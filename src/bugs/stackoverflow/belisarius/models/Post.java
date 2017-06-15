@@ -2,12 +2,10 @@ package bugs.stackoverflow.belisarius.models;
 
 import com.google.gson.JsonObject;
 
-import java.time.Instant;
-
 import org.jetbrains.annotations.NotNull;
 
 public class Post {
-    private Integer postID;
+    private int postID;
     private String title;
     private String lastTitle;
     private String body;
@@ -16,11 +14,11 @@ public class Post {
     private boolean isRollback;
     private String postType;
     
-    public Integer getPostID() {
+    public int getPostID() {
         return postID;
     }
 
-    public void setPostID(Integer postID) {
+    public void setPostID(int postID) {
         this.postID = postID;
     }
     

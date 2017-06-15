@@ -1,4 +1,4 @@
-package bugs.stackoverflow.belasarius.finders;
+package bugs.stackoverflow.belisarius.finders;
 
 import info.debatty.java.stringsimilarity.JaroWinkler;
 
@@ -6,6 +6,7 @@ public class VandalismFinder {
 
 	private String string1;
 	private String string2;
+	private static double score;
 		
 	private double quantifier;
 	
@@ -20,13 +21,17 @@ public class VandalismFinder {
 		
 		JaroWinkler js = new JaroWinkler();
 		
-		double score = js.similarity(string1, string2);
+		score = js.similarity(string1, string2);
 		
 		if (score * quantifier < 0.5) {
 			vandalismFound = true;
 		}
 		
 		return vandalismFound;
+	}
+	
+	public static double getScore() {
+		return score;
 	}
 	
 }
