@@ -18,7 +18,7 @@ import java.util.List;
 public class MonitorService {
 
 	private Room room;
-	public static long lastPostTime = System.currentTimeMillis()/1000-5*60;
+	public static long lastPostTime = System.currentTimeMillis()/1000-1*60;
 	private ScheduledExecutorService executorService;
 	
 	private String commands = "    alive          - Test to check if bot is alive or not.\n" +
@@ -72,7 +72,7 @@ public class MonitorService {
 			
 		} else if (message.toLowerCase().contains("check")) {
 			try{
-				Integer postId = Integer.parseInt(message.split("check")[1].trim());
+				int postId = Integer.parseInt(message.split("check")[1].trim());
 				run(room, postId);
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
@@ -127,9 +127,10 @@ public class MonitorService {
 		try {
 			List<Integer> postIds = postUtils.getPostIdsByActivity(lastPostTime);
 			if (postIds.size() > 0) {
-				for (Integer id : postIds) {
-					for (Post p : getVandalisedPosts(id)) {
-						sendVandalisedPostLink(p);
+				for (int id : postIds) {
+					List<Post> vandalisedPosts = getVandalisedPost(id);
+					if (vandalisedPosts.size() == 1) {
+						sendVandalisedPostLink(vandalisedPosts.get(0));
 					}
 				}
 			}
@@ -140,16 +141,18 @@ public class MonitorService {
 		
 	}
 	
-	private void run(Room room, Integer postId) {
+	private void run(Room room, int postId) {
 		
-		for (Post p : getVandalisedPosts(postId)) {
-			sendVandalisedPostLink(p);
+		List<Post> vandalisedPosts = getVandalisedPost(postId);
+		
+		if (vandalisedPosts.size() == 1) {
+			sendVandalisedPostLink(vandalisedPosts.get(0));
 		}
 
 	}
 	
-	private List<Post> getVandalisedPosts(Integer postId) {
-		List<Post> vandalisedPosts = new ArrayList<Post>();
+	private List<Post> getVandalisedPost(int postId) {
+		List<Post> vandalisedPost = new ArrayList<Post>();
 		
 		PostUtils postUtils = new PostUtils();
 		Post editedPost = postUtils.getLastRevisionByPostId(postId);
@@ -162,14 +165,18 @@ public class MonitorService {
 				 if (editedPost.getTitle() != null) {
 					 VandalismFinder vandalismOnTitle = new VandalismFinder(editedPost.getTitle(), editedPost.getLastTitle(), titleQuantifier);
 					 if (vandalismOnTitle.vandalismFound()) {
-						 vandalisedPosts.add(editedPost);
+						 if (!vandalisedPost.contains(editedPost)) {
+							 vandalisedPost.add(editedPost);
+						 }
 					 }
 				 }
 				 
 				 if (editedPost.getBody() != null) {
 					 VandalismFinder vandalismnOnBody = new VandalismFinder(editedPost.getBody(), editedPost.getLastBody(), bodyQuantifier);
 					 if (vandalismnOnBody.vandalismFound()) {
-						 vandalisedPosts.add(editedPost);
+						 if (!vandalisedPost.contains(editedPost)) {
+							 vandalisedPost.add(editedPost);
+						 }
 					 }
 					 
 				 }
@@ -178,15 +185,14 @@ public class MonitorService {
 			 e.printStackTrace();
 		 }
 		 
-		 return vandalisedPosts;
+		 return vandalisedPost;
 	}
 	
 	private void sendVandalisedPostLink(Post post) {
-		String message = "Potential vandalism found on [" + post.getPostType().toLowerCase() + "]";
-		message += "(https://stackoverflow.com/posts/" + String.valueOf(post.getPostID()) + "/revisions) ";
-		message += "Score " + String.valueOf(VandalismFinder.getScore());
+		String message = "Potential vandalism found on [" + post.getPostType().toLowerCase() + "](https://stackoverflow.com/posts/" + String.valueOf(post.getPostID()) + "/revisions)";
+		message += " Score" + String.valueOf(VandalismFinder.getScore());
+		message += " @Bugs";
 		room.send(message);
 	}
-	
 	
 }

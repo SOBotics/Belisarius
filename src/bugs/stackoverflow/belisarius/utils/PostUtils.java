@@ -28,26 +28,32 @@ public class PostUtils {
 		
 		JsonObject postsJSON = null;
 		try {
-			long lastActivity = lastPostTime;
+			long lastActivityDate = 0;
+			long lastEditDate = 0;
+			long maxActivityDate = lastPostTime;
 			int page = 1;
 			do {
 			
-				postsJSON = apiService.getPostIdsByActivity(lastPostTime, page);
+				postsJSON = apiService.getPostIdsByActivityDesc(page);
 	            for (JsonElement post : postsJSON.get("items").getAsJsonArray()) {
+	            	lastActivityDate = post.getAsJsonObject().get("last_activity_date").getAsLong();
 	            	if (post.getAsJsonObject().has("last_edit_date")) {
-	            		postIds.add(post.getAsJsonObject().get("post_id").getAsInt());
+		            	lastEditDate = post.getAsJsonObject().get("last_edit_date").getAsLong();
+		            	if(lastActivityDate == lastEditDate) {
+		            		int postId = post.getAsJsonObject().get("post_id").getAsInt();
+		            		if (!postIds.contains(postId)) {
+		            			postIds.add(postId);
+		            		}
+		            	}
 	            	}
-	            	long lastAcivityDate = post.getAsJsonObject().get("last_activity_date").getAsLong();
-	            	if (lastActivity < lastAcivityDate) {
-            			lastActivity = post.getAsJsonObject().get("last_activity_date").getAsLong();
+	            	if (maxActivityDate < lastActivityDate) {
+	            		maxActivityDate = lastActivityDate;
 	            	}
 	            }
 	            page++;
-			} while (!postsJSON.get("has_more").getAsBoolean() && page < 10);
+			} while (lastPostTime < lastActivityDate && page<10);
 		
-            if (MonitorService.lastPostTime < lastActivity) {
-            	MonitorService.lastPostTime = lastActivity;
-            }
+           	MonitorService.lastPostTime = maxActivityDate;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
