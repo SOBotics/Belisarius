@@ -5,21 +5,30 @@ import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 
 public class Post {
-    private int postID;
+    private int postId;
+    private int revisionNumber;
     private String title;
     private String lastTitle;
     private String body;
     private String lastBody;
-    private SOUser editor;
+    private SOUser user;
     private boolean isRollback;
     private String postType;
     
-    public int getPostID() {
-        return postID;
+    public int getPostId() {
+        return postId;
     }
 
-    public void setPostID(int postID) {
-        this.postID = postID;
+    public void setPostID(int postId) {
+        this.postId = postId;
+    }
+    
+    public int getRevisionNumber() {
+    	return revisionNumber;
+    }
+    
+    public void setRevisionNumber(int revisionNumber) {
+    	this.revisionNumber = revisionNumber;
     }
     
     public void setTitle(String title) {
@@ -55,12 +64,12 @@ public class Post {
         this.lastBody = lastBody;
     }
 
-    public SOUser getEditor() {
-        return editor;
+    public SOUser getUser() {
+        return user;
     }
 
-    public void setEditor(SOUser editor) {
-        this.editor = editor;
+    public void setUser(SOUser user) {
+        this.user = user;
     }
     
     public boolean getIsRollback() {
@@ -90,12 +99,13 @@ public class Post {
     private JsonObject getJson() {
         JsonObject json = new JsonObject();
 
-        json.addProperty("postId", postID);
+        json.addProperty("postId", postId);
+        json.addProperty("revisionNumber", revisionNumber);
         json.addProperty("body", body);
         json.addProperty("lastBody", lastBody);
         json.addProperty("isRollback", isRollback);
         json.addProperty("postType", postType);
-        json.add("editor", editor.getJson());
+        json.add("user", user.getJson());
         
         return json;
 

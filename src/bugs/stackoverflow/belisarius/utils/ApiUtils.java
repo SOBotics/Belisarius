@@ -18,7 +18,7 @@ public class ApiUtils {
     	return jsonUtils.get(postsUrl,"page",String.valueOf(page),"pagesize","100","order","desc","sort","activity","site",site,"filter",postsFilter,"key",apiKey);
     }
     
-    public static JsonObject getLastRevisionByPostId(int postId, String site, String apiKey) throws IOException{
+    public static JsonObject getLastestRevisionByPostId(int postId, String site, String apiKey) throws IOException{
     	String postsUrl = "https://api.stackexchange.com/2.2/posts/" + String.valueOf(postId) + "/revisions";
     	return jsonUtils.get(postsUrl,"page","1","pagesize","1","site",site,"filter",revisionsFilter,"key",apiKey);
     }

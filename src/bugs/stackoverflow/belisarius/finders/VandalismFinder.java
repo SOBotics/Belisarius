@@ -11,27 +11,36 @@ public class VandalismFinder {
 	private double quantifier;
 	
 	public VandalismFinder(String s1, String s2, double quantifier) {
-		this.string1 = s1;
-		this.string2 = s2;
+		this.string1 = removeIntentionalRepetitions(s1);
+		this.string2 = removeIntentionalRepetitions(s2);
 		this.quantifier = quantifier;
 	}
 	
 	public Boolean vandalismFound() {
-		Boolean vandalismFound = false;
+		 if (string1.length() < string2.length()*(0.6)) {
+			return true;
+		 }
 		
 		JaroWinkler js = new JaroWinkler();
 		
 		score = js.similarity(string1, string2);
 		
-		if (score * quantifier < 0.5) {
-			vandalismFound = true;
+		if (score * quantifier < 0.6) {
+			return true;
 		}
 		
-		return vandalismFound;
+		return false;
 	}
 	
 	public static double getScore() {
 		return score;
+	}
+	
+	private static String removeIntentionalRepetitions(String result) {
+		// TODO Improve implementation
+		//1 first if 3 letter or more
+		//2 if word contains 2 letters in sequenze and is over threshold
+		return result.replaceAll("(.)\\1{2,}", "$1");
 	}
 	
 }

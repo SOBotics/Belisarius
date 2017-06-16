@@ -12,7 +12,6 @@ import fr.tunaki.stackoverflow.chat.event.UserMentionedEvent;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MonitorService {
@@ -128,9 +127,9 @@ public class MonitorService {
 			List<Integer> postIds = postUtils.getPostIdsByActivity(lastPostTime);
 			if (postIds.size() > 0) {
 				for (int id : postIds) {
-					List<Post> vandalisedPosts = getVandalisedPost(id);
-					if (vandalisedPosts.size() == 1) {
-						sendVandalisedPostLink(vandalisedPosts.get(0));
+					Post post = getLatestRevision(id);
+					if (postIsVandalised(post)) {
+						sendVandalismFoundMessage(room, post);
 					}
 				}
 			}
@@ -143,40 +142,45 @@ public class MonitorService {
 	
 	private void run(Room room, int postId) {
 		
-		List<Post> vandalisedPosts = getVandalisedPost(postId);
+	    Post post = getLatestRevision(postId);
 		
-		if (vandalisedPosts.size() == 1) {
-			sendVandalisedPostLink(vandalisedPosts.get(0));
+	    if (post.getRevisionNumber() != 1){
+			if (postIsVandalised(post)) {
+				sendVandalismFoundMessage(room, post);
+			} else {
+				sendNoVandalismFoundMessage(room, post);
+			}
+	    } else {
+	    	sendPostNotEditedMessage(room, post);
 		}
 
 	}
 	
-	private List<Post> getVandalisedPost(int postId) {
-		List<Post> vandalisedPost = new ArrayList<Post>();
-		
+	private Post getLatestRevision(int postId) {
 		PostUtils postUtils = new PostUtils();
-		Post editedPost = postUtils.getLastRevisionByPostId(postId);
+		Post editedPost = postUtils.getLastestRevisionByPostId(postId);
 		
+		return editedPost;
+	}
+	
+	private boolean postIsVandalised(Post post) {
+
 		 double titleQuantifier = 1;
 		 double bodyQuantifier = 1;
 		 
 		 try {
-			 if (editedPost.getIsRollback() == false) {
-				 if (editedPost.getTitle() != null) {
-					 VandalismFinder vandalismOnTitle = new VandalismFinder(editedPost.getTitle(), editedPost.getLastTitle(), titleQuantifier);
+			 if (post.getIsRollback() == false) {
+				 if (post.getTitle() != null) {
+					 VandalismFinder vandalismOnTitle = new VandalismFinder(post.getTitle(), post.getLastTitle(), titleQuantifier);
 					 if (vandalismOnTitle.vandalismFound()) {
-						 if (!vandalisedPost.contains(editedPost)) {
-							 vandalisedPost.add(editedPost);
-						 }
+						 return true;
 					 }
 				 }
 				 
-				 if (editedPost.getBody() != null) {
-					 VandalismFinder vandalismnOnBody = new VandalismFinder(editedPost.getBody(), editedPost.getLastBody(), bodyQuantifier);
+				 if (post.getBody() != null) {
+					 VandalismFinder vandalismnOnBody = new VandalismFinder(post.getBody(), post.getLastBody(), bodyQuantifier);
 					 if (vandalismnOnBody.vandalismFound()) {
-						 if (!vandalisedPost.contains(editedPost)) {
-							 vandalisedPost.add(editedPost);
-						 }
+						 return true;
 					 }
 					 
 				 }
@@ -185,12 +189,29 @@ public class MonitorService {
 			 e.printStackTrace();
 		 }
 		 
-		 return vandalisedPost;
+		 return false;
 	}
 	
-	private void sendVandalisedPostLink(Post post) {
-		String message = "Potential vandalism found on [" + post.getPostType().toLowerCase() + "](https://stackoverflow.com/posts/" + String.valueOf(post.getPostID()) + "/revisions)";
-		message += " Score" + String.valueOf(VandalismFinder.getScore());
+	private void sendVandalismFoundMessage(Room room, Post post) {
+		String message = "Potential vandalism found on [" + post.getPostType().toLowerCase() + "](https://stackoverflow.com/posts/" + String.valueOf(post.getPostId()) + "/revisions)";
+		//message += " Score " + NumberFormat.getNumberInstance().format(VandalismFinder.getScore());
+		//implement a reason
+		message += " @Bugs";
+		room.send(message);
+	}
+	
+	private void sendNoVandalismFoundMessage(Room room, Post post) {
+		String message = "No vandalism has been found on [" + post.getPostType().toLowerCase() + "](https://stackoverflow.com/posts/" + String.valueOf(post.getPostId()) + "/revisions)";
+		//message += " Score " + NumberFormat.getNumberInstance().format(VandalismFinder.getScore());
+		//implement a reason
+		message += " @Bugs";
+		room.send(message);
+	}
+	
+	private void sendPostNotEditedMessage(Room room, Post post) {
+		String message = "This [" + post.getPostType().toLowerCase() + "](https://stackoverflow.com/posts/" + String.valueOf(post.getPostId()) + "/revisions) has not been edited yet.";
+		//message += " Score " + NumberFormat.getNumberInstance().format(VandalismFinder.getScore());
+		//implement a reason
 		message += " @Bugs";
 		room.send(message);
 	}
