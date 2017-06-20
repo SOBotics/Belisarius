@@ -1,46 +1,61 @@
 package bugs.stackoverflow.belisarius.finders;
 
-import info.debatty.java.stringsimilarity.JaroWinkler;
+import java.util.ArrayList;
+import java.util.List;
+
+import bugs.stackoverflow.belisarius.models.Post;
+import bugs.stackoverflow.belisarius.models.VandalisedPost;
+import bugs.stackoverflow.belisarius.reasonlists.*;
+import bugs.stackoverflow.belisarius.reasons.*;
 
 public class VandalismFinder {
 
-	private String string1;
-	private String string2;
-	private static double score;
-		
-	private double quantifier;
+	private Post post;
 	
-	public VandalismFinder(String s1, String s2, double quantifier) {
-		this.string1 = removeIntentionalRepetitions(s1);
-		this.string2 = removeIntentionalRepetitions(s2);
-		this.quantifier = quantifier;
+	public VandalismFinder(Post post) {
+		this.post = post;
 	}
 	
-	public Boolean vandalismFound() {
-		 if (string1.length() < string2.length()*(0.6)) {
-			return true;
-		 }
+	public VandalisedPost findReasons() {
+		VandalisedPost vandalisedPost = new VandalisedPost(this.post);
+    	
+    	if (post.getTitle() != null && post.getLastTitle() != null)
+    	{
+    		for (String reason : getReasons(post.getTitle(), post.getLastTitle(), true, false, 2.0)) {
+    			vandalisedPost.addReason(reason);
+    		}
+    	} 
+    	
+    	if (post.getBody() != null && post.getLastBody() != null) {
+    		for (String reason : getReasons(post.getBody(), post.getLastBody(), false, true, 1.0)) {
+    			vandalisedPost.addReason(reason);
+    		}
+    	}
 		
-		JaroWinkler js = new JaroWinkler();
+		return vandalisedPost;
+	}
+	
+	private List<String> getReasons(String target, String original, boolean isCheckOnTitle, boolean isCheckOnBody, double quantifier) {
+		List<String> reasons = new ArrayList<String>();
 		
-		score = js.similarity(string1, string2);
-		
-		if (score * quantifier < 0.6) {
-			return true;
+		if (target != "" && original != "") {
+			ReasonList reasonList = new SOBoticsReasonList(target, original, isCheckOnTitle, isCheckOnBody, quantifier);
+			for (Reason reason : reasonList.reasons()) {
+				if (reason.isHit()) {
+					reasons.add(reason.getDescription());
+				}
+			}
 		}
 		
-		return false;
+		return reasons;
 	}
 	
-	public static double getScore() {
-		return score;
-	}
 	
-	private static String removeIntentionalRepetitions(String result) {
+	//private static String removeIntentionalRepetitions(String result) {
 		// TODO Improve implementation
 		//1 first if 3 letter or more
 		//2 if word contains 2 letters in sequenze and is over threshold
-		return result.replaceAll("(.)\\1{2,}", "$1");
-	}
+		//return result.replaceAll("(.)\\1{2,}", "$1");
+	//}
 	
 }

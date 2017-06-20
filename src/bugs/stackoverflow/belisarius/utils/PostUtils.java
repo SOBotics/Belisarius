@@ -109,8 +109,13 @@ public class PostUtils {
         Post np = new Post();
 
         np.setPostID(post.get("post_id").getAsInt());
-        
-        np.setRevisionNumber(post.get("revision_number").getAsInt());
+
+    	//some revisions don't have a revision number, e.g. vote based revisions (undeleted)
+        if (post.has("revision_number")) {
+        	np.setRevisionNumber(post.get("revision_number").getAsInt());
+        } else {
+        	np.setRevisionNumber(1);
+        }
         
         if (post.has("body")) {
 	        np.setBody(post.get("body").getAsString());

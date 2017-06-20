@@ -1,9 +1,5 @@
 package bugs.stackoverflow.belisarius.models;
 
-import com.google.gson.JsonObject;
-
-import org.jetbrains.annotations.NotNull;
-
 public class Post {
     private int postId;
     private int revisionNumber;
@@ -46,7 +42,6 @@ public class Post {
     public String getLastTitle() {
     	return lastTitle;
     }
-
     
     public String getBody() {
         return body;
@@ -86,29 +81,6 @@ public class Post {
     
     public void setPostType(String postType) {
     	this.postType = postType;
-    }
-    
-    @Override
-    public String toString() {
-
-        JsonObject json = getJson();
-        return json.toString();
-    }
-
-    @NotNull
-    private JsonObject getJson() {
-        JsonObject json = new JsonObject();
-
-        json.addProperty("postId", postId);
-        json.addProperty("revisionNumber", revisionNumber);
-        json.addProperty("body", body);
-        json.addProperty("lastBody", lastBody);
-        json.addProperty("isRollback", isRollback);
-        json.addProperty("postType", postType);
-        json.add("user", user.getJson());
-        
-        return json;
-
     }
     
 }
