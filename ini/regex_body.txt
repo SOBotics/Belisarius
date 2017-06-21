@@ -1,1 +1,1 @@
-(i)error resolved
+(?i)error resolved

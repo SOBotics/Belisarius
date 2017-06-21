@@ -31,7 +31,7 @@ public class KeywordFound implements Reason {
 					this.keywordsFound.add(pattern.toString());
 				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
@@ -60,7 +60,13 @@ public class KeywordFound implements Reason {
 
 	@Override
 	public String getDescription() {
-		return "Keyword found";
+		String keywordsFound = "Keyword" + (this.getFoundKeywords().size() > 1 ? "s" : "") + " found; ";
+		
+		for (String keyword : this.getFoundKeywords()) {
+			keywordsFound += "**" + keyword + "**; ";
+		}
+		
+		return keywordsFound.trim();
 	}
 	
 	public List<String> getFoundKeywords() {

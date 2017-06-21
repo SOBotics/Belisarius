@@ -1,21 +1,13 @@
 package bugs.stackoverflow.belisarius.services;
 
 import bugs.stackoverflow.belisarius.finders.VandalismFinder;
-import bugs.stackoverflow.belisarius.models.Post;
-import bugs.stackoverflow.belisarius.models.VandalisedPost;
+import bugs.stackoverflow.belisarius.models.*;
 import bugs.stackoverflow.belisarius.utils.PostUtils;
-import fr.tunaki.stackoverflow.chat.Room;
-import fr.tunaki.stackoverflow.chat.event.EventType;
-import fr.tunaki.stackoverflow.chat.event.MessagePostedEvent;
-import fr.tunaki.stackoverflow.chat.event.MessageReplyEvent;
-import fr.tunaki.stackoverflow.chat.event.UserMentionedEvent;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
-import java.io.BufferedReader;
-import java.io.FileReader;
+import fr.tunaki.stackoverflow.chat.Room;
+import fr.tunaki.stackoverflow.chat.event.*;
+
+import java.util.concurrent.*;
 import java.util.List;
 
 public class MonitorService {
@@ -23,6 +15,8 @@ public class MonitorService {
 	private Room room;
 	public static long lastPostTime = System.currentTimeMillis()/1000-1*60;
 	private ScheduledExecutorService executorService;
+	
+	private static String readMe = "https://github.com/SOBotics/Belisarius";
 	
 	private String commands = "    alive          - Test to check if bot is alive or not.\n" +
 	                          "    check 'idx'    - Checks a post for potential vandalism.\n" +
@@ -55,9 +49,15 @@ public class MonitorService {
 	private void messagePosted(Room room, MessagePostedEvent event) {
 		String message = event.getMessage().getPlainContent().trim();
 		
+		int cp = Character.codePointAt(message, 0);
 		if (message.toLowerCase().startsWith("@bots alive")) {
 			room.send("Yeah, I'm alive.");
+		} else {
+			if (cp == 128642 || (cp>=128644 && cp<=128650)) {
+				room.send("\uD83D\uDE83");
+			}
 		}
+		
 	}
 	
 	private void messageReply(Room room, MessageReplyEvent event) {
@@ -200,17 +200,19 @@ public class MonitorService {
 	}
 	
 	private void sendVandalismFoundMessage(Room room, Post post, String reason) {
-		String message = "Potential vandalism found on [" + post.getPostType().toLowerCase() + "](https://stackoverflow.com/posts/" + String.valueOf(post.getPostId()) + "/revisions)";
-		message += " Reason: " + reason;
-		//message += " Score " + NumberFormat.getNumberInstance().format(VandalismFinder.getScore());
+		String message = "[ [Belisarius](" + readMe + ") ]";
+		message += " Potential vandalism found. Reason: " + reason;
+		message += " [Link to " + post.getPostType().toLowerCase() + "](https://stackoverflow.com/posts/" + String.valueOf(post.getPostId()) + "/revisions).";
+		message += " Revision: " + String.valueOf(post.getRevisionNumber());
 		message += " @Bugs";
 		room.send(message);
 	}
 	
 	private void sendNoVandalismFoundMessage(Room room, Post post) {
-		String message = "No vandalism has been found on [" + post.getPostType().toLowerCase() + "](https://stackoverflow.com/posts/" + String.valueOf(post.getPostId()) + "/revisions)";
-		//message += " Score " + NumberFormat.getNumberInstance().format(VandalismFinder.getScore());
-		//implement a reason
+		String message = "[ [Belisarius](" + readMe + ") ]";
+		message += " No vandalism has been found.";
+		message += " [Link to " + post.getPostType().toLowerCase() + "](https://stackoverflow.com/posts/" + String.valueOf(post.getPostId()) + "/revisions).";
+		message += " Revision: " + String.valueOf(post.getRevisionNumber());
 		message += " @Bugs";
 		room.send(message);
 	}

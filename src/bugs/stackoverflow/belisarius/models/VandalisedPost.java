@@ -17,7 +17,7 @@ public class VandalisedPost {
 	}
 	
 	public void addReason(String reason) {
-		if (!reason.contains(reason)) {
+		if (!this.reasons.contains(reason)) {
 			this.reasons.add(reason);
 		}
 	}

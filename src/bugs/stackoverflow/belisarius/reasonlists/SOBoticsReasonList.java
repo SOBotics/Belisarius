@@ -29,6 +29,8 @@ public class SOBoticsReasonList implements ReasonList {
 		
 		reasons.add(new KeywordFound(this.target, this.isCheckOnTitle, this.isCheckOnBody));
 		reasons.add(new TextRemoved(this.target, this.original, quantifier));
+		reasons.add(new RepeatedWords(this.target, this.isCheckOnBody));
+		
 		return reasons;
 	}
 

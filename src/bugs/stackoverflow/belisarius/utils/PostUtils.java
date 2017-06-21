@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jsoup.Jsoup;
+
 public class PostUtils {
 	
 	private ApiService apiService;
@@ -59,43 +61,43 @@ public class PostUtils {
 	}
 	
 	private boolean postBeenEdited(JsonElement post) {
-		
-		boolean postBeenEdited = false;
-		
 		if (post.getAsJsonObject().has("last_edit_date")) {
 			long lastActivityDate = post.getAsJsonObject().get("last_activity_date").getAsLong();
 			long lastEditDate = post.getAsJsonObject().get("last_edit_date").getAsLong();
 			if(lastActivityDate == lastEditDate) {
-				postBeenEdited = true;
+				return true;
 			}
 		}
 		
-		return postBeenEdited; 
+		return false; 
 	}
 	
 	private boolean editorAlsoOwner(JsonElement post) {
-		
-		boolean editorAlsoOwner = false;
-		
-		JsonObject ownerJSON = post.getAsJsonObject().get("owner").getAsJsonObject();
-		JsonObject editorJSON = post.getAsJsonObject().get("last_editor").getAsJsonObject();
-		
-		long ownerId = ownerJSON.get("user_id").getAsLong();
-		long editorId = editorJSON.get("user_id").getAsLong();
-		
-		if (ownerId == editorId) {
-			editorAlsoOwner = true;
+		try{
+			JsonObject ownerJSON = post.getAsJsonObject().get("owner").getAsJsonObject();
+			JsonObject editorJSON = post.getAsJsonObject().get("last_editor").getAsJsonObject();
+			
+			long ownerId = ownerJSON.get("user_id").getAsLong();
+			long editorId = editorJSON.get("user_id").getAsLong();
+			
+			if (ownerId == editorId) {
+				return true;
+			}
+		} catch (Exception e) {
+			System.out.println(e);
 		}
 		
-		return editorAlsoOwner;
+		return false;
 	}
 	
 	public Post getLastestRevisionByPostId(int postId) {
 		Post revision = new Post();
-		
+		JsonObject postsJson;
 		try {
-			JsonObject postsJson = apiService.getLastestRevisionByPostId(postId);
-			revision = PostUtils.getPost(postsJson.get("items").getAsJsonArray().get(0).getAsJsonObject());
+			postsJson = apiService.getLastestRevisionByPostId(postId);
+			if (postsJson.has("items")) {
+				revision = PostUtils.getPost(postsJson.get("items").getAsJsonArray().get(0).getAsJsonObject());
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -118,15 +120,15 @@ public class PostUtils {
         }
         
         if (post.has("body")) {
-	        np.setBody(post.get("body").getAsString());
+	        np.setBody(Jsoup.parse(post.get("body").getAsString()).text());
         }
         
         if (post.has("last_body")) {
-	        np.setLastBody(post.get("last_body").getAsString());
+	        np.setLastBody(Jsoup.parse(post.get("last_body").getAsString()).text());
         }
         
         if (post.has("title")) {
-	        np.setBody(post.get("title").getAsString());
+	        np.setTitle(post.get("title").getAsString());
         }
         
         if (post.has("last_title")) {
