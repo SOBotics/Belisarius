@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.jsoup.Jsoup;
 
 public class PostUtils {
@@ -90,19 +91,34 @@ public class PostUtils {
 		return false;
 	}
 	
-	public Post getLastestRevisionByPostId(int postId) {
-		Post revision = new Post();
-		JsonObject postsJson;
-		try {
-			postsJson = apiService.getLastestRevisionByPostId(postId);
-			if (postsJson.has("items")) {
-				revision = PostUtils.getPost(postsJson.get("items").getAsJsonArray().get(0).getAsJsonObject());
+	public List<Post> getLastestRevisions(String postIdInput) {
+		List<Post> revisions = new ArrayList<Post>();
+		String[] postIds = postIdInput.split(";");
+		boolean hasMore = false;
+		do {
+			
+			try {
+				JsonObject postsJSON = apiService.getLastestRevisions(String.join(";", postIds));
+				hasMore = postsJSON.get("has_more").getAsBoolean();
+				for (String id : postIds) {
+					int revisionNo = 0;
+					for (JsonElement post : postsJSON.get("items").getAsJsonArray()) {
+					    if (post.getAsJsonObject().get("post_id").getAsInt() == Integer.parseInt(id) && post.getAsJsonObject().has("revision_number")) {
+					    	if (revisionNo < post.getAsJsonObject().get("revision_number").getAsInt()) {
+					    		revisionNo = post.getAsJsonObject().get("revision_number").getAsInt();
+					    		revisions.add(getPost(post.getAsJsonObject()));
+					    	}
+					    }
+						postIds = ArrayUtils.removeElement(postIds, id);
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			
+		} while (hasMore);
 		
-		return revision;
+		return revisions;
 	}
 	
 
@@ -112,12 +128,7 @@ public class PostUtils {
 
         np.setPostID(post.get("post_id").getAsInt());
 
-    	//some revisions don't have a revision number, e.g. vote based revisions (undeleted)
-        if (post.has("revision_number")) {
-        	np.setRevisionNumber(post.get("revision_number").getAsInt());
-        } else {
-        	np.setRevisionNumber(1);
-        }
+        np.setRevisionNumber(post.get("revision_number").getAsInt());
         
         if (post.has("body")) {
 	        np.setBody(Jsoup.parse(post.get("body").getAsString()).text());

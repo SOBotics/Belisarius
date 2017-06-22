@@ -76,7 +76,7 @@ public class MonitorService {
 		} else if (message.toLowerCase().contains("check")) {
 			try{
 				int postId = Integer.parseInt(message.split("check")[1].trim());
-				run(room, postId);
+				run(room, String.valueOf(postId));
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			}
@@ -130,8 +130,13 @@ public class MonitorService {
 		try {
 			List<Integer> postIds = postUtils.getPostIdsByActivity(lastPostTime);
 			if (postIds.size() > 0) {
+				String postIdInput = "";
 				for (int id : postIds) {
-					Post post = getLatestRevision(id);
+					postIdInput += id + ";";
+				}
+				postIdInput = postIdInput.substring(0, postIdInput.length()-1);
+				List<Post> posts = getLatestRevisions(postIdInput);
+				for (Post post : posts) {
 					String message =  getVandalismMessage(post);
 					if (message != "") {
 						sendVandalismFoundMessage(room, post, message);
@@ -145,17 +150,19 @@ public class MonitorService {
 		
 	}
 	
-	private void run(Room room, int postId) {
+	private void run(Room room, String postIdInput) {
 		
-		Post post = getLatestRevision(postId);
+		List<Post> revisions = getLatestRevisions(postIdInput);
   
-		String message =  getVandalismMessage(post);
-	  
-		if (message != "") {
-			sendVandalismFoundMessage(room, post, message);
-		} else {
-  			sendNoVandalismFoundMessage(room, post);
-  		}
+		for (Post post : revisions) {
+			String message =  getVandalismMessage(post);
+		  
+			if (message != "") {
+				sendVandalismFoundMessage(room, post, message);
+			} else {
+	  			sendNoVandalismFoundMessage(room, post);
+	  		}
+		}
   	}
 	
 	private String getVandalismMessage(Post post) {
@@ -177,11 +184,9 @@ public class MonitorService {
 		
 	}
 	
-	private Post getLatestRevision(int postId) {
+	private List<Post> getLatestRevisions(String postIdInput) {
 		PostUtils postUtils = new PostUtils();
-		Post editedPost = postUtils.getLastestRevisionByPostId(postId);
-		
-		return editedPost;
+		return postUtils.getLastestRevisions(postIdInput);
 	}
 	
 	private VandalisedPost getVandalisedPost(Post post) {
