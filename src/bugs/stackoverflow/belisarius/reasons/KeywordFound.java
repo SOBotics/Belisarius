@@ -2,6 +2,7 @@ package bugs.stackoverflow.belisarius.reasons;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class KeywordFound implements Reason {
@@ -26,9 +27,9 @@ public class KeywordFound implements Reason {
 		try {
 			List<Pattern> regexs = getRegexs(isCheckOnTitle ? regexTitleFile : isCheckOnBody ? regexBodyFile : "");
 			for (Pattern pattern : regexs) {
-				boolean match = pattern.matcher(this.target).find();
-				if (match) {
-					this.keywordsFound.add(pattern.toString());
+				Matcher matcher = pattern.matcher(this.target);
+				if (matcher.find()) {
+					this.keywordsFound.add(matcher.group());
 				}
 			}
 		} catch (Exception e) {
@@ -47,7 +48,7 @@ public class KeywordFound implements Reason {
 			String line = br.readLine();
 			while (line != null) {
 				if (line.trim().length() > 0) {
-					Pattern p = Pattern.compile(line);
+					Pattern p = Pattern.compile(line, Pattern.CASE_INSENSITIVE);
 					patterns.add(p);
 				}
 				line = br.readLine();

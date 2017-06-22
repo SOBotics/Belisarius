@@ -9,7 +9,6 @@ import bugs.stackoverflow.belisarius.services.PropertyService;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +53,7 @@ public class PostUtils {
 			} while (lastPostTime < lastActivityDate & page<10);
 		
            	MonitorService.lastPostTime = maxActivityDate;
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
@@ -75,17 +74,21 @@ public class PostUtils {
 	
 	private boolean editorAlsoOwner(JsonElement post) {
 		try{
-			JsonObject ownerJSON = post.getAsJsonObject().get("owner").getAsJsonObject();
-			JsonObject editorJSON = post.getAsJsonObject().get("last_editor").getAsJsonObject();
-			
-			long ownerId = ownerJSON.get("user_id").getAsLong();
-			long editorId = editorJSON.get("user_id").getAsLong();
-			
-			if (ownerId == editorId) {
+			if (!post.getAsJsonObject().has("owner")) {
 				return true;
+			} else {
+				JsonObject ownerJSON = post.getAsJsonObject().get("owner").getAsJsonObject();
+				JsonObject editorJSON = post.getAsJsonObject().get("last_editor").getAsJsonObject();
+				
+				long ownerId = ownerJSON.get("user_id").getAsLong();
+				long editorId = editorJSON.get("user_id").getAsLong();
+				
+				if (ownerId == editorId) {
+					return true;
+				}
 			}
 		} catch (Exception e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
 		
 		return false;
@@ -102,15 +105,19 @@ public class PostUtils {
 				hasMore = postsJSON.get("has_more").getAsBoolean();
 				for (String id : postIds) {
 					int revisionNo = 0;
+					Post revision = null;
 					for (JsonElement post : postsJSON.get("items").getAsJsonArray()) {
 					    if (post.getAsJsonObject().get("post_id").getAsInt() == Integer.parseInt(id) && post.getAsJsonObject().has("revision_number")) {
 					    	if (revisionNo < post.getAsJsonObject().get("revision_number").getAsInt()) {
 					    		revisionNo = post.getAsJsonObject().get("revision_number").getAsInt();
-					    		revisions.add(getPost(post.getAsJsonObject()));
+					    		revision = getPost(post.getAsJsonObject());
 					    	}
 					    }
-						postIds = ArrayUtils.removeElement(postIds, id);
 					}
+				    if (revision != null) {
+				    	revisions.add(revision);
+				    }
+					postIds = ArrayUtils.removeElement(postIds, id);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

@@ -61,7 +61,8 @@ public class MonitorService {
 	}
 	
 	private void messageReply(Room room, MessageReplyEvent event) {
-		//String message = event.getMessage().getPlainContent().trim();
+		String message = event.getMessage().getPlainContent().trim();
+		System.out.println(message);
 	}
 	
 	private void userMentioned(Room room, UserMentionedEvent event) {
