@@ -5,8 +5,11 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import bugs.stackoverflow.belisarius.models.Post;
+
 public class KeywordFound implements Reason {
 
+	private String postType;
 	private String target;
 	private List<String> keywordsFound = new ArrayList<String>();
 	
@@ -14,9 +17,11 @@ public class KeywordFound implements Reason {
 	private boolean isCheckOnBody;
 	
 	public static String regexTitleFile = "./ini/regex_title.txt";
-	public static String regexBodyFile = "./ini/regex_body.txt";
+	public static String regexQuestionBodyFile = "./ini/regex_question_body.txt";
+	public static String regexAnswerBodyFile = "./ini/regex_answer_body.txt";
 	
-	public KeywordFound(String target, boolean isCheckOnTitle, boolean isCheckOnBody) {
+	public KeywordFound(String postType, String target, boolean isCheckOnTitle, boolean isCheckOnBody) {
+		this.postType = postType;
 		this.target = target.toLowerCase();
 		this.isCheckOnTitle = isCheckOnTitle;
 		this.isCheckOnBody = isCheckOnBody;
@@ -25,7 +30,7 @@ public class KeywordFound implements Reason {
 	@Override
 	public boolean isHit() {
 		try {
-			List<Pattern> regexs = getRegexs(isCheckOnTitle ? regexTitleFile : isCheckOnBody ? regexBodyFile : "");
+			List<Pattern> regexs = getRegexs(getFilename());
 			for (Pattern pattern : regexs) {
 				Matcher matcher = pattern.matcher(this.target);
 				if (matcher.find()) {
@@ -57,6 +62,24 @@ public class KeywordFound implements Reason {
 			br.close();
 		}
 		return patterns;
+	}
+	
+	private String getFilename() {
+		
+		switch (this.postType) {
+			case Post.postType_Question: {
+				if (this.isCheckOnBody) {
+					return regexQuestionBodyFile;
+				} else if (this.isCheckOnTitle) {
+					return regexTitleFile;
+				}
+			}
+			case Post.postType_Answer : return regexAnswerBodyFile;
+		    
+			default:
+				throw new RuntimeException("Unable to determine post type to return correct filename. Post type; " + this.postType + ".");
+		}
+
 	}
 
 	@Override

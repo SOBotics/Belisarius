@@ -1,1 +1,1 @@
-((re)?so+l+ved)
+((re)?(so+l+ved|so+vl+ed))

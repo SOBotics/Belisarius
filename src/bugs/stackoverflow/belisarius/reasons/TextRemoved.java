@@ -33,7 +33,8 @@ public class TextRemoved implements Reason {
 
 	@Override
 	public String getDescription() {
-		return "Text removed";
+		double score = Math.round(this.score*100.0)/100.0;
+		return "Text removed. Score: " + score;
 	}
 
 }

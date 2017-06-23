@@ -7,6 +7,7 @@ import java.util.List;
 
 public class SOBoticsReasonList implements ReasonList {
 
+	private String postType;
 	private String target;
 	private String original;
 	
@@ -15,7 +16,8 @@ public class SOBoticsReasonList implements ReasonList {
 	
 	private double quantifier;
 	
-	public SOBoticsReasonList(String target, String original, boolean isCheckOnTitle, boolean isCheckOnBody, double quantifier) {
+	public SOBoticsReasonList(String postType, String target, String original, boolean isCheckOnTitle, boolean isCheckOnBody, double quantifier) {
+		this.postType = postType;
 		this.target = target;
 		this.original = original;
 		this.isCheckOnTitle = isCheckOnTitle;
@@ -27,7 +29,7 @@ public class SOBoticsReasonList implements ReasonList {
 	public List<Reason> reasons() {
 		List<Reason> reasons = new ArrayList<Reason>();
 		
-		reasons.add(new KeywordFound(this.target, this.isCheckOnTitle, this.isCheckOnBody));
+		reasons.add(new KeywordFound(this.postType, this.target, this.isCheckOnTitle, this.isCheckOnBody));
 		reasons.add(new TextRemoved(this.target, this.original, quantifier));
 		reasons.add(new RepeatedWords(this.target, this.isCheckOnBody));
 		

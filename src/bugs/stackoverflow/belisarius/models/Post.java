@@ -1,6 +1,10 @@
 package bugs.stackoverflow.belisarius.models;
 
 public class Post {
+	
+	public final static String postType_Answer = "answer";
+	public final static String postType_Question = "question";
+		
     private int postId;
     private int revisionNumber;
     private String title;

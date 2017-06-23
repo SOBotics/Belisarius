@@ -8,6 +8,8 @@ import fr.tunaki.stackoverflow.chat.Room;
 import fr.tunaki.stackoverflow.chat.event.*;
 
 import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class MonitorService {
@@ -131,18 +133,30 @@ public class MonitorService {
 		try {
 			List<Integer> postIds = postUtils.getPostIdsByActivity(lastPostTime);
 			if (postIds.size() > 0) {
-				String postIdInput = "";
-				for (int id : postIds) {
-					postIdInput += id + ";";
-				}
-				postIdInput = postIdInput.substring(0, postIdInput.length()-1);
-				List<Post> posts = getLatestRevisions(postIdInput);
-				for (Post post : posts) {
-					String message =  getVandalismMessage(post);
-					if (message != "") {
-						sendVandalismFoundMessage(room, post, message);
+				List<Integer> postIdsRemaining = new ArrayList<Integer>();
+				do {
+					if (postIdsRemaining.size()>0) {
+						postIds = postIdsRemaining;
 					}
-				}
+					String postIdInput = "";
+					int count = 0;
+					for (int id : postIds) {
+						if (count != 100) {
+							postIdInput += id + ";";
+						} else {
+							postIdsRemaining.add(id);
+						}
+						count++;
+					}
+					postIdInput = postIdInput.substring(0, postIdInput.length()-1);
+					List<Post> posts = getLatestRevisions(postIdInput);
+					for (Post post : posts) {
+						String message =  getVandalismMessage(post);
+						if (message != "") {
+							sendVandalismFoundMessage(room, post, message);
+						}
+					}
+				} while (postIdsRemaining.size()>0);
 			}
 			
 		} catch (Exception e){

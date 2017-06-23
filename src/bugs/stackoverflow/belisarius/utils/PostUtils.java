@@ -123,7 +123,7 @@ public class PostUtils {
 				e.printStackTrace();
 			}
 			
-		} while (hasMore);
+		} while (hasMore || postIds.length>0);
 		
 		return revisions;
 	}
