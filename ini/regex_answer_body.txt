@@ -1,3 +1,0 @@
-i\s*(h)?(av)?(e)?\s*a(n)?(other)?\s*problem
-\s*(((Can\s*you)?\s*(please)?)?)?\s*post\s*(a|(yo)?ur)\s*workin(g)?\s*solution\s*(\?)?
-pl(eas+e|s+|z+)\s*(h(e|a)?lp)\s*me

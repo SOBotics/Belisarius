@@ -1,29 +1,38 @@
 package bugs.stackoverflow.belisarius.models;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 public class VandalisedPost {
 
 	private Post post;
-	private List<String> reasons = new ArrayList<String>();
+	private Map<String, Double> reasons = new HashMap<String, Double>();
 	
-	public VandalisedPost(Post post) {
+	public VandalisedPost(Post post, Map<String, Double> reasons) {
 		this.post = post;
+		this.reasons = reasons;
 	}
 	
 	public Post getPost() {
 		return this.post;
 	}
 	
-	public void addReason(String reason) {
-		if (!this.reasons.contains(reason)) {
-			this.reasons.add(reason);
-		}
-	}
-	
-	public List<String> getReasons() {
-		return this.reasons;
-	}
-	
+    public String getReasons() {
+    	String reasons = "";
+    	double score = 0;
+    	
+    	for (String key : this.reasons.keySet()) {
+    		reasons += key + ", ";
+    	}
+    	
+    	for (double value : this.reasons.values()) {
+    		score += value;
+    	}
+    	
+    	if (reasons != "" && score > 0) {
+    		reasons = reasons.substring(0, reasons.trim().length()-1) + "; Score: " + score;
+    	}
+    	
+    	return reasons;
+    }	
 }

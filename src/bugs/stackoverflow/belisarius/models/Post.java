@@ -2,8 +2,8 @@ package bugs.stackoverflow.belisarius.models;
 
 public class Post {
 	
-	public final static String postType_Answer = "answer";
-	public final static String postType_Question = "question";
+	public final static String postTypeAnswer = "answer";
+	public final static String postTypeQuestion = "question";
 		
     private int postId;
     private int revisionNumber;

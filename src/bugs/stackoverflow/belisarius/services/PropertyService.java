@@ -4,16 +4,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import bugs.stackoverflow.belisarius.utils.PathUtils;
+
 public class PropertyService {
 
-	public static String loginPropertiesFile = "./properties/login.properties";
-	
 	private Properties prop;
 
 	public PropertyService() {
 		prop = new Properties();
 		try{
-			prop.load(new FileInputStream(loginPropertiesFile));
+			prop.load(new FileInputStream(PathUtils.loginPropertiesFile));
 		} catch(IOException e){
 			e.printStackTrace();
 		}

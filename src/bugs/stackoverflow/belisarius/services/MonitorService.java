@@ -9,7 +9,6 @@ import fr.tunaki.stackoverflow.chat.event.*;
 
 import java.util.concurrent.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 public class MonitorService {
@@ -18,7 +17,7 @@ public class MonitorService {
 	public static long lastPostTime = System.currentTimeMillis()/1000-1*60;
 	private ScheduledExecutorService executorService;
 	
-	private static String readMe = "https://github.com/SOBotics/Belisarius";
+	private static String readMe = "https://git.io/vQZlJ";
 	
 	private String commands = "    alive          - Test to check if bot is alive or not.\n" +
 	                          "    check 'idx'    - Checks a post for potential vandalism.\n" +
@@ -181,18 +180,13 @@ public class MonitorService {
   	}
 	
 	private String getVandalismMessage(Post post) {
-		
 		String message = "";
 		
         if (post.getRevisionNumber()!= 1 && post.getIsRollback() == false) {
         	VandalisedPost vandalisedPost = getVandalisedPost(post);
-
-        	for (String reason : vandalisedPost.getReasons()) {
-        		if (message != "") {
-        			message += "; ";
-        		}
-	    		message += reason;
-	    	}
+        	if (vandalisedPost != null) {
+        		message = vandalisedPost.getReasons();
+        	}
         }
         
         return message;
@@ -205,18 +199,16 @@ public class MonitorService {
 	}
 	
 	private VandalisedPost getVandalisedPost(Post post) {
- 		VandalisedPost vandalisedPost = new VandalisedPost(post);
-		
 		 try {
 			  {
 		         VandalismFinder vandalismFinder = new VandalismFinder(post);
-		         vandalisedPost = vandalismFinder.findReasons();
+		         return vandalismFinder.findReasons();
 			 }
 		 } catch (Exception e) {
 			 e.printStackTrace();
 		 }
 
-		 return vandalisedPost;
+		 return null;
 	}
 	
 	private void sendVandalismFoundMessage(Room room, Post post, String reason) {

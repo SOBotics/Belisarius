@@ -1,19 +1,18 @@
 package bugs.stackoverflow.belisarius.utils;
 
-import bugs.stackoverflow.belisarius.models.Post;
-import bugs.stackoverflow.belisarius.models.SOUser;
-import bugs.stackoverflow.belisarius.services.ApiService;
-import bugs.stackoverflow.belisarius.services.MonitorService;
-import bugs.stackoverflow.belisarius.services.PropertyService;
+import bugs.stackoverflow.belisarius.filters.*;
+import bugs.stackoverflow.belisarius.models.*;
+import bugs.stackoverflow.belisarius.services.*;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.jsoup.Jsoup;
 
 public class PostUtils {
 	
@@ -128,7 +127,6 @@ public class PostUtils {
 		return revisions;
 	}
 	
-
 	public static Post getPost(JsonObject post){
 
         Post np = new Post();
@@ -138,11 +136,11 @@ public class PostUtils {
         np.setRevisionNumber(post.get("revision_number").getAsInt());
         
         if (post.has("body")) {
-	        np.setBody(Jsoup.parse(post.get("body").getAsString()).text());
+	        np.setBody(post.get("body").getAsString());
         }
         
         if (post.has("last_body")) {
-	        np.setLastBody(Jsoup.parse(post.get("last_body").getAsString()).text());
+	        np.setLastBody(post.get("last_body").getAsString());
         }
         
         if (post.has("title")) {
@@ -172,6 +170,25 @@ public class PostUtils {
         np.setUser(user);
         
         return np;
+    }
+	
+    public static VandalisedPost getVandalisedPost(Post post) {
+        List<Filter> filters = new ArrayList<Filter>(){{
+            add(new BlacklistedFilter(post));
+            add(new VeryLongWordFilter(post));
+            add(new CodeRemovedFilter(post));
+            add(new TextRemovedFilter(post));
+            add(new FewUniqueCharactersFilter(post));
+        }};
+        
+        Map<String, Double> reasons = new HashMap<String, Double>();
+        for(Filter filter: filters){
+            if(filter.isHit()){
+            	reasons.put(filter.getDescription(), filter.getScore());
+            }
+        }
+
+        return new VandalisedPost(post, reasons);
     }
 	
 }

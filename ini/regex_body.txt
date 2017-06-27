@@ -1,1 +1,0 @@
-\b(error|problem).{1,10}\b(re)?so+l+ved
