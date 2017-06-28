@@ -32,7 +32,7 @@ Titles are run through the following filters:
  The question/answer body is run through the following filters:
  
  - TextRemoved; 80% or more of the body must have been removed and then it must have a Jaro Winkler score of less than 0.6
- - BlacklistedWords; certain words are appended to posts. The bot holds a seperate file for questions and answers. Both hold a list of keywords to watch out
+ - BlacklistedWords; certain words are appended to posts. The bot holds a separate file for questions and answers. Both hold a list of keywords to watch out
  - CodeRemoved; the bot watches out for all code being removed
  - FewUniqueCharacters; the body must either be 30 plus characters long and have less than 7 unique characters or be 100 characters plus and have less than 16 unique characters
  - RepeatedWords; this is when an edit is made were all the body is replaced with repeated words. The bot will output if only 5 or less unique words are found
@@ -40,8 +40,8 @@ Titles are run through the following filters:
 
 Edit summaries are run through the following filters:
 
- - BlacklistedWords; certain words are used within the edit summaries. The bot holds a seperate file for question edit summaries and answer edit summaries. Both hold a list of keywords to watch out
- - OffensiveWord; the bot checks for offensive language used with the edit summary. This is done via a separate regex file
+ - BlacklistedWords; certain words are used within the edit summaries. The bot holds a separate file for question edit summaries and answer edit summaries. Both hold a list of keywords to watch out
+ - OffensiveWord; the bot checks for offensive language used within the edit summary. This is done via a separate regex file
  
 ## Accounts 
 
@@ -49,10 +49,11 @@ Edit summaries are run through the following filters:
   
   ![Sample Image][5]
   
-  The source code is available on [Github](https://github.com/SOBotics/Belisarius) and suggestions are welcome. The project is still under the testing phase.
+  The source code is available on [GitHub](https://github.com/SOBotics/Belisarius) and suggestions are welcome. The project is still under the testing phase.
 
  [1]: https://api.stackexchange.com/docs/posts
  [2]: https://api.stackexchange.com/docs/revisions-by-ids
  [3]: https://stackoverflow.com/users/8149646/belisarius
  [4]: http://chat.stackoverflow.com/rooms/111347/sobotics
  [5]: https://i.stack.imgur.com/uRSpD.png
+
