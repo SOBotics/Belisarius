@@ -2,7 +2,7 @@
 
 ## Background
 
-This bot has been developed in an attempt to help capture bad edits and possible vandalism. This includes:
+This bot has been developed in an attempt to help capture possible vandalism. This includes:
 
  - Removing all code
  - Replacing all content with nonsense
