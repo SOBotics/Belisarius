@@ -1,4 +1,4 @@
-# Belisarius
+# Belisarius - Detecting vandalism on Stack Overflow
 
 ## Background
 
@@ -31,7 +31,7 @@ Edits can be made up of a title change, body change of a question, tag changes o
 
 ### The question/answer body is run through the following filters:
  
- - TextRemoved; 80% or more of the body must have been removed and then it must have a Jaro Winkler score of less than 0.6
+ - TextRemoved; 80% or more of the body must have been removed and then it must have a [Jaro Winkler][3] score of less than 0.6
  - BlacklistedWords; certain words are appended to posts. The bot reads a separate file for questions and answers. Both hold a list of keywords to watch for
  - CodeRemoved; the bot watches for all code being removed
  - FewUniqueCharacters; the body must either be 30 plus characters long and have less than 7 unique characters or be 100 plus characters long and have less than 16 unique characters
@@ -45,15 +45,16 @@ Edits can be made up of a title change, body change of a question, tag changes o
  
 ## Accounts 
 
-The project is running under the user [Belisarius][3] in the [SOBotics][4] room. A sample image of a report is: 
+The project is running under the user [Belisarius][4] in the [SOBotics][5] room. A sample image of a report is: 
   
-  ![Sample Image][5]
+  ![Sample Image][6]
   
-The source code is available on [GitHub](https://github.com/SOBotics/Belisarius) and suggestions are welcome. The project is still under the testing phase.
+The source code is available on [GitHub][7] and suggestions are welcome. The project is still under the testing phase.
 
  [1]: https://api.stackexchange.com/docs/posts
  [2]: https://api.stackexchange.com/docs/revisions-by-ids
- [3]: https://stackoverflow.com/users/8149646/belisarius
- [4]: http://chat.stackoverflow.com/rooms/111347/sobotics
- [5]: https://i.stack.imgur.com/uRSpD.png
-
+ [3]: https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance
+ [4]: https://stackoverflow.com/users/8149646/belisarius
+ [5]: http://chat.stackoverflow.com/rooms/111347/sobotics
+ [6]: https://i.stack.imgur.com/uRSpD.png
+ [7]: https://github.com/SOBotics/Belisarius
