@@ -1,232 +1,115 @@
 package bugs.stackoverflow.belisarius.services;
 
-import bugs.stackoverflow.belisarius.finders.VandalismFinder;
+import bugs.stackoverflow.belisarius.Belisarius;
+import bugs.stackoverflow.belisarius.clients.Monitor;
 import bugs.stackoverflow.belisarius.models.*;
-import bugs.stackoverflow.belisarius.utils.PostUtils;
+import bugs.stackoverflow.belisarius.rooms.Chatroom;
 
-import fr.tunaki.stackoverflow.chat.Room;
-import fr.tunaki.stackoverflow.chat.event.*;
+import fr.tunaki.stackoverflow.chat.*;
+import fr.tunaki.stackoverflow.chat.event.EventType;
 
 import java.util.concurrent.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.time.Instant;
+import java.util.*;
 
 public class MonitorService {
 
-	private Room room;
-	public static long lastPostTime = System.currentTimeMillis()/1000-1*60;
+	private StackExchangeClient client;
+	private List<Chatroom> rooms;
+	private List<Room> chatrooms;
+	private Map<String, Belisarius> bots;
+	
+	private int presentInterval;
+	
 	private ScheduledExecutorService executorService;
+	private ScheduledFuture<?> handle;	
 	
-	private static String readMe = "https://git.io/vQZlJ";
-	
-	private String commands = "    alive          - Test to check if bot is alive or not.\n" +
-	                          "    check 'idx'    - Checks a post for potential vandalism.\n" +
-			                  "    commands       - Returns this list of commands.\n" +                  
-			                  "    help           - Returns description of the bot.\n" +
-			                  "    leave          - Asks the bot to leave the room (must be a room owner).\n" +
-			                  "    quota          - Returns the current quota\n" +
-			                  "    reboot         - Stops and starts the bot (must be a room owner).\n" +
-			                  "    stop           - Stops bot (must be a room owner).\n";
-	
-	public MonitorService(Room room) {
-		this.room = room;
-		executorService = Executors.newSingleThreadScheduledExecutor();
+	public MonitorService(StackExchangeClient client, List<Chatroom> rooms) {
+		this.client = client;
+		this.rooms = rooms;
+		this.chatrooms = new ArrayList<>();
+		this.bots = new HashMap<>();
+		this.presentInterval = 60;
 	}
 	
 	public void startMonitor() {
 		
-		room.addEventListener(EventType.MESSAGE_POSTED, event->messagePosted(room, event));
-		room.addEventListener(EventType.MESSAGE_REPLY, event->messageReply(room, event));
-		room.addEventListener(EventType.USER_MENTIONED, event->userMentioned(room, event));
-		 
-		room.send("Belisarius started.");
-		
-		PostUtils postUtils = new PostUtils();
-		Runnable monitor = () -> run(room, postUtils);
-		executorService.scheduleAtFixedRate(monitor, 0, 1, TimeUnit.MINUTES);
-		 
-	}
-
-	private void messagePosted(Room room, MessagePostedEvent event) {
-		String message = event.getMessage().getPlainContent().trim();
-		
-		int cp = Character.codePointAt(message, 0);
-		if (message.toLowerCase().startsWith("@bots alive")) {
-			room.send("Yeah, I'm alive.");
-		} else {
-			if (cp == 128642 || (cp>=128644 && cp<=128650)) {
-				room.send("\uD83D\uDE83");
-			}
-		}
-		
-	}
-	
-	private void messageReply(Room room, MessageReplyEvent event) {
-		String message = event.getMessage().getPlainContent().trim();
-		System.out.println(message);
-	}
-	
-	private void userMentioned(Room room, UserMentionedEvent event) {
-		String message = event.getMessage().getPlainContent().trim();
-		
-        if (message.toLowerCase().contains("alive")) {
-			room.send("Yeah, I'm alive.");
+		for (Chatroom room : rooms) {
 			
-		} else if (message.toLowerCase().contains("commands")) {
-			room.send(commands);
-			
-		} else if (message.toLowerCase().contains("check")) {
-			try{
-				int postId = Integer.parseInt(message.split("check")[1].trim());
-				run(room, String.valueOf(postId));
-			} catch (NumberFormatException e) {
+			Room chatroom = null;
+			try {
+				chatroom = client.joinRoom(room.getHost(), room.getRoomId());
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			
+			if (room.getUserMentioned(chatroom, this) != null) {
+				chatroom.addEventListener(EventType.USER_MENTIONED, room.getUserMentioned(chatroom, this));
+			}
+			
+			if (room.getPostedReply(chatroom) != null) {
+				chatroom.addEventListener(EventType.MESSAGE_REPLY, room.getPostedReply(chatroom));
+			}
+			
+			if (room.getPostedMessage(chatroom, this) != null) {
+				chatroom.addEventListener(EventType.MESSAGE_POSTED, room.getPostedMessage(chatroom, this));
+			}
+			
+            String siteName = room.getSiteName();
+            String SiteUrl = room.getSiteUrl();
+			
+            if (!bots.containsKey(siteName)) {
+            	bots.put(siteName, new Belisarius(siteName, SiteUrl));
+            }
+			
+			chatroom.send("[ [Belisarius](" + Belisarius.readMe + ") ] started.");
+			
+			chatrooms.add(chatroom);
+		}
+	
+		executorService = Executors.newSingleThreadScheduledExecutor();
+		 
+	}
+	
+	public void runMonitor() {
+		 handle = executorService.scheduleAtFixedRate(() -> execute(), 0, presentInterval, TimeUnit.SECONDS);
+	}
+	
+    private void execute() {
 
-		} else if (message.toLowerCase().contains("help")) {
-			room.send("I'm a bot that monitors for potential vandalism on posts.");
-			
-		} else if (message.toLowerCase().contains("leave")){
-			if (room.getUser(event.getUserId()).isRoomOwner()) {
-				leaveRoom(room);
-			} else {
-				room.send("Only room owners can make that call.");
-			}
-			
-		} else if (message.toLowerCase().contains("quota")) {
-			room.send("Current quota is " + String.valueOf(ApiService.getQuota() + "."));
-			
-		} else if (message.toLowerCase().contains("reboot")) {
-			if (room.getUser(event.getUserId()).isRoomOwner()) {
-				rebootMonitor(room);
-			} else {
-				room.send("Only room owners can make that call.");
-			}
+    	Map<String, List<Post>> postMap = new HashMap<>();
+    	
+    	for (String site : bots.keySet()) {
+    		postMap.put(site, bots.get(site).getPosts());
+    	}
 
-		} else if (message.toLowerCase().contains("stop")) {
-			if (room.getUser(event.getUserId()).isRoomOwner()) {
-				stopMonitor(room, true);
-			} else {
-				room.send("Only room owners can make that call.");
-			}
-		}
-	}
+    	for (int i=0; i<rooms.size(); i++) {
+    		Chatroom room = rooms.get(i);
+    		Room chatroom = chatrooms.get(i);
+    		List<Post> posts = postMap.get(room.getSiteName());
+    		new Monitor().runOnce(chatroom, posts, room.getSiteName(), room.getSiteUrl());
+    	}
+    	
+    }
 	
-	private void leaveRoom(Room room) {
-		room.leave();
-	}
+    public void stop(){
+        executorService.shutdown();
+    }
 	
-	private void rebootMonitor(Room room) {
-		stopMonitor(room, false);
-		startMonitor();
-	}
-	
-	private void stopMonitor(Room room, boolean leaveRoom) {
-		if (leaveRoom == true) {
-			leaveRoom(room);
-		}
-		executorService.shutdown();
-	}
-	
-	private void run(Room room, PostUtils postUtils) {
-		try {
-			List<Integer> postIds = postUtils.getPostIdsByActivity(lastPostTime);
-			if (postIds.size() > 0) {
-				List<Integer> postIdsRemaining = new ArrayList<Integer>();
-				do {
-					if (postIdsRemaining.size()>0) {
-						postIds = postIdsRemaining;
-					}
-					String postIdInput = "";
-					int count = 0;
-					for (int id : postIds) {
-						if (count != 100) {
-							postIdInput += id + ";";
-						} else {
-							postIdsRemaining.add(id);
-						}
-						count++;
-					}
-					postIdInput = postIdInput.substring(0, postIdInput.length()-1);
-					List<Post> posts = getLatestRevisions(postIdInput);
-					for (Post post : posts) {
-						String message =  getVandalismMessage(post);
-						if (message != "") {
-							sendVandalismFoundMessage(room, post, message);
-						}
-					}
-				} while (postIdsRemaining.size()>0);
-			}
-			
-		} catch (Exception e){
-			e.printStackTrace();
-		}
-		
-	}
-	
-	private void run(Room room, String postIdInput) {
-		
-		List<Post> revisions = getLatestRevisions(postIdInput);
-  
-		for (Post post : revisions) {
-			String message =  getVandalismMessage(post);
-		  
-			if (message != "") {
-				sendVandalismFoundMessage(room, post, message);
-			} else {
-	  			sendNoVandalismFoundMessage(room, post);
-	  		}
-		}
-  	}
-	
-	private String getVandalismMessage(Post post) {
-		String message = "";
-		
-        if (post.getRevisionNumber()!= 1 && post.getIsRollback() == false) {
-        	VandalisedPost vandalisedPost = getVandalisedPost(post);
-        	if (vandalisedPost != null) {
-        		message = vandalisedPost.getReasons();
-        	}
+	public void reboot() {
+        this.stop();
+        executorService = Executors.newSingleThreadScheduledExecutor();
+        this.runMonitor();
+        for(int i=0; i<rooms.size(); i++){
+            Room room = chatrooms.get(i);
+            room.send("[ [Belisarius](\\\" + Belisarius.readMe + \\\") ] rebooted at " + Instant.now());
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-        
-        return message;
-		
-	}
-	
-	private List<Post> getLatestRevisions(String postIdInput) {
-		PostUtils postUtils = new PostUtils();
-		return postUtils.getLastestRevisions(postIdInput);
-	}
-	
-	private VandalisedPost getVandalisedPost(Post post) {
-		 try {
-			  {
-		         VandalismFinder vandalismFinder = new VandalismFinder(post);
-		         return vandalismFinder.findReasons();
-			 }
-		 } catch (Exception e) {
-			 e.printStackTrace();
-		 }
-
-		 return null;
-	}
-	
-	private void sendVandalismFoundMessage(Room room, Post post, String reason) {
-		String message = "[ [Belisarius](" + readMe + ") ]";
-		message += " Potential vandalism found. Reason: " + reason;
-		message += " [Link to " + post.getPostType().toLowerCase() + "](https://stackoverflow.com/posts/" + String.valueOf(post.getPostId()) + "/revisions).";
-		message += " Revision: " + String.valueOf(post.getRevisionNumber());
-		message += " @Bugs";
-		room.send(message);
-	}
-	
-	private void sendNoVandalismFoundMessage(Room room, Post post) {
-		String message = "[ [Belisarius](" + readMe + ") ]";
-		message += " No vandalism has been found.";
-		message += " [Link to " + post.getPostType().toLowerCase() + "](https://stackoverflow.com/posts/" + String.valueOf(post.getPostId()) + "/revisions).";
-		message += " Revision: " + String.valueOf(post.getRevisionNumber());
-		message += " @Bugs";
-		room.send(message);
 	}
 	
 }

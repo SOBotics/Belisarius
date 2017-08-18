@@ -1,23 +1,25 @@
 package bugs.stackoverflow.belisarius;
 
-import bugs.stackoverflow.belisarius.services.MonitorService;
-import bugs.stackoverflow.belisarius.services.PropertyService;
+import java.util.*;
+
+import bugs.stackoverflow.belisarius.rooms.*;
+import bugs.stackoverflow.belisarius.services.*;
 import bugs.stackoverflow.belisarius.utils.LoginUtils;
-import fr.tunaki.stackoverflow.chat.ChatHost;
-import fr.tunaki.stackoverflow.chat.Room;
-import fr.tunaki.stackoverflow.chat.StackExchangeClient;
+import fr.tunaki.stackoverflow.chat.*;
 
 public class Application {
 	
 	public static void main(String[] args) {
 		
 		StackExchangeClient client = LoginUtils.getClient();
+			
+		List<Chatroom> rooms = new ArrayList<>();
+		rooms.add(new SOBotics());
+		rooms.add(new BelisariusHQ());
 		
-		PropertyService ps = new PropertyService();
-		Room room = client.joinRoom(ChatHost.STACK_OVERFLOW, ps.getRoomId());
-		
-		MonitorService monitorService = new MonitorService(room);
+		MonitorService monitorService = new MonitorService(client, rooms);
 		monitorService.startMonitor();
+		monitorService.runMonitor();
 	}
 
 }

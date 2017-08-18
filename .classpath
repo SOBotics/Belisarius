@@ -2,13 +2,17 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="lib" path="C:/Users/graeme/.m2/repository/fr/tunaki/stackoverflow/chatexchange/1.1.0/chatexchange-1.1.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/graeme/.m2/repository/com/google/code/gson/gson/2.6.2/gson-2.6.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/graeme/.m2/repository/org/slf4j/slf4j-api/1.7.21/slf4j-api-1.7.21.jar"/>
-	<classpathentry kind="lib" path="C:/Users/graeme/.m2/repository/org/jsoup/jsoup/1.9.1/jsoup-1.9.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/graeme/.m2/repository/javax/json/javax.json-api/1.0/javax.json-api-1.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/graeme/.m2/repository/org/glassfish/tyrus/bundles/tyrus-standalone-client-jdk/1.13.1/tyrus-standalone-client-jdk-1.13.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/graeme/.m2/repository/com/intellij/annotations/12.0/annotations-12.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/graeme/.m2/repository/info/debatty/java-string-similarity/0.21/java-string-similarity-0.21.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Graeme/.m2/repository/com/google/code/gson/gson/2.6.2/gson-2.6.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Graeme/.m2/repository/org/slf4j/slf4j-api/1.7.21/slf4j-api-1.7.21.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Graeme/.m2/repository/org/jsoup/jsoup/1.9.1/jsoup-1.9.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Graeme/.m2/repository/javax/json/javax.json-api/1.0/javax.json-api-1.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Graeme/.m2/repository/org/glassfish/tyrus/bundles/tyrus-standalone-client-jdk/1.13.1/tyrus-standalone-client-jdk-1.13.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Graeme/.m2/repository/com/intellij/annotations/12.0/annotations-12.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Graeme/.m2/repository/info/debatty/java-string-similarity/0.21/java-string-similarity-0.21.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Graeme/.m2/repository/com/google/guava/guava/16.0.1/guava-16.0.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Graeme/.m2/repository/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar"/>
+	<classpathentry kind="lib" path="C:/Development/Eclipse/sqlite-jdbc-3.19.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Graeme/.m2/repository/fr/tunaki/stackoverflow/chatexchange/1.1.2-SNAPSHOT/chatexchange-1.1.2-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Graeme/.m2/repository/commons-io/commons-io/2.2/commons-io-2.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -1,12 +1,18 @@
 package bugs.stackoverflow.belisarius.utils;
 
 import bugs.stackoverflow.belisarius.filters.*;
+import bugs.stackoverflow.belisarius.filters.Filter.Severity;
 import bugs.stackoverflow.belisarius.models.*;
 import bugs.stackoverflow.belisarius.services.*;
+import fr.tunaki.stackoverflow.chat.Message;
+import fr.tunaki.stackoverflow.chat.Room;
+import fr.tunaki.stackoverflow.chat.User;
+import fr.tunaki.stackoverflow.chat.event.PingMessageEvent;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,42 +30,8 @@ public class PostUtils {
 		apiService = new ApiService(ps.getSite());
 	}
 	
-	public List<Integer> getPostIdsByActivity(long lastPostTime) {
-		List<Integer> postIds = new ArrayList<Integer>();
-		
-		JsonObject postsJSON = null;
-		try {
-			long lastActivityDate = 0;
-			long maxActivityDate = lastPostTime;
-			int page = 1;
-			do {
-				postsJSON = apiService.getPostIdsByActivityDesc(page);
-	            for (JsonElement post : postsJSON.get("items").getAsJsonArray()) {
-            		lastActivityDate = post.getAsJsonObject().get("last_activity_date").getAsLong();
-	            	
-            		if (postBeenEdited(post) && editorAlsoOwner(post) && lastPostTime < lastActivityDate) {
-	            		int postId = post.getAsJsonObject().get("post_id").getAsInt();
-	            		if (!postIds.contains(postId)) {
-	            			postIds.add(postId);
-	            		}
-	            	}
-            		
-	                if (maxActivityDate < lastActivityDate) {
-	            		maxActivityDate = lastActivityDate;
-	            	}
-	            }
-	            page++;
-			} while (lastPostTime < lastActivityDate & page<10);
-		
-           	MonitorService.lastPostTime = maxActivityDate;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return postIds;
-	}
-	
-	private boolean postBeenEdited(JsonElement post) {
+
+	public static boolean postBeenEdited(JsonElement post) {
 		if (post.getAsJsonObject().has("last_edit_date")) {
 			long lastActivityDate = post.getAsJsonObject().get("last_activity_date").getAsLong();
 			long lastEditDate = post.getAsJsonObject().get("last_edit_date").getAsLong();
@@ -71,7 +43,7 @@ public class PostUtils {
 		return false; 
 	}
 	
-	private boolean editorAlsoOwner(JsonElement post) {
+	public static boolean editorAlsoOwner(JsonElement post) {
 		try{
 			if (!post.getAsJsonObject().has("owner")) {
 				return true;
@@ -91,40 +63,6 @@ public class PostUtils {
 		}
 		
 		return false;
-	}
-	
-	public List<Post> getLastestRevisions(String postIdInput) {
-		List<Post> revisions = new ArrayList<Post>();
-		String[] postIds = postIdInput.split(";");
-		boolean hasMore = false;
-		do {
-			
-			try {
-				JsonObject postsJSON = apiService.getLastestRevisions(String.join(";", postIds));
-				hasMore = postsJSON.get("has_more").getAsBoolean();
-				for (String id : postIds) {
-					int revisionNo = 0;
-					Post revision = null;
-					for (JsonElement post : postsJSON.get("items").getAsJsonArray()) {
-					    if (post.getAsJsonObject().get("post_id").getAsInt() == Integer.parseInt(id) && post.getAsJsonObject().has("revision_number")) {
-					    	if (revisionNo < post.getAsJsonObject().get("revision_number").getAsInt()) {
-					    		revisionNo = post.getAsJsonObject().get("revision_number").getAsInt();
-					    		revision = getPost(post.getAsJsonObject());
-					    	}
-					    }
-					}
-				    if (revision != null) {
-				    	revisions.add(revision);
-				    }
-					postIds = ArrayUtils.removeElement(postIds, id);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-		} while (hasMore || postIds.length>0);
-		
-		return revisions;
 	}
 	
 	public static Post getPost(JsonObject post){
@@ -154,6 +92,10 @@ public class PostUtils {
         np.setIsRollback(post.get("is_rollback").getAsBoolean());
         np.setPostType(post.get("post_type").getAsString());
         
+        if (post.has("comment")) {
+        	np.setComment(post.get("comment").getAsString());
+        }
+        
         JsonObject userJSON = post.get("user").getAsJsonObject();
         SOUser user = new SOUser();
        
@@ -172,6 +114,35 @@ public class PostUtils {
         return np;
     }
 	
+	public static void storeFeedback(Room room, PingMessageEvent event, String feedbackType) {
+		long repliedTo = event.getParentMessageId();
+		Message repliedToMessage = room.getMessage(repliedTo);
+		String reason = repliedToMessage.getPlainContent().split("Reason:")[1].substring(0,repliedToMessage.getPlainContent().split("Reason:")[1].indexOf(";")).replace("*","").trim();
+		String score = repliedToMessage.getPlainContent().split("Score:")[1].replace("*","").trim().substring(0,3);
+		String postId = getPostIdFromMessage(repliedToMessage.getPlainContent().trim());
+		String postType = repliedToMessage.getPlainContent().contains("[tag:question]") ? "Q" : "A";
+		handleFeedback(event.getMessage().getUser(), postId, postType, feedbackType, reason, score);
+	}
+	
+	public static String getPostIdFromMessage(String message) {
+        message = message.split("//stackoverflow.com/posts/")[1];
+        return message.substring(0,message.indexOf("/"));
+	}
+	 
+	public static void handleFeedback(User user, String postId, String postType, String feedbackType, String reason, String score) {
+		String outputCSVLogFile = "./logs/output.csv";
+		try {
+			String loggedAsTp = FileUtils.readLineFromFileStartswith(outputCSVLogFile, "tp," + postId);
+			String loggedAsFp = FileUtils.readLineFromFileStartswith(outputCSVLogFile, "fp," + postId);
+			
+			if (loggedAsTp == null || loggedAsFp == null) {
+				FileUtils.appendToFile(outputCSVLogFile, postId + "," + postType + "," + feedbackType + "," + reason + "," + score);
+			}
+		} catch (IOException e){
+			e.printStackTrace();
+	    }
+	}
+	
     public static VandalisedPost getVandalisedPost(Post post) {
         List<Filter> filters = new ArrayList<Filter>(){{
             add(new BlacklistedFilter(post));
@@ -179,16 +150,27 @@ public class PostUtils {
             add(new CodeRemovedFilter(post));
             add(new TextRemovedFilter(post));
             add(new FewUniqueCharactersFilter(post));
+            add(new OffensiveWordFilter(post));
+            add(new RepeatedWordFilter(post));
         }};
-        
+       
+        Severity severity = null;
+       
         Map<String, Double> reasons = new HashMap<String, Double>();
         for(Filter filter: filters){
             if(filter.isHit()){
             	reasons.put(filter.getDescription(), filter.getScore());
+            	if (severity == null) {
+            		severity = filter.getSeverity();
+            	} else if (severity == Severity.LOW && (filter.getSeverity() == Severity.MEDIUM || filter.getSeverity() == Severity.HIGH)) {
+            		severity = filter.getSeverity();
+            	} else if (severity == Severity.MEDIUM && filter.getSeverity() == Severity.HIGH) {
+            		severity = filter.getSeverity();
+            	}
             }
         }
 
-        return new VandalisedPost(post, reasons);
+        return new VandalisedPost(post, reasons, severity);
     }
 	
 }

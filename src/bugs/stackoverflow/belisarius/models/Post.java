@@ -14,6 +14,9 @@ public class Post {
     private SOUser user;
     private boolean isRollback;
     private String postType;
+    private String comment;
+    private String site;
+    private String siteUrl;
     
     public int getPostId() {
         return postId;
@@ -85,6 +88,30 @@ public class Post {
     
     public void setPostType(String postType) {
     	this.postType = postType;
+    }
+    
+    public String getComment() {
+    	return comment;
+    }
+    
+    public void setComment(String comment) {
+    	this.comment = comment;
+    }
+    
+    public String getSite() {
+        return site;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
+    }
+
+    public String getSiteUrl() {
+        return siteUrl;
+    }
+
+    public void setSiteUrl(String siteUrl) {
+        this.siteUrl = siteUrl;
     }
     
 }

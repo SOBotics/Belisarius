@@ -18,10 +18,7 @@ public class TextRemovedFilter implements Filter {
 		String original = "";
 		String target = "";
 		
-		if (this.post.getTitle() != null && this.post.getLastTitle() != null) {
-			original = this.post.getLastTitle();
-			target = this.post.getTitle();
-		} else if (this.post.getBody() != null && this.post.getLastBody() != null) {
+		if (this.post.getBody() != null && this.post.getLastBody() != null) {
 			original = this.post.getLastBody();
 			target = this.post.getBody();
 		}
@@ -33,12 +30,17 @@ public class TextRemovedFilter implements Filter {
 
 	@Override
 	public double getScore() {
-		return 1.0-this.score;
+		return 1.0;
 	}
 
 	@Override
 	public String getDescription() {
-		return "**" + percentage*100 + "% or more text removed with a JW score of " + this.score + "**";
+		return "**" + percentage*100 + "% or more text removed with a JW score of " + Math.round(this.score*100.0)/100.0  + "**";
+	}
+
+	@Override
+	public Severity getSeverity() {
+		return Severity.MEDIUM;
 	}
 
 }

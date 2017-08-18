@@ -1,11 +1,9 @@
 package bugs.stackoverflow.belisarius.utils;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.nio.file.*;
+import java.util.*;
+import java.util.regex.Pattern;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -18,18 +16,18 @@ public class CheckUtils {
         return checkForListedWords(target, path);
     }
 	
-    private static List<String> checkForListedWords(String target, String file){
+    private static List<String> checkForListedWords(String target, String path){
         List<String> words = new ArrayList<String>();
     	
     	try {
-            List<String> lines = Files.readAllLines(Paths.get(file));
+            List<String> lines = Files.readAllLines(Paths.get(path));
             for(String word : lines){
                 if(checkIfBodyContainsKeyword(target, word.trim()))
                 	words.add(word.trim());
             }
         }
         catch (IOException exception){
-            System.out.println(file+" not found.");
+            System.out.println(path + " not found.");
         }
         return words;
     }
@@ -54,7 +52,7 @@ public class CheckUtils {
     }
     
     public static String checkForLongWords(String target){
-        String bodyParts[] = target.replaceAll("[^a-zA-Z ]", " ").split(" ");
+        String bodyParts[] = removeHtml(stripBody(target)).replaceAll("[^a-zA-Z ]", " ").split(" ");
         for(String part : bodyParts){
             if (part.length()>50){
                 return part;
@@ -91,5 +89,65 @@ public class CheckUtils {
     	
     	return null;
     }
+    
+   
+    public static List<String> checkForOffensiveWords(String target, String path) {
+        List<String> words = new ArrayList<String>();
+        
+        List<Pattern> patterns = getRegexs(path);
+        
+		for (Pattern pattern : patterns) {
+			if (checkIfBodyContainsOffensiveWord(pattern, target)) {
+				words.add(pattern.toString());
+			}
+		}
+    	
+        return words;
+    }
+    
+    private static List<Pattern> getRegexs(String path) {
+    	List<Pattern> patterns = new ArrayList<Pattern>();
+    	
+    	try {
+            List<String> lines = Files.readAllLines(Paths.get(path));
+            for(String word : lines){
+            	Pattern pattern = Pattern.compile(word);
+            	patterns.add(pattern);
+            }
+        }
+        catch (IOException exception){
+            System.out.println(path + " not found.");
+        }
+    	
+    	return patterns;
+    }
+    
+	public static boolean checkIfBodyContainsOffensiveWord(Pattern pattern, String target){
+        String body = removeHtml(target);
+        
+        boolean match = pattern.matcher(body).find();
+		if (match) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public static Set<String> checkRepeatedWords(String target) {
+		Set<String> repeatedWords = new HashSet<String>();
+		
+		try{
+			String[] words = target.split("\\W");
+			for (String word : words) {
+				if (!repeatedWords.contains(word)) {
+					repeatedWords.add(word);
+				}
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return repeatedWords;
+	}
     
 }

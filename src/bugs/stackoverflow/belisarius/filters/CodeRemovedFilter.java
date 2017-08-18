@@ -31,4 +31,9 @@ public class CodeRemovedFilter implements Filter {
 		return "**Code removed**";
 	}
 
+	@Override
+	public Severity getSeverity() {
+		return Severity.MEDIUM;
+	}
+
 }

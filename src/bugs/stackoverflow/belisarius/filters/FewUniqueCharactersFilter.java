@@ -31,7 +31,12 @@ public class FewUniqueCharactersFilter implements Filter {
 
 	@Override
 	public String getDescription() {
-		return "**Few unique characters detected:** " + this.listedWord;
+		return "**Few unique characters detected - ** " + this.listedWord;
+	}
+
+	@Override
+	public Severity getSeverity() {
+		return Severity.HIGH;
 	}
 
 }

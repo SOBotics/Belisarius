@@ -1,15 +1,14 @@
 package bugs.stackoverflow.belisarius.utils;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 
 import bugs.stackoverflow.belisarius.services.ApiService;
 
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
+import org.jsoup.*;
 import org.jsoup.parser.Parser;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by bhargav.h on 22-Jan-17.
@@ -21,7 +20,7 @@ public class JsonUtils {
 	private long lastCall;
 	private long throttle = 1L * 1000L;
 	
-    public synchronized JsonObject get(String url, String... data) throws IOException {
+	public synchronized JsonObject get(String url, String... data) throws IOException {
     	
     	long backOffUntil = ApiService.getBackOffUntil();
     	
@@ -55,7 +54,16 @@ public class JsonUtils {
         if (response.statusCode() != 200) {
             throw new IOException("HTTP " + response.statusCode() + " fetching URL " + (url) + ". Body is: " + response.body());
         }
+        
+        //used to output json to file
+        //org.apache.commons.io.FileUtils.writeStringToFile(new java.io.File("jsondump.txt"), json);
+        
         JsonObject root = new JsonParser().parse(json).getAsJsonObject();
+        
+        if (root.has("quota_remaining")) {
+        	StatusUtils.remainingQuota = new AtomicInteger(root.get("quota_remaining").getAsInt());
+        }
+        
         return root;
     }
 

@@ -1,0 +1,188 @@
+
+45076964,A,tp,Answer contains blacklisted word: help me,1.0
+45077739,Q,fp,Question contains blacklisted words: solution:, my solution:,2.0
+45076417,Q,tp,Code removed,1.0
+43295971,Q,tp,Question contains blacklisted word: problem solved,1.0
+45076900,Q,tp,Code removed,1.0
+45056440,A,tp,80.0% or more text removed with a JW score of 0.57,1.0
+45080531,Q,tp,Question contains blacklisted word: resolved:,1.0
+45056440,A,fp,80.0% or more text removed with a JW score of 0.57,1.0
+37881170,Q,fp,Code removed,1.0
+45065052,Q,tp,Code removed,1.0
+44927940,Q,tp,Question contains blacklisted word: solution:,1.0
+45082943,A,fp,Code removed,1.0
+45082873,Q,tp,Code removed,1.0
+45083351,A,fp,Code removed,1.0
+45061849,Q,tp,Question contains blacklisted words: solution:, I found a solution,2.0
+45082252,A,fp,80.0% or more text removed with a JW score of 0.56,1.0
+45084596,Q,tp,Question contains blacklisted word: answer:,1.0
+45084876,Q,tp,Code removed,1.0
+44957796,Q,fp,Question contains blacklisted word: solution:,1.0
+45070102,A,fp,80.0% or more text removed with a JW score of 0.58,1.0
+30535075,A,fp,Code removed,1.0
+45090537,Q,fp,Code removed,1.0
+45087760,Q,fp,Question contains blacklisted word: answer:,1.0
+45043833,Q,fp,Question contains blacklisted word: solution:,1.0
+45088079,A,fp,Code removed,1.0
+45088714,Q,tp,Code removed,1.0
+45067433,Q,fp,Code removed,1.0
+45089343,A,fp,Answer contains blacklisted word: have another problem,1.0
+44990293,Q,tp,Question contains blacklisted word: solution:,1.0
+45090077,Q,fp,Question contains blacklisted word: solution:,1.0
+45090537,Q,fp,Code removed,1.0
+45090605,Q,tp,Edit summary contains blacklisted word: added solution,1.0
+45091696,Q,tp,Question contains blacklisted word: solution:,1.0
+45091948,A,fp,Code removed,1.0
+45089309,Q,tp,Question contains blacklisted word: answer:,1.0
+45092327,Q,tp,Code removed,1.0
+29581870,Q,fp,Question contains blacklisted word: answer:,1.0
+45075330,Q,tp,Question contains blacklisted word: problem solved,1.0
+45093630,Q,fp,Code removed,1.0
+45071043,A,fp,Code removed,1.0
+45075705,Q,fp,Title contains blacklisted word: solved,1.0
+45094871,Q,fp,Question contains blacklisted word: I found a solution,1.0
+45093574,A,tp,Code removed,1.0
+45095499,Q,fp,Code removed,1.0
+45077799,A,fp,Code removed,1.0
+45035287,Q,tp,Code removed,1.0
+45096595,Q,tp,Question contains blacklisted word: solution:,1.0
+45062327,Q,fp,80.0% or more text removed with a JW score of 0.58,1.0
+45098206,Q,fp,Question contains blacklisted word: solution:,1.0
+45087815,Q,fp,Code removed,1.0
+45096416,A,tp,Code removed,1.0
+45077075,Q,tp,Title contains blacklisted word: solved,1.0
+45043833,Q,fp,Question contains blacklisted word: solution:,1.0
+45098900,A,fp,Code removed,1.0
+44040773,Q,tp,Title contains blacklisted word: solved,1.0
+45094489,A,tp,Code removed,1.0
+45097888,Q,tp,Question contains blacklisted word: problem solved,1.0
+45077899,Q,fp,Question contains blacklisted word: answer:,1.0
+44624032,Q,tp,Code removed,1.0
+45073775,Q,fp,Question contains blacklisted word: answer:,1.0
+45102095,Q,tp,Code removed,1.0
+44971332,Q,tp,Question contains blacklisted word: problem solved,1.0
+44997764,Q,fp,Question contains blacklisted word: resolved:,1.0
+45120533,Q,tp,Code removed,1.0
+45064113,A,fp,Answer contains blacklisted word: help me,1.0
+45119975,Q,fp,Code removed,1.0
+45123700,Q,fp,80.0% or more text removed with a JW score of 0.53,1.0
+45130864,Q,tp,Code removed,1.0
+41781136,A,tp,Question contains repeated words -  , p, Deleted, Code removed,4.0
+45133101,Q,tp,Title contains blacklisted word: solved,1.0
+45140341,A,tp,Code removed,1.0
+44816538,Q,tp,Code removed,1.0
+45085683,Q,tp,Title contains blacklisted word: solved,1.0
+45093189,Q,tp,Question contains blacklisted word: problem solved,1.0
+45138207,A,tp,Code removed,1.0
+18596465,A,tp,Few unique characters detected -  ., Code removed, 80.0% or more text removed with a JW score of 0.45, Question contains repeated words -  , p,5.0
+45156007,Q,tp,Code removed,1.0
+45164804,Q,fp,80.0% or more text removed with a JW score of 0.6,1.0
+45160126,Q,tp,Code removed,1.0
+45165890,Q,tp,Title contains blacklisted word: solved,1.0
+45108897,Q,tp,Title contains blacklisted word: solved,1.0
+45154645,A,fp,Code removed,1.0
+45151144,Q,tp,Code removed,1.0
+45153238,Q,fp,Question contains blacklisted word: answer:,1.0
+45103251,Q,tp,Question contains blacklisted word: problem solved,1.0
+45174832,Q,tp,80.0% or more text removed with a JW score of 0.6,1.0
+45111982,Q,tp,Code removed,1.0
+45174563,Q,tp,Code removed,1.0
+45177183,Q,tp,Code removed,1.0
+45161206,Q,tp,Title contains blacklisted word: solved,1.0
+45183243,Q,tp,Code removed,1.0
+10313689,Q,tp,Question contains blacklisted word: solution:,1.0
+45005600,Q,tp,Title contains blacklisted word: solved,1.0
+45165939,A,fp,Code removed,1.0
+45159897,A,tp,Code removed,1.0
+45183911,Q,tp,Code removed,1.0
+45184788,Q,fp,Question contains blacklisted word: solution:,1.0
+45175197,Q,tp,Title contains blacklisted word: solved,1.0
+45185919,Q,tp,Question contains blacklisted word: solution:,1.0
+45175204,Q,tp,80.0% or more text removed with a JW score of 0.6,1.0
+45173831,Q,tp,Title contains blacklisted word: solved,1.0
+45019008,Q,tp,Title contains blacklisted word: solved,1.0
+45175719,Q,tp,Title contains blacklisted word: solved Edit summary contains blacklisted word: added solution,2.0
+45195782,A,tp,Code removed,1.0
+45059180,Q,tp,Title contains blacklisted word: solved,1.0
+45018925,Q,tp,Title contains blacklisted word: solved,1.0
+45097915,A,fp,Code removed,1.0
+45169951,Q,tp,Title contains blacklisted word: solved,1.0
+45169951,Q,tp,Title contains blacklisted word: solved,1.0
+45198898,A,fp,Code removed,1.0
+45199857,A,tp,80.0% or more text removed with a JW score of 0.6,1.0
+44978727,A,tp,80.0% or more text removed with a JW score of 0.55,1.0
+45199563,Q,tp,Title contains blacklisted word: solved,1.0
+45200300,Q,tp,Question contains blacklisted word: answer:,1.0
+45201763,Q,tp,Code removed,1.0
+45135511,Q,tp,Code removed,1.0
+45205135,Q,tp,Title contains blacklisted word: solved,1.0
+45205351,Q,fp,Code removed,1.0
+45205250,Q,tp,Title contains blacklisted word: solved,1.0
+45192179,Q,tp,80.0% or more text removed with a JW score of 0.58,1.0
+45200085,Q,fp,Contains very long word -  AQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQ...,1.0
+45072603,Q,tp,Code removed,1.0
+45207834,Q,fp,80.0% or more text removed with a JW score of 0.53,1.0
+45194895,Q,fp,Question contains blacklisted word: I found a solution,1.0
+45207841,Q,fp,Title contains blacklisted word: solved,1.0
+45205979,Q,tp,Title contains blacklisted word: solved,1.0
+45207887,Q,tp,Code removed,1.0
+45073673,Q,tp,Code removed,1.0
+45208617,A,fp,Code removed,1.0
+45166402,Q,fp,Question contains blacklisted word: solution:,1.0
+45016696,Q,tp,Title contains blacklisted word: solved,1.0
+45209200,A,tp,Code removed,1.0
+45207907,Q,fp,Code removed,1.0
+45205979,Q,tp,Title contains blacklisted word: solved,1.0
+45208840,Q,tp,Question contains blacklisted word: I found a solution,1.0
+45207831,A,tp,Code removed,1.0
+45195820,Q,tp,Question contains blacklisted word: solution:,1.0
+45195658,A,tp,Code removed,1.0
+45207603,Q,tp,Code removed,1.0
+45193308,Q,tp,Question contains blacklisted word: solution:,1.0
+45210146,Q,fp,Code removed,1.0
+45210019,Q,tp,Question contains blacklisted word: solution:,1.0
+45209020,A,tp,Answer contains blacklisted word: help me,1.0
+45207603,Q,tp,Code removed,1.0
+45211571,Q,tp,Code removed,1.0
+45210581,Q,tp,Title contains blacklisted word: solved,1.0
+45208729,Q,tp,Question contains blacklisted word: solution:,1.0
+45213591,Q,fp,80.0% or more text removed with a JW score of 0.6,1.0
+45190584,Q,tp,Title contains blacklisted word: solved,1.0
+45208252,Q,tp,Code removed,1.0
+45216676,Q,tp,Code removed,1.0
+42662173,Q,fp,Code removed,1.0
+45216466,Q,fp,Question contains blacklisted word: answer:,1.0
+45212589,Q,tp,Question contains blacklisted word: solution:,1.0
+45214586,Q,tp,Title contains blacklisted word: solved,1.0
+45217384,Q,tp,Code removed,1.0
+45219431,Q,tp,Title contains blacklisted word: solved,1.0
+45220880,Q,tp,Title contains blacklisted word: solved,1.0
+45219431,Q,tp,Title contains blacklisted word: solved,1.0
+45219983,Q,tp,Question contains blacklisted word: answer:,1.0
+33130571,Q,tp,Code removed,1.0
+45597127,Q,tp,Title contains blacklisted word: solved,1.0
+45611764,Q,tp,Title contains blacklisted word: solved Question contains blacklisted word: solution:,2.0
+45612397,Q,fp,Question contains blacklisted word: solution:,1.0
+45033267,Q,tp,Question contains blacklisted word: solution:,1.0
+45556964,Q,tp,Title contains blacklisted word: solved,1.0
+45594021,Q,tp,Question contains blacklisted word: problem solved,1.0
+45457271,Q,tp,Question contains blacklisted word: solution:,1.0
+45614431,Q,tp,Question contains blacklisted word: solution:,1.0
+45670662,Q,tp,Title contains blacklisted word: solved,1.0
+45663630,Q,tp,Code removed,1.0
+45674559,Q,tp,Question contains blacklisted word: answer:,1.0
+45691709,Q,tp,Code removed,1.0
+45691517,Q,fp,Question contains blacklisted word: problem solved,1.0
+45675809,Q,tp,Question contains blacklisted word: solution:,1.0
+45683885,Q,tp,Code removed,1.0
+45695207,Q,tp,Title contains blacklisted word: solved,1.0
+45692696,Q,tp,Question contains blacklisted word: solution:,1.0
+45707520,A,tp,Answer contains blacklisted word: help me,1.0
+45710152,A,tp,Code removed,1.0
+45712236,A,tp,Code removed,1.0
+45712105,Q,tp,Question contains blacklisted word: answer:,1.0
+45711842,Q,tp,Title contains blacklisted word: solved,1.0
+45559887,Q,tp,Title contains blacklisted word: solved Question contains blacklisted word: solution:,2.0
+45710691,Q,tp,Question contains blacklisted word: solution:,1.0
+45713574,A,tp,Code removed,1.0
+45710962,Q,fp,Question contains blacklisted word: solution:,1.0
