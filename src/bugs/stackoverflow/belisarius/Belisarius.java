@@ -30,19 +30,20 @@ public class Belisarius {
 	
 	public List<Post> getPosts() {
 		List<Post> posts = new ArrayList<>();
-		List<Integer> postIds = getPostIds();
+		List<Long> postIds = getPostIds();
 		
 		try {
 			if (postIds.size() > 0) {
-				List<Integer> postIdsRemaining = new ArrayList<Integer>();
+				List<Long> postIdsRemaining = new ArrayList<Long>();
 				do {
 					if (postIdsRemaining.size()>0) {
 						postIds = postIdsRemaining;
+						postIdsRemaining = new ArrayList<Long>();
 					}
 					String postIdInput = "";
 					int count = 0;
-					for (int id : postIds) {
-						if (count != 100) {
+					for (long id : postIds) {
+						if (count != 50) {
 							postIdInput += id + ";";
 						} else {
 							postIdsRemaining.add(id);
@@ -67,9 +68,29 @@ public class Belisarius {
 		
 		return posts;
 	}
+	
+	public Post getPost(String postId) {
+		Post post = null;
+		try {
+			if (postId != null) {
+				List<Post> postsWithLatestRevisions = getPostsWithLatestRevision(postId);
+				if (postsWithLatestRevisions.size()==1) {
+					post = postsWithLatestRevisions.get(0);
+				}
+			}
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+		
+	
+		post.setSite(this.site);
+		post.setSiteUrl(this.siteUrl);
+		
+		return post;
+	}
 
-	private List<Integer> getPostIds() {
-		List<Integer> postIds = new ArrayList<Integer>();
+	private List<Long> getPostIds() {
+		List<Long> postIds = new ArrayList<Long>();
 		
 		JsonObject postsJSON = null;
 		try {
@@ -82,7 +103,7 @@ public class Belisarius {
             		lastActivityDate = post.getAsJsonObject().get("last_activity_date").getAsLong();
 	            	
             		if (PostUtils.postBeenEdited(post) && PostUtils.editorAlsoOwner(post) && lastPostTime < lastActivityDate) {
-	            		int postId = post.getAsJsonObject().get("post_id").getAsInt();
+	            		long postId = post.getAsJsonObject().get("post_id").getAsLong();
 	            		if (!postIds.contains(postId)) {
 	            			postIds.add(postId);
 	            		}
@@ -134,7 +155,7 @@ public class Belisarius {
 				e.printStackTrace();
 			}
 			
-		} while (hasMore || postIds.length>0);
+		} while (hasMore && postIds.length>0);
 		
 		return revisions;
 	}

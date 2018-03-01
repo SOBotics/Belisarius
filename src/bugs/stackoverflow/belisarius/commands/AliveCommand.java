@@ -1,10 +1,15 @@
 package bugs.stackoverflow.belisarius.commands;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import bugs.stackoverflow.belisarius.utils.CommandUtils;
 import fr.tunaki.stackoverflow.chat.*;
 
 public class AliveCommand implements Command {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(AliveCommand.class);
+	
 	private Message message;
 
 	public AliveCommand(Message message) {
@@ -18,6 +23,7 @@ public class AliveCommand implements Command {
 
 	@Override
 	public void execute(Room room) {
+		LOGGER.info(this.message.getUser().getName() + " (" + this.message.getUser().getId() + ") wants to know if I'm alive.");
 		room.replyTo(this.message.getId(), "Yeah, I'm alive.");
 		
 	}

@@ -2,14 +2,17 @@ package bugs.stackoverflow.belisarius.filters;
 
 import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
+import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 
 public class VeryLongWordFilter implements Filter {
 
 	private Post post;
+	private int reasonId;
 	private String listedWord;
 	
-	public VeryLongWordFilter(Post post) {
+	public VeryLongWordFilter(Post post, int reasonId) {
 		this.post = post;
+		this.reasonId = reasonId;
 	}
 	
 	@Override
@@ -30,13 +33,17 @@ public class VeryLongWordFilter implements Filter {
 	}
 
 	@Override
-	public String getDescription() {
+	public String getFormattedReasonMessage() {
 		return "**Contains very long word - ** " + this.listedWord.substring(0, 50) + "...";
 	}
 
 	@Override
 	public Severity getSeverity() {
 		return Severity.MEDIUM;
+	}
+
+	public void storeHit() {
+		DatabaseUtils.storeReasonCaught(this.post.getPostId(), this.post.getRevisionNumber(), this.reasonId, this.getScore());
 	}
 
 }

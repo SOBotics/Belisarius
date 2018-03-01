@@ -15,6 +15,7 @@ public class SOBoticsCommandList {
 		
 		List<Command> commands = new ArrayList<>(Arrays.asList(
 				new AliveCommand(message),
+				new CheckCommand(message, service),
 				new HelpCommand(message),
 				new QuotaCommand(message),
 				new RebootCommand(message, service),

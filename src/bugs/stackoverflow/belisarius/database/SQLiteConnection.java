@@ -23,15 +23,6 @@ public class  SQLiteConnection {
             conn = DriverManager.getConnection(PathUtils.dbFile);
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-            
         }
         return conn;
     }

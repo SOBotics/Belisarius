@@ -42,8 +42,8 @@ public class Post {
     	return title;
     }
 
-    public void setLastTitle(String LastTitle) {
-    	this.lastTitle = LastTitle;
+    public void setLastTitle(String lastTitle) {
+    	this.lastTitle = lastTitle;
     }
     
     public String getLastTitle() {

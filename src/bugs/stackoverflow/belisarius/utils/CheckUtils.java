@@ -12,32 +12,31 @@ import info.debatty.java.stringsimilarity.JaroWinkler;
 
 public class CheckUtils {
 
-	public static List<String> checkForBlackListedWords(String target, String path){
-        return checkForListedWords(target, path);
+	public static HashMap<Integer, String> checkForBlackListedWords(String target, String postType){
+		HashMap<Integer, String> caught = new HashMap<Integer, String>();
+		HashMap<Integer,String> blacklistedWords = DatabaseUtils.getBlacklistedWords(postType);
+		
+		try {
+		Iterator iterator = blacklistedWords.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Map.Entry<Integer, String> blacklistedWord = (Map.Entry<Integer, String>)iterator.next();
+			if(checkIfContainsKeyword(target, blacklistedWord.getValue()))
+			{
+				caught.put(blacklistedWord.getKey(), blacklistedWord.getValue());
+			}
+		}
+		} catch (Exception e) {
+		e.printStackTrace();	
+		}
+        return caught;
     }
-	
-    private static List<String> checkForListedWords(String target, String path){
-        List<String> words = new ArrayList<String>();
-    	
-    	try {
-            List<String> lines = Files.readAllLines(Paths.get(path));
-            for(String word : lines){
-                if(checkIfBodyContainsKeyword(target, word.trim()))
-                	words.add(word.trim());
-            }
-        }
-        catch (IOException exception){
-            System.out.println(path + " not found.");
-        }
-        return words;
-    }
-    
-	public static boolean checkIfBodyContainsKeyword(String target, String keyword){
-        String body = stripBody(target);
+   
+	public static boolean checkIfContainsKeyword(String target, String keyword){
+        String body = stripTags(target);
 		return body.toLowerCase().contains(keyword.toLowerCase());
 	}
 	
-    private static String stripBody(String target) {
+    private static String stripTags(String target) {
         Document doc = Jsoup.parse("<body>"+target+"</body>");
         doc.getElementsByTag("a").remove();
         doc.getElementsByTag("code").remove();
@@ -52,7 +51,7 @@ public class CheckUtils {
     }
     
     public static String checkForLongWords(String target){
-        String bodyParts[] = removeHtml(stripBody(target)).replaceAll("[^a-zA-Z ]", " ").split(" ");
+        String bodyParts[] = removeHtml(stripTags(target)).replaceAll("[^a-zA-Z ]", " ").split(" ");
         for(String part : bodyParts){
             if (part.length()>50){
                 return part;
@@ -66,8 +65,8 @@ public class CheckUtils {
     }
     
     public static double getJaroWiklerScore(String original, String target, double percentage) {
-    	String originalBody = stripBody(original);
-    	String targetBody = stripBody(target);
+    	String originalBody = stripTags(original);
+    	String targetBody = stripTags(target);
     	double score = 1.0;
     	
     	if (targetBody.length() < originalBody.length()*(percentage)) {
@@ -80,7 +79,7 @@ public class CheckUtils {
 
     		
     public static String checkForFewUniqueCharacters(String target) {
-    	String body = removeHtml(stripBody(target));
+    	String body = removeHtml(stripTags(target));
     	
     	long uniquesCount = body.chars().distinct().count();
     	if ((body.length() >= 30 && uniquesCount <= 6) || body.length()>=100 && uniquesCount <= 15) {
@@ -91,46 +90,30 @@ public class CheckUtils {
     }
     
    
-    public static List<String> checkForOffensiveWords(String target, String path) {
-        List<String> words = new ArrayList<String>();
-        
-        List<Pattern> patterns = getRegexs(path);
-        
-		for (Pattern pattern : patterns) {
-			if (checkIfBodyContainsOffensiveWord(pattern, target)) {
-				words.add(pattern.toString());
+    public static HashMap<Integer, String> checkForOffensiveWords(String target) {
+		HashMap<Integer, String> caught = new HashMap<Integer, String>();
+		HashMap<Integer,String> offensiveWords = DatabaseUtils.getOffensiveWords();
+
+		try {
+			Iterator iterator = offensiveWords.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Map.Entry<Integer, String> offensiveWord = (Map.Entry<Integer, String>)iterator.next();
+				
+				Pattern pattern = Pattern.compile(offensiveWord.getValue());
+	        	
+				if (checkIfBodyContainsOffensiveWord(pattern, target)) {
+					caught.put(offensiveWord.getKey(), offensiveWord.getValue());
+				}
 			}
+		} catch (Exception e) {
+		e.printStackTrace();	
 		}
-    	
-        return words;
+        return caught;
     }
-    
-    private static List<Pattern> getRegexs(String path) {
-    	List<Pattern> patterns = new ArrayList<Pattern>();
-    	
-    	try {
-            List<String> lines = Files.readAllLines(Paths.get(path));
-            for(String word : lines){
-            	Pattern pattern = Pattern.compile(word);
-            	patterns.add(pattern);
-            }
-        }
-        catch (IOException exception){
-            System.out.println(path + " not found.");
-        }
-    	
-    	return patterns;
-    }
-    
+        
 	public static boolean checkIfBodyContainsOffensiveWord(Pattern pattern, String target){
         String body = removeHtml(target);
-        
-        boolean match = pattern.matcher(body).find();
-		if (match) {
-			return true;
-		}
-		
-		return false;
+        return pattern.matcher(body).find();
 	}
 	
 	public static Set<String> checkRepeatedWords(String target) {

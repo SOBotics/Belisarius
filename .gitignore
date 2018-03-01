@@ -1,2 +1,5 @@
 *.properties
 bin/
+logs/output.csv
+database/belisarius.db
+logs/output.csv

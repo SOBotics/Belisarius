@@ -41,7 +41,7 @@ public class ApiService {
     
     public void setBackOffUntil(JsonObject jsonObject) {
     	if (jsonObject.has("backoff")) {
-    		backOffUntil = System.currentTimeMillis()+(jsonObject.get("backoff").getAsLong()*1000L);
+    		backOffUntil = jsonObject.get("backoff").getAsLong();
     	}
     }
     

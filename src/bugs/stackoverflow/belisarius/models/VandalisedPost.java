@@ -22,7 +22,7 @@ public class VandalisedPost {
 		return this.post;
 	}
 	
-    public String getReasons() {
+    public String getReasonMessage() {
     	String reasons = "";
     	double score = 0;
     	
@@ -39,6 +39,10 @@ public class VandalisedPost {
     	}
     	
     	return reasons;
+    }
+    
+    public Map<String, Double> getReasons() {
+    	return this.reasons;
     }
     
     public String getSeverity() {

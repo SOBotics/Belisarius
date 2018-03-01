@@ -3,34 +3,20 @@ package bugs.stackoverflow.belisarius.utils;
 import bugs.stackoverflow.belisarius.filters.*;
 import bugs.stackoverflow.belisarius.filters.Filter.Severity;
 import bugs.stackoverflow.belisarius.models.*;
-import bugs.stackoverflow.belisarius.services.*;
 import fr.tunaki.stackoverflow.chat.Message;
 import fr.tunaki.stackoverflow.chat.Room;
-import fr.tunaki.stackoverflow.chat.User;
 import fr.tunaki.stackoverflow.chat.event.PingMessageEvent;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 public class PostUtils {
 	
-	private ApiService apiService;
-	
-	public PostUtils() {
-		
-		PropertyService ps = new PropertyService();
-		apiService = new ApiService(ps.getSite());
-	}
-	
-
 	public static boolean postBeenEdited(JsonElement post) {
 		if (post.getAsJsonObject().has("last_edit_date")) {
 			long lastActivityDate = post.getAsJsonObject().get("last_activity_date").getAsLong();
@@ -39,7 +25,6 @@ public class PostUtils {
 				return true;
 			}
 		}
-		
 		return false; 
 	}
 	
@@ -61,7 +46,6 @@ public class PostUtils {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		return false;
 	}
 	
@@ -70,7 +54,7 @@ public class PostUtils {
         Post np = new Post();
 
         np.setPostID(post.get("post_id").getAsInt());
-
+        
         np.setRevisionNumber(post.get("revision_number").getAsInt());
         
         if (post.has("body")) {
@@ -117,49 +101,54 @@ public class PostUtils {
 	public static void storeFeedback(Room room, PingMessageEvent event, String feedbackType) {
 		long repliedTo = event.getParentMessageId();
 		Message repliedToMessage = room.getMessage(repliedTo);
-		String reason = repliedToMessage.getPlainContent().split("Reason:")[1].substring(0,repliedToMessage.getPlainContent().split("Reason:")[1].indexOf(";")).replace("*","").trim();
-		String score = repliedToMessage.getPlainContent().split("Score:")[1].replace("*","").trim().substring(0,3);
-		String postId = getPostIdFromMessage(repliedToMessage.getPlainContent().trim());
-		String postType = repliedToMessage.getPlainContent().contains("[tag:question]") ? "Q" : "A";
-		handleFeedback(event.getMessage().getUser(), postId, postType, feedbackType, reason, score);
+		
+		long postId = getPostIdFromMessage(repliedToMessage.getPlainContent().trim());
+		int revisionNumber = getRevisionNumberFromMessage(repliedToMessage.getPlainContent().trim());
+
+		DatabaseUtils.storeFeedback(postId, revisionNumber, feedbackType, event.getMessage().getUser().getId());
 	}
 	
-	public static String getPostIdFromMessage(String message) {
+	public static boolean checkVandalisedPost(VandalisedPost vandalisedPost) {
+		return DatabaseUtils.checkVandalisedPostExists(vandalisedPost.getPost().getPostId(), vandalisedPost.getPost().getRevisionNumber());
+	}
+	
+	public static void storeVandalisedPost(VandalisedPost vandalisedPost) {
+		Post post = vandalisedPost.getPost();
+		DatabaseUtils.storeVandalisedPost(post.getPostId(), post.getRevisionNumber(), post.getUser().getUserId(), post.getTitle(), post.getLastTitle(), post.getBody(), post.getLastBody(),
+				                          post.getIsRollback(), post.getPostType(), post.getComment(), post.getSite(), post.getSiteUrl(), vandalisedPost.getSeverity());
+		
+		
+		
+	}
+	
+	public static long getPostIdFromMessage(String message) {
         message = message.split("//stackoverflow.com/posts/")[1];
-        return message.substring(0,message.indexOf("/"));
+        return Long.parseLong(message.substring(0,message.indexOf("/")));
+	}
+	
+	public static int getRevisionNumberFromMessage(String message) {
+        message = message.split("Revision:")[1];
+        return Integer.parseInt(message.trim());
 	}
 	 
-	public static void handleFeedback(User user, String postId, String postType, String feedbackType, String reason, String score) {
-		String outputCSVLogFile = "./logs/output.csv";
-		try {
-			String loggedAsTp = FileUtils.readLineFromFileStartswith(outputCSVLogFile, "tp," + postId);
-			String loggedAsFp = FileUtils.readLineFromFileStartswith(outputCSVLogFile, "fp," + postId);
-			
-			if (loggedAsTp == null || loggedAsFp == null) {
-				FileUtils.appendToFile(outputCSVLogFile, postId + "," + postType + "," + feedbackType + "," + reason + "," + score);
-			}
-		} catch (IOException e){
-			e.printStackTrace();
-	    }
-	}
-	
     public static VandalisedPost getVandalisedPost(Post post) {
         List<Filter> filters = new ArrayList<Filter>(){{
-            add(new BlacklistedFilter(post));
-            add(new VeryLongWordFilter(post));
-            add(new CodeRemovedFilter(post));
-            add(new TextRemovedFilter(post));
-            add(new FewUniqueCharactersFilter(post));
-            add(new OffensiveWordFilter(post));
-            add(new RepeatedWordFilter(post));
+            add(new BlacklistedFilter(post, DatabaseUtils.getReasonId(BlacklistedFilter.class.getName().substring(BlacklistedFilter.class.getName().lastIndexOf('.') + 1).trim())));
+            add(new VeryLongWordFilter(post, DatabaseUtils.getReasonId(VeryLongWordFilter.class.getName().substring(VeryLongWordFilter.class.getName().lastIndexOf('.') + 1).trim())));
+            add(new CodeRemovedFilter(post, DatabaseUtils.getReasonId(CodeRemovedFilter.class.getName().substring(CodeRemovedFilter.class.getName().lastIndexOf('.') + 1).trim())));
+            add(new TextRemovedFilter(post, DatabaseUtils.getReasonId(TextRemovedFilter.class.getName().substring(TextRemovedFilter.class.getName().lastIndexOf('.') + 1).trim())));
+            add(new FewUniqueCharactersFilter(post, DatabaseUtils.getReasonId(FewUniqueCharactersFilter.class.getName().substring(FewUniqueCharactersFilter.class.getName().lastIndexOf('.') + 1).trim())));
+            add(new OffensiveWordFilter(post, DatabaseUtils.getReasonId(OffensiveWordFilter.class.getName().substring(OffensiveWordFilter.class.getName().lastIndexOf('.') + 1).trim())));
+            add(new RepeatedWordFilter(post, DatabaseUtils.getReasonId(RepeatedWordFilter.class.getName().substring(RepeatedWordFilter.class.getName().lastIndexOf('.') + 1).trim())));
         }};
        
         Severity severity = null;
        
-        Map<String, Double> reasons = new HashMap<String, Double>();
+        HashMap<String, Double> formattedReasonMessages = new HashMap<String, Double>();
         for(Filter filter: filters){
             if(filter.isHit()){
-            	reasons.put(filter.getDescription(), filter.getScore());
+            	filter.storeHit();
+            	formattedReasonMessages.put(filter.getFormattedReasonMessage(), filter.getScore());
             	if (severity == null) {
             		severity = filter.getSeverity();
             	} else if (severity == Severity.LOW && (filter.getSeverity() == Severity.MEDIUM || filter.getSeverity() == Severity.HIGH)) {
@@ -170,7 +159,7 @@ public class PostUtils {
             }
         }
 
-        return new VandalisedPost(post, reasons, severity);
+        return new VandalisedPost(post, formattedReasonMessages, severity);
     }
 	
 }

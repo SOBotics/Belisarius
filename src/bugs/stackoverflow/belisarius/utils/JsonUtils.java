@@ -6,8 +6,11 @@ import bugs.stackoverflow.belisarius.services.ApiService;
 
 import org.jsoup.*;
 import org.jsoup.parser.Parser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -16,22 +19,19 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class JsonUtils {
 	
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(JsonUtils.class);
+	
 	private long lastCall;
 	private long throttle = 1L * 1000L;
 	
 	public synchronized JsonObject get(String url, String... data) throws IOException {
-    	
     	long backOffUntil = ApiService.getBackOffUntil();
     	
     	if (backOffUntil > 0) {
-			long timeToWait = backOffUntil - System.currentTimeMillis() + 1000L; 
-			if (timeToWait > 0) {
-				try {
-					Thread.sleep(timeToWait);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+			try {
+				Thread.sleep(1000 * backOffUntil);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 			backOffUntil = 0L;
 		}
@@ -53,16 +53,23 @@ public class JsonUtils {
         String json = response.body();
         if (response.statusCode() != 200) {
             throw new IOException("HTTP " + response.statusCode() + " fetching URL " + (url) + ". Body is: " + response.body());
+       }
+        JsonObject root = null;
+        
+        try {
+        	root = new JsonParser().parse(json).getAsJsonObject();
+        } catch (Exception e) {
+        	DateTimeFormatter timeStampPattern = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        	org.apache.commons.io.FileUtils.writeStringToFile(new java.io.File("jsondump" + timeStampPattern.format(java.time.LocalDateTime.now()) + ".txt"), json);
+        	org.apache.commons.io.FileUtils.writeStringToFile(new java.io.File("url" + timeStampPattern.format(java.time.LocalDateTime.now()) + ".txt"), response.url().getQuery());
         }
         
-        //used to output json to file
-        //org.apache.commons.io.FileUtils.writeStringToFile(new java.io.File("jsondump.txt"), json);
-        
-        JsonObject root = new JsonParser().parse(json).getAsJsonObject();
         
         if (root.has("quota_remaining")) {
         	StatusUtils.remainingQuota = new AtomicInteger(root.get("quota_remaining").getAsInt());
         }
+        
+        LOGGER.info(json);
         
         return root;
     }
