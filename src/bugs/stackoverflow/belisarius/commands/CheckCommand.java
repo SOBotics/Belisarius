@@ -47,7 +47,7 @@ public class CheckCommand implements Command {
 
 	@Override
 	public String getDescription() {
-		return "Checks a post for potentially vandalism (must be either a moderator or a room owner).";
+		return "Checks a post for potential vandalism (must be either a moderator or a room owner).";
 	}
 
 	@Override

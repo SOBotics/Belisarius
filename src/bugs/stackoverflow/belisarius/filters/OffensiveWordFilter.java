@@ -12,17 +12,20 @@ import org.slf4j.LoggerFactory;
 import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
+import fr.tunaki.stackoverflow.chat.Room;
 
 public class OffensiveWordFilter implements Filter {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(OffensiveWordFilter.class);
 	
+	private Room room;
 	private Post post;
 	private int reasonId;
 	
 	private HashMap<Integer, String> offensiveWords = new HashMap<Integer, String>();
 	
-	public OffensiveWordFilter(Post post, int reasonId) {
+	public OffensiveWordFilter(Room room, Post post, int reasonId) {
+		this.room = room;
 		this.post = post;
 		this.reasonId = reasonId;
 	}
@@ -81,9 +84,9 @@ public class OffensiveWordFilter implements Filter {
 	}
 	
 	public void storeHit() {
-		DatabaseUtils.storeReasonCaught(this.post.getPostId(), this.post.getRevisionNumber(), this.reasonId, this.getScore());
+		DatabaseUtils.storeReasonCaught(this.post.getPostId(), this.post.getRevisionNumber(), this.room.getRoomId(), this.reasonId, this.getScore());
 		this.getCaughtOffensiveWordIds().stream().forEach(id -> {
-			DatabaseUtils.storeCaughtOffensiveWord(this.post.getPostId(), this.post.getRevisionNumber(), id);	
+			DatabaseUtils.storeCaughtOffensiveWord(this.post.getPostId(), this.post.getRevisionNumber(), this.room.getRoomId(), id);	
 		});
 	}
 }

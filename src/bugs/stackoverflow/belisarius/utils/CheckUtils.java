@@ -13,22 +13,8 @@ import info.debatty.java.stringsimilarity.JaroWinkler;
 public class CheckUtils {
 
 	public static HashMap<Integer, String> checkForBlackListedWords(String target, String postType){
-		HashMap<Integer, String> caught = new HashMap<Integer, String>();
 		HashMap<Integer,String> blacklistedWords = DatabaseUtils.getBlacklistedWords(postType);
-		
-		try {
-		Iterator iterator = blacklistedWords.entrySet().iterator();
-		while (iterator.hasNext()) {
-			Map.Entry<Integer, String> blacklistedWord = (Map.Entry<Integer, String>)iterator.next();
-			if(checkIfContainsKeyword(target, blacklistedWord.getValue()))
-			{
-				caught.put(blacklistedWord.getKey(), blacklistedWord.getValue());
-			}
-		}
-		} catch (Exception e) {
-		e.printStackTrace();	
-		}
-        return caught;
+		return getCaughtByRegex(blacklistedWords, target);
     }
    
 	public static boolean checkIfContainsKeyword(String target, String keyword){
@@ -89,20 +75,23 @@ public class CheckUtils {
     	return null;
     }
     
-   
     public static HashMap<Integer, String> checkForOffensiveWords(String target) {
-		HashMap<Integer, String> caught = new HashMap<Integer, String>();
 		HashMap<Integer,String> offensiveWords = DatabaseUtils.getOffensiveWords();
+		return getCaughtByRegex(offensiveWords, target);
+    }
+    
+    private static HashMap<Integer, String> getCaughtByRegex(HashMap<Integer,String> words, String target) {
+		HashMap<Integer, String> caught = new HashMap<Integer, String>();
 
 		try {
-			Iterator iterator = offensiveWords.entrySet().iterator();
+			Iterator iterator = words.entrySet().iterator();
 			while (iterator.hasNext()) {
-				Map.Entry<Integer, String> offensiveWord = (Map.Entry<Integer, String>)iterator.next();
+				Map.Entry<Integer, String> word = (Map.Entry<Integer, String>)iterator.next();
 				
-				Pattern pattern = Pattern.compile(offensiveWord.getValue());
+				Pattern pattern = Pattern.compile(word.getValue());
 	        	
-				if (checkIfBodyContainsOffensiveWord(pattern, target)) {
-					caught.put(offensiveWord.getKey(), offensiveWord.getValue());
+				if (checkIfBodyContainsWord(pattern, target)) {
+					caught.put(word.getKey(), word.getValue());
 				}
 			}
 		} catch (Exception e) {
@@ -111,7 +100,7 @@ public class CheckUtils {
         return caught;
     }
         
-	public static boolean checkIfBodyContainsOffensiveWord(Pattern pattern, String target){
+	public static boolean checkIfBodyContainsWord(Pattern pattern, String target){
         String body = removeHtml(target);
         return pattern.matcher(body).find();
 	}

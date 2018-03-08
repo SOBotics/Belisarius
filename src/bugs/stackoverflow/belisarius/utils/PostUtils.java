@@ -105,16 +105,16 @@ public class PostUtils {
 		long postId = getPostIdFromMessage(repliedToMessage.getPlainContent().trim());
 		int revisionNumber = getRevisionNumberFromMessage(repliedToMessage.getPlainContent().trim());
 
-		DatabaseUtils.storeFeedback(postId, revisionNumber, feedbackType, event.getMessage().getUser().getId());
+		DatabaseUtils.storeFeedback(postId, revisionNumber, room.getRoomId(), feedbackType, event.getMessage().getUser().getId());
 	}
 	
-	public static boolean checkVandalisedPost(VandalisedPost vandalisedPost) {
-		return DatabaseUtils.checkVandalisedPostExists(vandalisedPost.getPost().getPostId(), vandalisedPost.getPost().getRevisionNumber());
+	public static boolean checkVandalisedPost(Room room, VandalisedPost vandalisedPost) {
+		return DatabaseUtils.checkVandalisedPostExists(vandalisedPost.getPost().getPostId(), vandalisedPost.getPost().getRevisionNumber(), room.getRoomId());
 	}
 	
-	public static void storeVandalisedPost(VandalisedPost vandalisedPost) {
+	public static void storeVandalisedPost(Room room, VandalisedPost vandalisedPost) {
 		Post post = vandalisedPost.getPost();
-		DatabaseUtils.storeVandalisedPost(post.getPostId(), post.getRevisionNumber(), post.getUser().getUserId(), post.getTitle(), post.getLastTitle(), post.getBody(), post.getLastBody(),
+		DatabaseUtils.storeVandalisedPost(post.getPostId(), post.getRevisionNumber(), room.getRoomId(), post.getUser().getUserId(), post.getTitle(), post.getLastTitle(), post.getBody(), post.getLastBody(),
 				                          post.getIsRollback(), post.getPostType(), post.getComment(), post.getSite(), post.getSiteUrl(), vandalisedPost.getSeverity());
 		
 		
@@ -131,15 +131,15 @@ public class PostUtils {
         return Integer.parseInt(message.trim());
 	}
 	 
-    public static VandalisedPost getVandalisedPost(Post post) {
+    public static VandalisedPost getVandalisedPost(Room room, Post post) {
         List<Filter> filters = new ArrayList<Filter>(){{
-            add(new BlacklistedFilter(post, DatabaseUtils.getReasonId(BlacklistedFilter.class.getName().substring(BlacklistedFilter.class.getName().lastIndexOf('.') + 1).trim())));
-            add(new VeryLongWordFilter(post, DatabaseUtils.getReasonId(VeryLongWordFilter.class.getName().substring(VeryLongWordFilter.class.getName().lastIndexOf('.') + 1).trim())));
-            add(new CodeRemovedFilter(post, DatabaseUtils.getReasonId(CodeRemovedFilter.class.getName().substring(CodeRemovedFilter.class.getName().lastIndexOf('.') + 1).trim())));
-            add(new TextRemovedFilter(post, DatabaseUtils.getReasonId(TextRemovedFilter.class.getName().substring(TextRemovedFilter.class.getName().lastIndexOf('.') + 1).trim())));
-            add(new FewUniqueCharactersFilter(post, DatabaseUtils.getReasonId(FewUniqueCharactersFilter.class.getName().substring(FewUniqueCharactersFilter.class.getName().lastIndexOf('.') + 1).trim())));
-            add(new OffensiveWordFilter(post, DatabaseUtils.getReasonId(OffensiveWordFilter.class.getName().substring(OffensiveWordFilter.class.getName().lastIndexOf('.') + 1).trim())));
-            add(new RepeatedWordFilter(post, DatabaseUtils.getReasonId(RepeatedWordFilter.class.getName().substring(RepeatedWordFilter.class.getName().lastIndexOf('.') + 1).trim())));
+            add(new BlacklistedFilter(room, post, DatabaseUtils.getReasonId(BlacklistedFilter.class.getName().substring(BlacklistedFilter.class.getName().lastIndexOf('.') + 1).trim())));
+            add(new VeryLongWordFilter(room, post, DatabaseUtils.getReasonId(VeryLongWordFilter.class.getName().substring(VeryLongWordFilter.class.getName().lastIndexOf('.') + 1).trim())));
+            add(new CodeRemovedFilter(room, post, DatabaseUtils.getReasonId(CodeRemovedFilter.class.getName().substring(CodeRemovedFilter.class.getName().lastIndexOf('.') + 1).trim())));
+            add(new TextRemovedFilter(room, post, DatabaseUtils.getReasonId(TextRemovedFilter.class.getName().substring(TextRemovedFilter.class.getName().lastIndexOf('.') + 1).trim())));
+            add(new FewUniqueCharactersFilter(room, post, DatabaseUtils.getReasonId(FewUniqueCharactersFilter.class.getName().substring(FewUniqueCharactersFilter.class.getName().lastIndexOf('.') + 1).trim())));
+            add(new OffensiveWordFilter(room, post, DatabaseUtils.getReasonId(OffensiveWordFilter.class.getName().substring(OffensiveWordFilter.class.getName().lastIndexOf('.') + 1).trim())));
+            add(new RepeatedWordFilter(room, post, DatabaseUtils.getReasonId(RepeatedWordFilter.class.getName().substring(RepeatedWordFilter.class.getName().lastIndexOf('.') + 1).trim())));
         }};
        
         Severity severity = null;
