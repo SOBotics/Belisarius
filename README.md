@@ -45,16 +45,23 @@ Edits can be made up of a title change, body change of a question, tag changes o
  
 ## Accounts 
 
-The project is running under the user [Belisarius][4] in the [SOBotics][5] room. A sample image of a report is: 
+The project is running under the user [Belisarius][4] in the [SOBotics][5] room. A more detailed presentation is at http://belisarius.sobotics.org/ including a [list of commands][6].
+
+## Feedback:
+
+Currently feedback is taken by replying to the chat message with either `tp` (True Positive) or `fp` (False Positive).
+
+A sample image of a report is: 
   
-  ![Sample Image][6]
+  ![Sample Image][7]
   
-The source code is available on [GitHub][7] and suggestions are welcome. The project is still under the testing phase.
+The source code is available on [GitHub][8] and suggestions are welcome. The project is still under the testing phase.
 
  [1]: https://api.stackexchange.com/docs/posts
  [2]: https://api.stackexchange.com/docs/revisions-by-ids
  [3]: https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance
  [4]: https://stackoverflow.com/users/8149646/belisarius
  [5]: http://chat.stackoverflow.com/rooms/111347/sobotics
- [6]: https://i.stack.imgur.com/uRSpD.png
- [7]: https://github.com/SOBotics/Belisarius
+ [6]: http://belisarius.sobotics.org/commands
+ [7]: https://i.stack.imgur.com/521ML.png
+ [8]: https://github.com/SOBotics/Belisarius
