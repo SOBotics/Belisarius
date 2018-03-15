@@ -9,7 +9,7 @@
         </layout>
     </appender>
 
-    <appender name="bdfile" class="org.apache.log4j.RollingFileAppender">
+    <appender name="file" class="org.apache.log4j.RollingFileAppender">
         <param name="append" value="false"/>
         <param name="maxFileSize" value="1GB"/>
         <param name="maxBackupIndex" value="2"/>
@@ -19,14 +19,14 @@
         </layout>
     </appender>
 
-    <logger name="com.example.mypackage" additivity="false">
-        <level value="debug"/>
-        <appender-ref ref="bdfile"/>
+    <logger name="fr.tunaki.stackoverflow.chat" additivity="false">
+        <level value="DEBUG"/>
+        <appender-ref ref="file"/>
     </logger>
 
     <root>
-        <priority value="info"/>
-        <appender-ref ref="bdfile"/>
+        <priority value="INFO"/>
+        <appender-ref ref="file"/>
         <appender-ref ref="console"/>
     </root>
 
