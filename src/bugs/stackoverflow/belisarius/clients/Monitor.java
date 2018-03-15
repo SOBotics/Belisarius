@@ -10,17 +10,17 @@ import fr.tunaki.stackoverflow.chat.Room;
 
 public class Monitor {
 
-	public void run(Room chatroom, List<Post> posts, String site, String siteUrl) {
+	public void run(Room room, List<Post> posts, String site, String siteUrl) {
 		
 		try {
 			for (Post post : posts) {
 		        if (post.getRevisionNumber()!= 1 && post.getIsRollback() == false) {
-		        	VandalisedPost vandalisedPost = getVandalisedPost(post);
+		        	VandalisedPost vandalisedPost = getVandalisedPost(room, post);
 		        	if (vandalisedPost.getSeverity() != null) {
-		        		if(!PostUtils.checkVandalisedPost(vandalisedPost))
+		        		if(!PostUtils.checkVandalisedPost(room, vandalisedPost))
 		        		{
-		        			PostUtils.storeVandalisedPost(vandalisedPost);
-		        			sendVandalismFoundMessage(chatroom, post, vandalisedPost);
+		        			PostUtils.storeVandalisedPost(room, vandalisedPost);
+		        			sendVandalismFoundMessage(room, post, vandalisedPost);
 		        		}
 		        	}
 		        }
@@ -31,17 +31,17 @@ public class Monitor {
 		
 	}
 	
-	public void runOnce(Room chatroom, Post post, String site, String siteUrl) {
+	public void runOnce(Room room, Post post, String site, String siteUrl) {
 		
 		try {
 	        if (post.getRevisionNumber()!= 1 && post.getIsRollback() == false) {
-	        	VandalisedPost vandalisedPost = getVandalisedPost(post);
+	        	VandalisedPost vandalisedPost = getVandalisedPost(room, post);
 	        	if (vandalisedPost.getSeverity() != null) {
-	        		sendVandalismFoundMessage(chatroom, post, vandalisedPost);
+	        		sendVandalismFoundMessage(room, post, vandalisedPost);
 	        	}
 	        	else
 	        	{
-	        		sendNoVandalismFoundMessage(chatroom, post);
+	        		sendNoVandalismFoundMessage(room, post);
 	        	}
 	        }
 		} catch (Exception e) {
@@ -50,10 +50,10 @@ public class Monitor {
 		
 	}
 	
-	private VandalisedPost getVandalisedPost(Post post) {
+	private VandalisedPost getVandalisedPost(Room room, Post post) {
 		 try {
 			  {
-		         VandalismFinder vandalismFinder = new VandalismFinder(post);
+		         VandalismFinder vandalismFinder = new VandalismFinder(room, post);
 		         return vandalismFinder.findReasons();
 			 }
 		 } catch (Exception e) {
@@ -68,16 +68,16 @@ public class Monitor {
 		message += " [tag:" + post.getPostType().toLowerCase() + "] ";
 		message += " [tag:severity-" + vandalisedPost.getSeverity() +  "]";
 		message += " Potentially harmful edit found. Reason: " + vandalisedPost.getReasonMessage();
-		message += " [Link to revisions](https://stackoverflow.com/posts/" + String.valueOf(post.getPostId()) + "/revisions).";
-		message += " Revision: " + String.valueOf(post.getRevisionNumber());
+		message += " [All revisions](https://stackoverflow.com/posts/" + String.valueOf(post.getPostId()) + "/revisions).";
+		message += " Revision: [" + String.valueOf(post.getRevisionNumber()) + "](https://stackoverflow.com/revisions/" + String.valueOf(post.getPostId()) + "/" + String.valueOf(post.getRevisionNumber()) + ").";
 		room.send(message);
 	}
 	
 	private void sendNoVandalismFoundMessage(Room room, Post post) {
 		String message = "[ [Belisarius](" + Belisarius.readMe + ") ]";
 		message += " [tag:" + post.getPostType().toLowerCase() + "] No issues have been found.";
-		message += " [Link to revisions](https://stackoverflow.com/posts/" + String.valueOf(post.getPostId()) + "/revisions).";
-		message += " Revision: " + String.valueOf(post.getRevisionNumber());
+		message += " [All revisions](https://stackoverflow.com/posts/" + String.valueOf(post.getPostId()) + "/revisions).";
+		message += " Revision: [" + String.valueOf(post.getRevisionNumber()) + "](https://stackoverflow.com/revisions/" + String.valueOf(post.getPostId()) + "/" + String.valueOf(post.getRevisionNumber()) + ").";
 		room.send(message);
 	}
 		
