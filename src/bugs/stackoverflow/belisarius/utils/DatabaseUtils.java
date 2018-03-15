@@ -22,6 +22,7 @@ public class DatabaseUtils {
 		
 		String sql = "CREATE TABLE IF NOT EXISTS VandalisedPost(PostId integer, \n" +
 		                                                      " RevisionId integer, \n" +
+		                                                      " RoomId integer, \n" +
 				                                              " OwnerId integer, \n" +
 				                                              " Title text, \n" +
 		                                                      " LastTitle text, \n" +
@@ -33,7 +34,7 @@ public class DatabaseUtils {
 		                                                      " Site text, \n" +
 				                                              " SiteUrl, \n" +
 				                                              " Severity text, \n" +
-				                                              " PRIMARY KEY(PostId, RevisionId));";
+				                                              " PRIMARY KEY(PostId, RevisionId, RoomId));";
 		                                                        
         try (Connection conn = connection.getConnection();
              Statement stmt = conn.createStatement()) {
@@ -64,10 +65,11 @@ public class DatabaseUtils {
 		
 		String sql = "CREATE TABLE IF NOT EXISTS ReasonCaught(PostId integer, \n" +
 		                                                    " RevisionId integer, \n" +
+		                                                    " RoomId integer, \n" +
 				                                            " ReasonId text, \n" +
 				                                            " Score integer, \n" +
-				                                            " PRIMARY KEY(PostId, RevisionId, ReasonId), \n" +
-						                                    " FOREIGN KEY(PostId) REFERENCES VandalisedPost(PostId), \n" +
+				                                            " PRIMARY KEY(PostId, RevisionId, RoomId, ReasonId), \n" +
+						                                    " FOREIGN KEY(PostId, RevisionId, RoomId) REFERENCES VandalisedPost(PostId, RevisionId, RoomId), \n" +
 						                                    " FOREIGN KEY(ReasonId) REFERENCES Reason(ReasonId));";
 		                                                        	
         try (Connection conn = connection.getConnection();
@@ -99,10 +101,11 @@ public class DatabaseUtils {
 		
 		String sql = "CREATE TABLE IF NOT EXISTS BlacklistedWordCaught(PostId integer, \n" +
 		                                                             " RevisionId integer, \n" +
-				                                                     " BlacklistWordId v, \n" +
-				                                                     " PRIMARY KEY(PostId, RevisionId), \n " +
-				                                                     " FOREIGN KEY(PostId) REFERENCES VandalisedPost(PostId), \n" +
-				                                                     " FOREIGN KEY(BlacklistWordId) REFERENCES BlacklistedWord(BlacklistWordId));";
+		                                                             " RoomId integer, \n" +
+				                                                     " BlacklistedWordId integer, \n" +
+				                                                     " PRIMARY KEY(PostId, RevisionId, RoomId, BlacklistedWordId), \n " +
+				                                                     " FOREIGN KEY(PostId, RevisionId, RoomId) REFERENCES VandalisedPost(PostId, RevisionId, RoomId), \n" +
+				                                                     " FOREIGN KEY(BlacklistedWordId) REFERENCES BlacklistedWord(BlacklistedWordId));";
 		
 		try (Connection conn = connection.getConnection();
 			 Statement stmt = conn.createStatement()) {
@@ -132,9 +135,10 @@ public class DatabaseUtils {
 		
 		String sql = "CREATE TABLE IF NOT EXISTS OffensiveWordCaught(PostId integer, \n" +
 		                                                           " RevisionId integer, \n" +
+		                                                           " RoomId integer, \n" +
 				                                                   " OffensiveWordId v, \n" +
-				                                                   " PRIMARY KEY(PostId, RevisionId), \n " +
-				                                                   " FOREIGN KEY(PostId) REFERENCES VandalisedPost(PostId), \n" +
+				                                                   " PRIMARY KEY(PostId, RevisionId, RoomId), \n " +
+				                                                   " FOREIGN KEY(PostId, RevisionId, RoomId) REFERENCES VandalisedPost(PostId, RevisionId, RoomId), \n" +
 				                                                   " FOREIGN KEY(OffensiveWordId) REFERENCES OffensiveWord(OffensiveWordId));";
 		
 		try (Connection conn = connection.getConnection();
@@ -145,17 +149,17 @@ public class DatabaseUtils {
 		 }
 	}
 
-
-	
 	public static void createFeedbackTable() {
 		SQLiteConnection connection = new SQLiteConnection();
 		
 		String sql = "CREATE TABLE IF NOT EXISTS Feedback(PostId integer, \n" +
 		                                                " RevisionId integer, \n" +
+		                                                " RoomId integer, \n" +
+		                                                " UserId integer, \n" +
 				                                        " Feedback text, \n" +
-				                                        " UserId integer, \n" +
-				                                        " PRIMARY KEY(PostId, RevisionId), \n" +
-				                                        " FOREIGN KEY(PostId) REFERENCES VandalisedPost(PostId));";
+				                                        " PRIMARY KEY(PostId, RevisionId, RoomId, UserId), \n" +
+				                                        " FOREIGN KEY(PostId, RevisionId, RoomId) REFERENCES VandalisedPost(PostId, RevisionId, RoomId), \n" +
+				                                        " FOREIGN KEY(RoomId) REFERENCES VandalisedPost(RoomId));";
 		                                                        	
         try (Connection conn = connection.getConnection();
              Statement stmt = conn.createStatement()) {
@@ -165,15 +169,16 @@ public class DatabaseUtils {
          }
     }
 	
-	public static boolean checkVandalisedPostExists(long postId, int revisionId) {
+	public static boolean checkVandalisedPostExists(long postId, int revisionId, int roomId) {
 		SQLiteConnection connection = new SQLiteConnection();
 		
-		String sql = "SELECT (COUNT(*) > 0) As Found FROM VandalisedPost WHERE PostId = ? AND RevisionId = ?;";
+		String sql = "SELECT (COUNT(*) > 0) As Found FROM VandalisedPost WHERE PostId = ? AND RevisionId = ? AND RoomId = ?;";
 		
         try (Connection conn = connection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
         	pstmt.setLong(1, postId);
         	pstmt.setInt(2,  revisionId);
+        	pstmt.setInt(3,  roomId);
 
         	ResultSet rs = pstmt.executeQuery();
         	while (rs.next()) {
@@ -185,28 +190,29 @@ public class DatabaseUtils {
 		return false;
 	}
 	
-	public static void storeVandalisedPost(long postId, int revisionId, long ownerId, String title, String lastTitle, String body, String lastBody,
+	public static void storeVandalisedPost(long postId, int revisionId, int roomId, long ownerId, String title, String lastTitle, String body, String lastBody,
 			                                boolean IsRollback, String postType, String comment, String site, String siteUrl, String severity) {
 		
 		SQLiteConnection connection = new SQLiteConnection();
 		
-		String sql = "INSERT INTO VandalisedPost VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+		String sql = "INSERT INTO VandalisedPost VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 		
         try (Connection conn = connection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
         	pstmt.setLong(1, postId);
         	pstmt.setInt(2,  revisionId);
-        	pstmt.setLong(3, ownerId);
-        	pstmt.setString(4, title);
-        	pstmt.setString(5, lastTitle);
-        	pstmt.setString(6, body);
-        	pstmt.setString(7, lastBody);
-        	pstmt.setInt(8, (IsRollback) ? 1 : 0);
-        	pstmt.setString(9, postType);
-        	pstmt.setString(10, comment);
-        	pstmt.setString(11, site);
-        	pstmt.setString(12, siteUrl);
-        	pstmt.setString(13, severity);
+        	pstmt.setInt(3,  roomId);
+        	pstmt.setLong(4, ownerId);
+        	pstmt.setString(5, title);
+        	pstmt.setString(6, lastTitle);
+        	pstmt.setString(7, body);
+        	pstmt.setString(8, lastBody);
+        	pstmt.setInt(9, (IsRollback) ? 1 : 0);
+        	pstmt.setString(10, postType);
+        	pstmt.setString(11, comment);
+        	pstmt.setString(12, site);
+        	pstmt.setString(13, siteUrl);
+        	pstmt.setString(14, severity);
 
         	pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -214,18 +220,19 @@ public class DatabaseUtils {
         }
 	}
 	
-	public static void storeReasonCaught(long postId, int revisionId, int reasonId, double score) {
+	public static void storeReasonCaught(long postId, int revisionId, int roomId, int reasonId, double score) {
 		SQLiteConnection connection = new SQLiteConnection();
 		
-		String sql = "INSERT INTO ReasonCaught(PostId, RevisionId, ReasonId, Score) VALUES (?, ?, ?, ?);";
+		String sql = "INSERT INTO ReasonCaught VALUES (?, ?, ?, ?, ?);";
 			
 		try (Connection conn = connection.getConnection();
 			 PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
 			pstmt.setLong(1, postId);
 			pstmt.setInt(2,  revisionId);
-			pstmt.setInt(3, reasonId);
-			pstmt.setDouble(4, score);
+			pstmt.setInt(3,  roomId);
+			pstmt.setInt(4, reasonId);
+			pstmt.setDouble(5, score);
 			
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
@@ -233,19 +240,20 @@ public class DatabaseUtils {
 		}
 	}
 	
-	public static void storeFeedback(long postId, int revisionId, String feedback, long userId) {
+	public static void storeFeedback(long postId, int revisionId, int roomId, String feedback, long userId) {
 
 		SQLiteConnection connection = new SQLiteConnection();
 		
-		String sql = "INSERT OR REPLACE INTO Feedback VALUES (?, ?, ?, ?);";
+		String sql = "INSERT OR REPLACE INTO Feedback VALUES (?, ?, ?, ?, ?);";
     	
 		try (Connection conn = connection.getConnection();
 			 PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
 			pstmt.setLong(1, postId);
 			pstmt.setInt(2,  revisionId);
-			pstmt.setString(3, feedback);
+			pstmt.setInt(3,  roomId);
 			pstmt.setLong(4, userId);
+			pstmt.setString(5, feedback);
 			
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
@@ -311,18 +319,19 @@ public class DatabaseUtils {
 		return 0;
 	}
 	
-	public static void storeCaughtBlacklistedWord(long postId, int revisionId, int blacklistedWordId) {
+	public static void storeCaughtBlacklistedWord(long postId, int revisionId, int roomId, int blacklistedWordId) {
 
 		SQLiteConnection connection = new SQLiteConnection();
 		
-		String sql = "INSERT INTO BlacklistedWordCaught VALUES (?, ?, ?);";
+		String sql = "INSERT INTO BlacklistedWordCaught VALUES (?, ?, ?, ?);";
     	
 		try (Connection conn = connection.getConnection();
 			 PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
 			pstmt.setLong(1, postId);
 			pstmt.setInt(2,  revisionId);
-			pstmt.setInt(3, blacklistedWordId);
+			pstmt.setInt(3,  roomId);
+			pstmt.setInt(4, blacklistedWordId);
 			
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
@@ -330,18 +339,19 @@ public class DatabaseUtils {
 		}
 	}
 	
-	public static void storeCaughtOffensiveWord(long postId, int revisionId, int offensiveWordId) {
+	public static void storeCaughtOffensiveWord(long postId, int revisionId, int roomId, int offensiveWordId) {
 
 		SQLiteConnection connection = new SQLiteConnection();
 		
-		String sql = "INSERT INTO OffensivedWordCaught VALUES (?, ?, ?);";
+		String sql = "INSERT INTO OffensivedWordCaught VALUES (?, ?, ?, ?);";
     	
 		try (Connection conn = connection.getConnection();
 			 PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
 			pstmt.setLong(1, postId);
 			pstmt.setInt(2,  revisionId);
-			pstmt.setInt(3, offensiveWordId);
+			pstmt.setInt(3,  roomId);
+			pstmt.setInt(4, offensiveWordId);
 			
 			pstmt.executeUpdate();
 		} catch (SQLException e) {

@@ -6,24 +6,30 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
+import fr.tunaki.stackoverflow.chat.Room;
+
+
 
 public class BlacklistedFilter implements Filter {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BlacklistedFilter.class);
 	
+	private Room room;
 	private Post post;
 	private int reasonId;
 	private HashMap<Integer, String> blacklitedWordsTitle = new HashMap<Integer, String> ();
 	private HashMap<Integer, String> blacklitedWordsBody = new HashMap<Integer, String>();
 	private HashMap<Integer, String>  blacklitedWordsEditSummary = new HashMap<Integer, String>();
 	
-	public BlacklistedFilter(Post post, int reasonId) {
+	public BlacklistedFilter(Room room, Post post, int reasonId) {
+		this.room = room;
 		this.post = post;
 		this.reasonId = reasonId;
 	}
@@ -32,14 +38,17 @@ public class BlacklistedFilter implements Filter {
 	public boolean isHit() {
 		
 		if (post.getTitle() != null) {
-			blacklitedWordsTitle = CheckUtils.checkForBlackListedWords(post.getTitle(), post.getPostType());
+			LOGGER.debug(StringUtils.difference(post.getLastTitle(), post.getTitle()));
+			blacklitedWordsTitle = CheckUtils.checkForBlackListedWords(StringUtils.difference(post.getLastTitle(), post.getTitle()), post.getPostType());
 		}
 		
 		if (post.getBody() != null) {
-			blacklitedWordsBody = CheckUtils.checkForBlackListedWords(post.getBody(), post.getPostType());
+			LOGGER.debug(StringUtils.difference(post.getLastTitle(), post.getTitle()));
+			blacklitedWordsBody = CheckUtils.checkForBlackListedWords(StringUtils.difference(post.getLastBody(), post.getBody()), post.getPostType());
 		}
 		
 		if (post.getComment() != null) {
+			LOGGER.debug(StringUtils.difference(post.getLastTitle(), post.getTitle()));
 			blacklitedWordsEditSummary = CheckUtils.checkForBlackListedWords(post.getComment(), post.getPostType());
 		}
 		
@@ -65,7 +74,7 @@ public class BlacklistedFilter implements Filter {
 			}
 		
 			if (this.blacklitedWordsEditSummary.size()>0) {
-				message += "**Edit summary contains blacklisted " + (this.blacklitedWordsEditSummary.size()>1 ? "words" : "word") + ":** " + getBlacklistedWordsComment() + " @Bugs ";
+				message += "**Edit summary contains blacklisted " + (this.blacklitedWordsEditSummary.size()>1 ? "words" : "word") + ":** " + getBlacklistedWordsComment() + " ";
 			}
 		} catch (Exception e)
 		{
@@ -153,9 +162,9 @@ public class BlacklistedFilter implements Filter {
 
 	@Override
 	public void storeHit() {
-		DatabaseUtils.storeReasonCaught(this.post.getPostId(), this.post.getRevisionNumber(), this.reasonId, this.getScore());
+		DatabaseUtils.storeReasonCaught(this.post.getPostId(), this.post.getRevisionNumber(), this.room.getRoomId(), this.reasonId, this.getScore());
 		this.getCaughtBlacklistedWordIds().stream().forEach(id -> {
-			DatabaseUtils.storeCaughtBlacklistedWord(this.post.getPostId(), this.post.getRevisionNumber(), id);	
+			DatabaseUtils.storeCaughtBlacklistedWord(this.post.getPostId(), this.post.getRevisionNumber(), this.room.getRoomId(), id);	
 		});
 	}
 }
