@@ -16,6 +16,7 @@ public class BelisariusCommandList {
 		List<Command> commands = new ArrayList<>(Arrays.asList(
 				new AliveCommand(message),
 				new CheckCommand(message, service),
+				new CheckLocalCommand(message, service),
 				new HelpCommand(message),
 				new QuotaCommand(message),
 				new RebootCommand(message, service),
@@ -40,7 +41,7 @@ public class BelisariusCommandList {
 			room.send("Yeah, I'm alive.");
 		} else {
 			if (cp == 128642 || (cp>=128644 && cp<=128650)) {
-				room.send("[\uD83D\uDE83](https://en.wikipedia.org/wiki/Belisarius)");
+				room.send("[\uD83D\uDE83](https://www.youtube.com/watch?v=oKk-2Pu2N8g)");
 			}
 		}
 	}
