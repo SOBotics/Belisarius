@@ -50,6 +50,25 @@ public class Monitor {
 		
 	}
 	
+	public void runOnceLocal(Room room, Post post, String site, String siteUrl) {
+		
+		try {
+	        if (post.getRevisionNumber()!= 1 && post.getIsRollback() == false) {
+	        	VandalisedPost vandalisedPost = getVandalisedPost(room, post);
+	        	if (vandalisedPost.getSeverity() != null) {
+	        		sendVandalismFoundMessage(room, post, vandalisedPost);
+	        	}
+	        	else
+	        	{
+	        		sendNoVandalismFoundMessage(room, post);
+	        	}
+	        }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
 	private VandalisedPost getVandalisedPost(Room room, Post post) {
 		 try {
 			  {

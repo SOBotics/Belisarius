@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import bugs.stackoverflow.belisarius.database.SQLiteConnection;
+import bugs.stackoverflow.belisarius.models.Post;
 
 public class DatabaseUtils {
 	
@@ -357,5 +358,45 @@ public class DatabaseUtils {
 		} catch (SQLException e) {
 			LOGGER.info("Failed to store caught offensive word for vandalised post. PostId: " + String.valueOf(postId) + "; RevisionId: " + String.valueOf(revisionId) + "; OffensiveWordId: " + String.valueOf(offensiveWordId) + ".", e);
 		}
+	}
+	
+	public static Post getPost(long postId, int revisionId, int roomId) {
+
+		SQLiteConnection connection = new SQLiteConnection();
+		
+		String sql = "SELECT PostId, \n" +
+		             "       RevisionId, \n" +
+				     "       OwnerId, \n" +
+		             "       Title, \n" +
+				     "       LastTitle, \n " +
+		             "       Body, \n" +
+				     "       LastBody, \n" +
+		             "       IsRollback, \n" +
+				     "       PostType, \n" +
+		             "       Comment \n" +
+		             "  FROM VandalisedPost \n" +
+				     " WHERE PostId = ? \n" +
+		             "   AND RevisionId = ? \n" +
+		             "   AND RoomId = ?;";
+				    
+    	Post post = null;
+		try (Connection conn = connection.getConnection();
+			 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+			pstmt.setLong(1, postId);
+			pstmt.setInt(2,  revisionId);
+			pstmt.setInt(3,  roomId);
+
+        	ResultSet rs = pstmt.executeQuery();
+        	while (rs.next()) {
+        		post = PostUtils.getPost(rs.getInt("PostId"), rs.getInt("RevisionId"), rs.getString("Title"), rs.getString("LastTitle"),
+        			                     rs.getString("Body"),  rs.getString("LastBody"), rs.getBoolean("IsRollback"), rs.getString("PostType"), 
+        			                     rs.getString("Comment"), rs.getInt("OwnerId"));
+        	}
+		} catch (SQLException e) {
+			LOGGER.info("Failed to find vandalised post. PostId: " + String.valueOf(postId) + "; RevisionId: " + String.valueOf(revisionId) + "; RoomId: " + String.valueOf(roomId) + ".", e);
+		}
+		
+		return post;
 	}
 }

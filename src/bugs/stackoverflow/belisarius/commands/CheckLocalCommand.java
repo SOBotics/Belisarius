@@ -8,14 +8,14 @@ import bugs.stackoverflow.belisarius.utils.CommandUtils;
 import fr.tunaki.stackoverflow.chat.Message;
 import fr.tunaki.stackoverflow.chat.Room;
 
-public class CheckCommand implements Command {
+public class CheckLocalCommand implements Command {
 
 	private Message message;
 	private MonitorService service;
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(CheckCommand.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CheckLocalCommand.class);
 	
-	public CheckCommand(Message message, MonitorService service)
+	public CheckLocalCommand(Message message, MonitorService service)
 	{
 		this.message = message;
 		this.service = service;
@@ -32,27 +32,29 @@ public class CheckCommand implements Command {
 		if (this.message.getUser().isModerator() || this.message.getUser().isRoomOwner()) {
 			String args[] = CommandUtils.extractData(message.getPlainContent()).trim().split(" ");
 			
-	        if(args.length!=1){
+	        if(args.length!=2){
 	            room.send("Error in arguments passed.");
 	            return;
 	        }
 			
 			String postId = args[0];
-			service.executeOnce(postId, room);
+			String revisionId = args[1];
+			service.executeOnceLocal(postId, revisionId, room);
 		} else {
 			room.replyTo(this.message.getId(), "You must be either a moderator or a room owner to execute the check command.");
 			return;
 		}
+		
 	}
 
 	@Override
 	public String getDescription() {
-		return "Checks a post, through the API, for potential vandalism (must be either a moderator or a room owner).";
+		return "Checks a post, on the local db, for potential vandalism (must be either a moderator or a room owner).";
 	}
 
 	@Override
 	public String getName() {
-		return "check";
+		return "checklocal";
 	}
 
 }

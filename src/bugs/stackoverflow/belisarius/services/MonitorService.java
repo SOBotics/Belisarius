@@ -108,6 +108,22 @@ public class MonitorService {
 			new Monitor().runOnce(room, post, chatroom.getSiteName(), chatroom.getSiteUrl());
 		}
     }
+    
+    public void executeOnceLocal(String postId, String revisionId, Room room) {
+    	Map<String, Post> postMap = new HashMap<>();
+    	
+    	for (String site : bots.keySet()) {
+    		postMap.put(site, bots.get(site).getPostLocal(Long.valueOf(postId), Integer.valueOf(revisionId), room.getRoomId()));
+    	}
+
+		Chatroom chatroom = chatrooms.stream().filter((r) -> r.getRoomId() == room.getRoomId()).findFirst().orElse(null);
+    	
+		if (chatroom != null)
+		{
+			Post post = postMap.get(chatroom.getSiteName());
+			new Monitor().runOnceLocal(room, post, chatroom.getSiteName(), chatroom.getSiteUrl());
+		}
+    }
 	
     public void stop(){
         executorService.shutdown();

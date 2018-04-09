@@ -57,14 +57,6 @@ public class PostUtils {
         
         np.setRevisionNumber(post.get("revision_number").getAsInt());
         
-        if (post.has("body")) {
-	        np.setBody(post.get("body").getAsString());
-        }
-        
-        if (post.has("last_body")) {
-	        np.setLastBody(post.get("last_body").getAsString());
-        }
-        
         if (post.has("title")) {
 	        np.setTitle(post.get("title").getAsString());
         }
@@ -73,6 +65,14 @@ public class PostUtils {
             np.setLastBody(post.get("last_title").getAsString());
         }
         
+        if (post.has("body")) {
+	        np.setBody(post.get("body").getAsString());
+        }
+        
+        if (post.has("last_body")) {
+	        np.setLastBody(post.get("last_body").getAsString());
+        }
+       
         np.setIsRollback(post.get("is_rollback").getAsBoolean());
         np.setPostType(post.get("post_type").getAsString());
         
@@ -93,6 +93,29 @@ public class PostUtils {
             e.printStackTrace();
         }
 
+        np.setUser(user);
+        
+        return np;
+    }
+	
+	public static Post getPost(int postId, int revisionId, String title, String lastTitle, String body, String lastBody, boolean isRollback,
+			                   String postType, String comment, int ownerId){
+
+        Post np = new Post();
+
+        np.setPostID(postId);
+        
+        np.setRevisionNumber(revisionId);
+        np.setTitle(title);
+        np.setLastBody(lastTitle);
+        np.setBody(body);
+        np.setLastBody(lastBody);
+        np.setIsRollback(isRollback);
+        np.setPostType(postType);
+        np.setComment(comment);
+
+        SOUser user = new SOUser();
+        user.setUserId(ownerId);
         np.setUser(user);
         
         return np;

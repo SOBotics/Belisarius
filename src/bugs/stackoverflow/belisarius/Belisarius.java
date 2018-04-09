@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 
 import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.services.ApiService;
+import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 import bugs.stackoverflow.belisarius.utils.PostUtils;
 
 public class Belisarius {
@@ -83,6 +84,20 @@ public class Belisarius {
 		}
 		
 	
+		post.setSite(this.site);
+		post.setSiteUrl(this.siteUrl);
+		
+		return post;
+	}
+	
+	public Post getPostLocal(long postId, int revisionId, int roomId) {
+		Post post = null;
+		try {
+			post = DatabaseUtils.getPost(postId, revisionId, roomId);
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+		
 		post.setSite(this.site);
 		post.setSiteUrl(this.siteUrl);
 		
