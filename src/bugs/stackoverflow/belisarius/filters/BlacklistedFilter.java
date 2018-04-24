@@ -14,11 +14,6 @@ import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 import fr.tunaki.stackoverflow.chat.Room;
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 07716059bda34d7a7da9c5e47b728127712b2453
 
 public class BlacklistedFilter implements Filter {
 
