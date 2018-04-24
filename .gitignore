@@ -1,6 +1,10 @@
-*.properties
-bin/
-logs/output.csv
-database/belisarius.db
-logs/output.csv
 *.db
+*.jar
+/target
+/out
+/.idea
+/.classpath
+/.project
+/.settings
+/ini
+/resources
