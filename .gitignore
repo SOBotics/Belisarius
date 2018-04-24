@@ -1,5 +1,4 @@
 *.db
-*.jar
 /target
 /out
 /.idea
@@ -7,4 +6,4 @@
 /.project
 /.settings
 /ini
-/resources
+*.MF
