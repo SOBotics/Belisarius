@@ -2,7 +2,7 @@ package bugs.stackoverflow.belisarius;
 
 import java.util.*;
 
-import bugs.stackoverflow.belisarius.rooms.*;
+import bugs.stackoverflow.belisarius.models.Chatroom;
 import bugs.stackoverflow.belisarius.services.*;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 import bugs.stackoverflow.belisarius.utils.LoginUtils;
@@ -13,7 +13,8 @@ public class Application {
 	public static void main(String[] args) {
 		
 		StackExchangeClient client = LoginUtils.getClient();
-		
+
+		DatabaseUtils.createRoomTable();
 		DatabaseUtils.createVandalisedPostTable();
 		DatabaseUtils.createReasonTable();
 		DatabaseUtils.createBlacklistedWordTable();
@@ -23,9 +24,7 @@ public class Application {
 		DatabaseUtils.createReasonCaughtTable();
 		DatabaseUtils.createFeedbackTable();
 		
-		List<Chatroom> rooms = new ArrayList<>();
-		rooms.add(new SOBotics());
-		rooms.add(new BelisariusHQ());
+		List<Chatroom> rooms = DatabaseUtils.getRooms();
 		
 		MonitorService monitorService = new MonitorService(client, rooms);
 		monitorService.startMonitor();

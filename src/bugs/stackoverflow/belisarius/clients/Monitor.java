@@ -10,7 +10,7 @@ import fr.tunaki.stackoverflow.chat.Room;
 
 public class Monitor {
 
-	public void run(Room room, List<Post> posts, String site, String siteUrl) {
+	public void run(Room room, List<Post> posts, boolean outputMessage) {
 		
 		try {
 			for (Post post : posts) {
@@ -20,7 +20,9 @@ public class Monitor {
 		        		if(!PostUtils.checkVandalisedPost(room, vandalisedPost))
 		        		{
 		        			PostUtils.storeVandalisedPost(room, vandalisedPost);
-		        			sendVandalismFoundMessage(room, post, vandalisedPost);
+		        			if (outputMessage) {
+								sendVandalismFoundMessage(room, post, vandalisedPost);
+							}
 		        		}
 		        	}
 		        }
@@ -31,7 +33,7 @@ public class Monitor {
 		
 	}
 	
-	public void runOnce(Room room, Post post, String site, String siteUrl) {
+	public void runOnce(Room room, Post post) {
 		
 		try {
 	        if (post.getRevisionNumber()!= 1 && post.getIsRollback() == false) {
@@ -50,7 +52,7 @@ public class Monitor {
 		
 	}
 	
-	public void runOnceLocal(Room room, Post post, String site, String siteUrl) {
+	public void runOnceLocal(Room room, Post post) {
 		
 		try {
 	        if (post.getRevisionNumber()!= 1 && post.getIsRollback() == false) {

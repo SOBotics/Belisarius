@@ -18,15 +18,13 @@ public class Belisarius {
 	private long lastPostTime;
 	private ApiService apiService;
     private String site;
-    private String siteUrl;
     
 	public static String readMe = "https://stackapps.com/questions/7473";
 	
-	public Belisarius(String site, String siteUrl) {
+	public Belisarius(String site) {
 		this.lastPostTime = System.currentTimeMillis()/1000-1*60;
 		this.apiService = new ApiService(site);
 		this.site = site;
-		this.siteUrl = siteUrl;
 	}
 	
 	public List<Post> getPosts() {
@@ -64,7 +62,6 @@ public class Belisarius {
 		
 		for (Post post : posts) {
 			post.setSite(this.site);
-			post.setSiteUrl(this.siteUrl);
 		}
 		
 		return posts;
@@ -85,7 +82,6 @@ public class Belisarius {
 		
 	
 		post.setSite(this.site);
-		post.setSiteUrl(this.siteUrl);
 		
 		return post;
 	}
@@ -99,7 +95,6 @@ public class Belisarius {
 		}
 		
 		post.setSite(this.site);
-		post.setSiteUrl(this.siteUrl);
 		
 		return post;
 	}

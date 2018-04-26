@@ -1,9 +1,8 @@
 package bugs.stackoverflow.belisarius.services;
 
-import bugs.stackoverflow.belisarius.Belisarius;
+import bugs.stackoverflow.belisarius.*;
 import bugs.stackoverflow.belisarius.clients.Monitor;
 import bugs.stackoverflow.belisarius.models.*;
-import bugs.stackoverflow.belisarius.rooms.Chatroom;
 
 import fr.tunaki.stackoverflow.chat.*;
 import fr.tunaki.stackoverflow.chat.event.EventType;
@@ -55,11 +54,10 @@ public class MonitorService {
 				room.addEventListener(EventType.MESSAGE_POSTED, chatroom.getPostedMessage(room, this));
 			}
 			
-            String siteName = chatroom.getSiteName();
-            String SiteUrl = chatroom.getSiteUrl();
+            String site = chatroom.getSiteName();
 			
-            if (!bots.containsKey(siteName)) {
-            	bots.put(siteName, new Belisarius(siteName, SiteUrl));
+            if (!bots.containsKey(site)) {
+            	bots.put(site, new Belisarius(site));
             }
 			
 			room.send("[ [Belisarius](" + Belisarius.readMe + ") ] started.");
@@ -88,7 +86,7 @@ public class MonitorService {
     		if (chatroom != null)
     		{
 	    		List<Post> posts = postMap.get(chatroom.getSiteName());
-	    		new Monitor().run(room, posts, chatroom.getSiteName(), chatroom.getSiteUrl());
+	    		new Monitor().run(room, posts, chatroom.getOutputMessage());
     		}
     	}
     }
@@ -105,7 +103,7 @@ public class MonitorService {
 		if (chatroom != null)
 		{
 			Post post = postMap.get(chatroom.getSiteName());
-			new Monitor().runOnce(room, post, chatroom.getSiteName(), chatroom.getSiteUrl());
+			new Monitor().runOnce(room, post);
 		}
     }
     
@@ -121,7 +119,7 @@ public class MonitorService {
 		if (chatroom != null)
 		{
 			Post post = postMap.get(chatroom.getSiteName());
-			new Monitor().runOnceLocal(room, post, chatroom.getSiteName(), chatroom.getSiteUrl());
+			new Monitor().runOnceLocal(room, post);
 		}
     }
 	

@@ -138,7 +138,7 @@ public class PostUtils {
 	public static void storeVandalisedPost(Room room, VandalisedPost vandalisedPost) {
 		Post post = vandalisedPost.getPost();
 		DatabaseUtils.storeVandalisedPost(post.getPostId(), post.getRevisionNumber(), room.getRoomId(), post.getUser().getUserId(), post.getTitle(), post.getLastTitle(), post.getBody(), post.getLastBody(),
-				                          post.getIsRollback(), post.getPostType(), post.getComment(), post.getSite(), post.getSiteUrl(), vandalisedPost.getSeverity());
+				                          post.getIsRollback(), post.getPostType(), post.getComment(), post.getSite(), vandalisedPost.getSeverity());
 		
 		
 		

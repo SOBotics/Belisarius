@@ -1,8 +1,10 @@
 package bugs.stackoverflow.belisarius.utils;
 
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import bugs.stackoverflow.belisarius.models.Chatroom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import bugs.stackoverflow.belisarius.database.SQLiteConnection;
 import bugs.stackoverflow.belisarius.models.Post;
@@ -33,7 +36,6 @@ public class DatabaseUtils {
 		                                                      " PostType text, \n" +
 				                                              " Comment text, \n" +
 		                                                      " Site text, \n" +
-				                                              " SiteUrl, \n" +
 				                                              " Severity text, \n" +
 				                                              " PRIMARY KEY(PostId, RevisionId, RoomId));";
 		                                                        
@@ -43,6 +45,22 @@ public class DatabaseUtils {
          } catch (SQLException e) {
 			 LOGGER.info("Failed to create VandalisedPost table.", e);
          }
+    }
+
+    public static void createRoomTable() {
+        SQLiteConnection connection = new SQLiteConnection();
+
+        String sql = "CREATE TABLE IF NOT EXISTS Room(RoomId integer, \n" +
+                                                    " Site text, \n" +
+                                                    " OutputMessage integer, \n" +
+                                                    " PRIMARY KEY(RoomId))";
+
+        try (Connection conn = connection.getConnection();
+             Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+        } catch (SQLException e) {
+            LOGGER.info("Failed to create Room table.", e);
+        }
     }
 	
 	public static void createReasonTable() {
@@ -71,7 +89,8 @@ public class DatabaseUtils {
 				                                            " Score integer, \n" +
 				                                            " PRIMARY KEY(PostId, RevisionId, RoomId, ReasonId), \n" +
 						                                    " FOREIGN KEY(PostId, RevisionId, RoomId) REFERENCES VandalisedPost(PostId, RevisionId, RoomId), \n" +
-						                                    " FOREIGN KEY(ReasonId) REFERENCES Reason(ReasonId));";
+						                                    " FOREIGN KEY(ReasonId) REFERENCES Reason(ReasonId), \n" +
+                                                            " FOREIGN KEY(RoomId) REFERENCES Room(RoomId));";
 		                                                        	
         try (Connection conn = connection.getConnection();
              Statement stmt = conn.createStatement()) {
@@ -106,7 +125,8 @@ public class DatabaseUtils {
 				                                                     " BlacklistedWordId integer, \n" +
 				                                                     " PRIMARY KEY(PostId, RevisionId, RoomId, BlacklistedWordId), \n " +
 				                                                     " FOREIGN KEY(PostId, RevisionId, RoomId) REFERENCES VandalisedPost(PostId, RevisionId, RoomId), \n" +
-				                                                     " FOREIGN KEY(BlacklistedWordId) REFERENCES BlacklistedWord(BlacklistedWordId));";
+				                                                     " FOREIGN KEY(BlacklistedWordId) REFERENCES BlacklistedWord(BlacklistedWordId), \n" +
+                                                                     " FOREIGN KEY(RoomId) REFERENCES Room(RoomId));";
 		
 		try (Connection conn = connection.getConnection();
 			 Statement stmt = conn.createStatement()) {
@@ -137,10 +157,11 @@ public class DatabaseUtils {
 		String sql = "CREATE TABLE IF NOT EXISTS OffensiveWordCaught(PostId integer, \n" +
 		                                                           " RevisionId integer, \n" +
 		                                                           " RoomId integer, \n" +
-				                                                   " OffensiveWordId v, \n" +
+				                                                   " OffensiveWordId integer, \n" +
 				                                                   " PRIMARY KEY(PostId, RevisionId, RoomId), \n " +
 				                                                   " FOREIGN KEY(PostId, RevisionId, RoomId) REFERENCES VandalisedPost(PostId, RevisionId, RoomId), \n" +
-				                                                   " FOREIGN KEY(OffensiveWordId) REFERENCES OffensiveWord(OffensiveWordId));";
+				                                                   " FOREIGN KEY(OffensiveWordId) REFERENCES OffensiveWord(OffensiveWordId), \n" +
+                                                                   " FOREIGN KEY(RoomId) REFERENCES Room(RoomId));";
 		
 		try (Connection conn = connection.getConnection();
 			 Statement stmt = conn.createStatement()) {
@@ -192,11 +213,11 @@ public class DatabaseUtils {
 	}
 	
 	public static void storeVandalisedPost(long postId, int revisionId, int roomId, long ownerId, String title, String lastTitle, String body, String lastBody,
-			                                boolean IsRollback, String postType, String comment, String site, String siteUrl, String severity) {
+			                                boolean IsRollback, String postType, String comment, String site, String severity) {
 		
 		SQLiteConnection connection = new SQLiteConnection();
 		
-		String sql = "INSERT INTO VandalisedPost VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+		String sql = "INSERT INTO VandalisedPost VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 		
         try (Connection conn = connection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -212,7 +233,6 @@ public class DatabaseUtils {
         	pstmt.setString(10, postType);
         	pstmt.setString(11, comment);
         	pstmt.setString(12, site);
-        	pstmt.setString(13, siteUrl);
         	pstmt.setString(14, severity);
 
         	pstmt.executeUpdate();
@@ -399,4 +419,32 @@ public class DatabaseUtils {
 		
 		return post;
 	}
+
+    public static List<Chatroom> getRooms() {
+
+        List<Chatroom> chatrooms = new ArrayList<>();
+
+        SQLiteConnection connection = new SQLiteConnection();
+
+        String sql = "SELECT RoomId, \n" +
+                     "       Site, \n" +
+                     "       OutputMessage \n" +
+                     "  FROM Room;";
+
+        Post post = null;
+        try (Connection conn = connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Chatroom chatroom = new Chatroom(rs.getInt("RoomId"), RoomUtils.getChatHost(rs.getString("Site")), rs.getString("Site"),
+                                                 rs.getBoolean("OutputMessage"));
+                chatrooms.add(chatroom);
+            }
+        } catch (SQLException e) {
+            LOGGER.info("Failed to find rooms.", e);
+        }
+
+        return chatrooms;
+    }
 }

@@ -16,7 +16,6 @@ public class Post {
     private String postType;
     private String comment;
     private String site;
-    private String siteUrl;
     
     public int getPostId() {
         return postId;
@@ -104,14 +103,6 @@ public class Post {
 
     public void setSite(String site) {
         this.site = site;
-    }
-
-    public String getSiteUrl() {
-        return siteUrl;
-    }
-
-    public void setSiteUrl(String siteUrl) {
-        this.siteUrl = siteUrl;
     }
     
 }

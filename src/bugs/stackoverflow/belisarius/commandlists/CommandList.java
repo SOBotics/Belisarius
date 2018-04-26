@@ -8,8 +8,8 @@ import bugs.stackoverflow.belisarius.services.MonitorService;
 import fr.tunaki.stackoverflow.chat.*;
 import fr.tunaki.stackoverflow.chat.event.*;
 
-public class BelisariusCommandList {
-	public void mention(Room room, PingMessageEvent event, MonitorService service, String siteName, String siteUrl) {
+public class CommandList {
+	public void mention(Room room, PingMessageEvent event, MonitorService service) {
 		
 		Message message = event.getMessage();
 		
@@ -33,7 +33,7 @@ public class BelisariusCommandList {
 
 	}
 	
-	public void posted(Room room, MessagePostedEvent event, MonitorService service) {
+	public void posted(Room room, MessagePostedEvent event) {
 		String message = event.getMessage().getPlainContent().trim();
 		
 		int cp = Character.codePointAt(message, 0);
