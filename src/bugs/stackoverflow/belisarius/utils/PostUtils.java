@@ -13,7 +13,6 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class PostUtils {
 	
@@ -21,9 +20,7 @@ public class PostUtils {
 		if (post.getAsJsonObject().has("last_edit_date")) {
 			long lastActivityDate = post.getAsJsonObject().get("last_activity_date").getAsLong();
 			long lastEditDate = post.getAsJsonObject().get("last_edit_date").getAsLong();
-			if(lastActivityDate == lastEditDate) {
-				return true;
-			}
+			return (lastActivityDate == lastEditDate);
 		}
 		return false; 
 	}
@@ -97,9 +94,8 @@ public class PostUtils {
         
         return np;
     }
-	
-	public static Post getPost(int postId, int revisionId, String title, String lastTitle, String body, String lastBody, boolean isRollback,
-			                   String postType, String comment, int ownerId){
+    static Post getPost(int postId, int revisionId, String title, String lastTitle, String body, String lastBody, boolean isRollback,
+			                    String postType, String comment, int ownerId){
 
         Post np = new Post();
 
@@ -121,7 +117,7 @@ public class PostUtils {
         return np;
     }
 	
-	public static void storeFeedback(Room room, PingMessageEvent event, String feedbackType) {
+	static void storeFeedback(Room room, PingMessageEvent event, String feedbackType) {
 		long repliedTo = event.getParentMessageId();
 		Message repliedToMessage = room.getMessage(repliedTo);
 		
@@ -144,30 +140,30 @@ public class PostUtils {
 		
 	}
 	
-	public static long getPostIdFromMessage(String message) {
+	private static long getPostIdFromMessage(String message) {
         message = message.split("//stackoverflow.com/posts/")[1];
         return Long.parseLong(message.substring(0,message.indexOf("/")));
 	}
 	
-	public static int getRevisionNumberFromMessage(String message) {
+	private static int getRevisionNumberFromMessage(String message) {
         message = message.split("Revision:")[1];
         return Integer.parseInt(message.trim());
 	}
 	 
     public static VandalisedPost getVandalisedPost(Room room, Post post) {
         List<Filter> filters = new ArrayList<Filter>(){{
-            add(new BlacklistedFilter(room, post, DatabaseUtils.getReasonId(BlacklistedFilter.class.getName().substring(BlacklistedFilter.class.getName().lastIndexOf('.') + 1).trim())));
-            add(new VeryLongWordFilter(room, post, DatabaseUtils.getReasonId(VeryLongWordFilter.class.getName().substring(VeryLongWordFilter.class.getName().lastIndexOf('.') + 1).trim())));
-            add(new CodeRemovedFilter(room, post, DatabaseUtils.getReasonId(CodeRemovedFilter.class.getName().substring(CodeRemovedFilter.class.getName().lastIndexOf('.') + 1).trim())));
-            add(new TextRemovedFilter(room, post, DatabaseUtils.getReasonId(TextRemovedFilter.class.getName().substring(TextRemovedFilter.class.getName().lastIndexOf('.') + 1).trim())));
-            add(new FewUniqueCharactersFilter(room, post, DatabaseUtils.getReasonId(FewUniqueCharactersFilter.class.getName().substring(FewUniqueCharactersFilter.class.getName().lastIndexOf('.') + 1).trim())));
-            add(new OffensiveWordFilter(room, post, DatabaseUtils.getReasonId(OffensiveWordFilter.class.getName().substring(OffensiveWordFilter.class.getName().lastIndexOf('.') + 1).trim())));
-            add(new RepeatedWordFilter(room, post, DatabaseUtils.getReasonId(RepeatedWordFilter.class.getName().substring(RepeatedWordFilter.class.getName().lastIndexOf('.') + 1).trim())));
+            add(new BlacklistedFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(BlacklistedFilter.class.getName()))));
+            add(new VeryLongWordFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(VeryLongWordFilter.class.getName()))));
+            add(new CodeRemovedFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(CodeRemovedFilter.class.getName()))));
+            add(new TextRemovedFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(TextRemovedFilter.class.getName()))));
+            add(new FewUniqueCharactersFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(FewUniqueCharactersFilter.class.getName()))));
+            add(new OffensiveWordFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(OffensiveWordFilter.class.getName()))));
+            add(new RepeatedWordFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(RepeatedWordFilter.class.getName()))));
         }};
        
         Severity severity = null;
        
-        HashMap<String, Double> formattedReasonMessages = new HashMap<String, Double>();
+        HashMap<String, Double> formattedReasonMessages = new HashMap<>();
         for(Filter filter: filters){
             if(filter.isHit()){
             	filter.storeHit();
@@ -184,5 +180,4 @@ public class PostUtils {
 
         return new VandalisedPost(post, formattedReasonMessages, severity);
     }
-	
 }
