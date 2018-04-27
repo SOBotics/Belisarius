@@ -1,10 +1,6 @@
 package bugs.stackoverflow.belisarius.filters;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -22,9 +18,9 @@ public class BlacklistedFilter implements Filter {
 	private Room room;
 	private Post post;
 	private int reasonId;
-	private HashMap<Integer, String> blacklitedWordsTitle = new HashMap<Integer, String> ();
-	private HashMap<Integer, String> blacklitedWordsBody = new HashMap<Integer, String>();
-	private HashMap<Integer, String>  blacklitedWordsEditSummary = new HashMap<Integer, String>();
+	private HashMap<Integer, String> blacklistedWordsTitle = new HashMap<> ();
+	private HashMap<Integer, String> blacklistedWordsBody = new HashMap<>();
+	private HashMap<Integer, String> blacklistedWordsEditSummary = new HashMap<>();
 	
 	public BlacklistedFilter(Room room, Post post, int reasonId) {
 		this.room = room;
@@ -36,18 +32,15 @@ public class BlacklistedFilter implements Filter {
 	public boolean isHit() {
 		
 		if (post.getTitle() != null) {
-			LOGGER.debug(StringUtils.difference(post.getLastTitle(), post.getTitle()));
-			blacklitedWordsTitle = CheckUtils.checkForBlackListedWords(StringUtils.difference(post.getLastTitle(), post.getTitle()), post.getPostType());
+			blacklistedWordsTitle = CheckUtils.checkForBlackListedWords(StringUtils.difference(post.getLastTitle(), post.getTitle()), post.getPostType());
 		}
 		
 		if (post.getBody() != null) {
-			LOGGER.debug(StringUtils.difference(post.getLastTitle(), post.getTitle()));
-			blacklitedWordsBody = CheckUtils.checkForBlackListedWords(StringUtils.difference(post.getLastBody(), post.getBody()), post.getPostType());
+			blacklistedWordsBody = CheckUtils.checkForBlackListedWords(StringUtils.difference(post.getLastBody(), post.getBody()), post.getPostType());
 		}
 		
 		if (post.getComment() != null) {
-			LOGGER.debug(StringUtils.difference(post.getLastTitle(), post.getTitle()));
-			blacklitedWordsEditSummary = CheckUtils.checkForBlackListedWords(post.getComment(), post.getPostType());
+			blacklistedWordsEditSummary = CheckUtils.checkForBlackListedWords(post.getComment(), post.getPostType());
 		}
 		
 		return getScore()>0;
@@ -55,7 +48,7 @@ public class BlacklistedFilter implements Filter {
 	
 	@Override
 	public double getScore() {
-		return this.blacklitedWordsTitle.size() + this.blacklitedWordsBody.size() + this.blacklitedWordsEditSummary.size();
+		return this.blacklistedWordsTitle.size() + this.blacklistedWordsBody.size() + this.blacklistedWordsEditSummary.size();
 	}
 
 	@Override
@@ -63,16 +56,16 @@ public class BlacklistedFilter implements Filter {
 		String message = "";
 		
 		try {
-			if (this.blacklitedWordsTitle.size()>0) {
-				message += "**Title contains blacklisted " + (this.blacklitedWordsTitle.size()>1 ? "words" : "word") + ":** " + getBlacklistedWordsTitle() + " ";
+			if (this.blacklistedWordsTitle.size()>0) {
+				message += "**Title contains blacklisted " + (this.blacklistedWordsTitle.size()>1 ? "words" : "word") + ":** " + getBlacklistedWordsTitle() + " ";
 			}
 			
-			if (this.blacklitedWordsBody.size()>0) {
-				message += "**Body contains blacklisted " + (this.blacklitedWordsBody.size()>1 ? "words" : "word") + ":** " + getBlacklistedWordsBody() + " ";
+			if (this.blacklistedWordsBody.size()>0) {
+				message += "**Body contains blacklisted " + (this.blacklistedWordsBody.size()>1 ? "words" : "word") + ":** " + getBlacklistedWordsBody() + " ";
 			}
 		
-			if (this.blacklitedWordsEditSummary.size()>0) {
-				message += "**Edit summary contains blacklisted " + (this.blacklitedWordsEditSummary.size()>1 ? "words" : "word") + ":** " + getBlacklistedWordsComment() + " ";
+			if (this.blacklistedWordsEditSummary.size()>0) {
+				message += "**Edit summary contains blacklisted " + (this.blacklistedWordsEditSummary.size()>1 ? "words" : "word") + ":** " + getBlacklistedWordsComment() + " ";
 			}
 		} catch (Exception e)
 		{
@@ -82,40 +75,34 @@ public class BlacklistedFilter implements Filter {
 	}
 
 	private String getBlacklistedWordsTitle() {
-		String words = "";
-		
-		Iterator iterator = this.blacklitedWordsTitle.entrySet().iterator();
-		while(iterator.hasNext()) {
-			Map.Entry<Integer, String> word = (Map.Entry<Integer, String>)iterator.next();
-			words += word.getValue() + ", ";
-		}
+		StringBuilder words = new StringBuilder();
 
-		return words.substring(0, words.trim().length()-1);
+		for(String word : blacklistedWordsTitle.values()) {
+		    words.append(word);
+        }
+
+		return words.toString();
 	}
 	
 	private String getBlacklistedWordsBody() {
-		String words = "";
-		
-		Iterator iterator = this.blacklitedWordsBody.entrySet().iterator();
-		while(iterator.hasNext()) {
-			Map.Entry<Integer, String> word = (Map.Entry<Integer, String>)iterator.next();
-			words += word.getValue() + ", ";
-		}
+		StringBuilder words = new StringBuilder();
 
-		return words.substring(0, words.trim().length()-1);
+        for(String word : blacklistedWordsBody.values()) {
+            words.append(word);
+        }
+
+		return words.toString();
 	}
 		
 	private String getBlacklistedWordsComment() {
-		String words = "";
-		
-		Iterator iterator = this.blacklitedWordsEditSummary.entrySet().iterator();
-		while(iterator.hasNext()) {
-			Map.Entry<Integer, String> word = (Map.Entry<Integer, String>)iterator.next();
-			words += word.getValue() + ", ";
-		}
+        StringBuilder words = new StringBuilder();
 
-		return words.substring(0, words.trim().length()-1);
-	}
+        for(String word : blacklistedWordsEditSummary.values()) {
+            words.append(word);
+        }
+
+        return words.toString();
+    }
 
 	@Override
 	public Severity getSeverity() {
@@ -123,37 +110,11 @@ public class BlacklistedFilter implements Filter {
 	}
 	
 	private List<Integer> getCaughtBlacklistedWordIds() {
-		List<Integer> blacklistedWordIds = new ArrayList<Integer>();
-		
-		try {
-			Iterator iterator = this.blacklitedWordsTitle.entrySet().iterator();
-			while(iterator.hasNext()) {
-				Map.Entry<Integer, String> blackListedWord = (Map.Entry<Integer, String>)iterator.next();
-				blacklistedWordIds.add(blackListedWord.getKey());
-			}
-		} catch (Exception e) {
-			LOGGER.info("Failed to get Ids from blacklistedWordsTitle.", e);
-		}
-		
-		try {
-			Iterator iterator = this.blacklitedWordsBody.entrySet().iterator();
-			while(iterator.hasNext()) {
-				Map.Entry<Integer, String> blackListedWord = (Map.Entry<Integer, String>)iterator.next();
-				blacklistedWordIds.add(blackListedWord.getKey());
-			}
-		} catch (Exception e) {
-			LOGGER.info("Failed to get Ids from blacklitedWordsBody.", e);
-		}
-		
-		try {
-			Iterator iterator = this.blacklitedWordsEditSummary.entrySet().iterator();
-			while(iterator.hasNext()) {
-				Map.Entry<Integer, String> blackListedWord = (Map.Entry<Integer, String>)iterator.next();
-				blacklistedWordIds.add(blackListedWord.getKey());
-			}
-		} catch (Exception e) {
-			LOGGER.info("Failed to get Ids from blacklitedWordsEditSummary.", e);
-		}
+		List<Integer> blacklistedWordIds = new ArrayList<>();
+
+		blacklistedWordIds.addAll(blacklistedWordsTitle.keySet());
+		blacklistedWordIds.addAll(blacklistedWordsBody.keySet());
+		blacklistedWordIds.addAll(blacklistedWordsEditSummary.keySet());
 		
 		return blacklistedWordIds;
 	}
@@ -161,8 +122,8 @@ public class BlacklistedFilter implements Filter {
 	@Override
 	public void storeHit() {
 		DatabaseUtils.storeReasonCaught(this.post.getPostId(), this.post.getRevisionNumber(), this.room.getRoomId(), this.reasonId, this.getScore());
-		this.getCaughtBlacklistedWordIds().stream().forEach(id -> {
-			DatabaseUtils.storeCaughtBlacklistedWord(this.post.getPostId(), this.post.getRevisionNumber(), this.room.getRoomId(), id);	
-		});
+		this.getCaughtBlacklistedWordIds().forEach(id ->
+			DatabaseUtils.storeCaughtBlacklistedWord(this.post.getPostId(), this.post.getRevisionNumber(), this.room.getRoomId(), id)
+		);
 	}
 }
