@@ -335,7 +335,7 @@ public class DatabaseUtils {
         		return rs.getInt("ReasonId");
         	}
         } catch (SQLException e) {
-		 LOGGER.info("Failed to get blacklisted words.", e);
+		 LOGGER.info("Failed to get reason Id.", e);
         }
 		return 0;
 	}
