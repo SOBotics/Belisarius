@@ -3,12 +3,15 @@ package bugs.stackoverflow.belisarius.utils;
 import bugs.stackoverflow.belisarius.filters.*;
 import bugs.stackoverflow.belisarius.filters.Filter.Severity;
 import bugs.stackoverflow.belisarius.models.*;
+import bugs.stackoverflow.belisarius.models.VandalisedPost.Feedback;
+import bugs.stackoverflow.belisarius.services.HiggsService;
 import fr.tunaki.stackoverflow.chat.Message;
 import fr.tunaki.stackoverflow.chat.Room;
 import fr.tunaki.stackoverflow.chat.event.PingMessageEvent;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import io.swagger.client.ApiException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -98,12 +101,13 @@ public class PostUtils {
         
         return np;
     }
-    static Post getPost(int postId, int revisionId, String title, String lastTitle, String body, String lastBody, boolean isRollback,
+    static Post getPost(int postId, long creationDate, int revisionId, String title, String lastTitle, String body, String lastBody, boolean isRollback,
                         String postType, String comment, int ownerId, String site){
 
         Post np = new Post();
 
         np.setPostId(postId);
+        np.setCreationDate(creationDate);
         np.setRevisionNumber(revisionId);
         np.setRevisionUrl("https://" + site + ".com/revisions/" + String.valueOf(postId) + "/" + String.valueOf(revisionId));
         np.setAllRevisionsUrl("https://" + site + "s.com/posts/" + String.valueOf(postId) + "/revisions");
@@ -122,24 +126,32 @@ public class PostUtils {
         return np;
     }
 	
-	static void storeFeedback(Room room, PingMessageEvent event, String feedbackType) {
+	static void storeFeedback(Room room, PingMessageEvent event, Feedback feedback) {
 		long repliedTo = event.getParentMessageId();
 		Message repliedToMessage = room.getMessage(repliedTo);
 		
 		long postId = getPostIdFromMessage(repliedToMessage.getPlainContent().trim());
 		int revisionNumber = getRevisionNumberFromMessage(repliedToMessage.getPlainContent().trim());
 
-		DatabaseUtils.storeFeedback(postId, revisionNumber, room.getRoomId(), feedbackType, event.getMessage().getUser().getId());
+		DatabaseUtils.storeFeedback(postId, revisionNumber, room.getRoomId(), feedback.toString(), event.getMessage().getUser().getId());
+
+		try {
+            int higgsId = DatabaseUtils.getHiggsId(postId, revisionNumber, event.getRoomId());
+            HiggsService.getInstance().sendFeedback(higgsId, (int) event.getMessage().getUser().getId(), feedback);
+        }
+        catch (ApiException e) {
+            e.printStackTrace();;
+        }
 	}
 	
 	public static boolean checkVandalisedPost(Room room, VandalisedPost vandalisedPost) {
 		return DatabaseUtils.checkVandalisedPostExists(vandalisedPost.getPost().getPostId(), vandalisedPost.getPost().getRevisionNumber(), room.getRoomId());
 	}
 	
-	public static void storeVandalisedPost(Room room, VandalisedPost vandalisedPost) {
+	public static void storeVandalisedPost(Room room, VandalisedPost vandalisedPost, int higgsId) {
 		Post post = vandalisedPost.getPost();
 		DatabaseUtils.storeVandalisedPost(post.getPostId(), post.getRevisionNumber(), room.getRoomId(), post.getUser().getUserId(), post.getTitle(), post.getLastTitle(), post.getBody(), post.getLastBody(),
-				                          post.getIsRollback(), post.getPostType(), post.getComment(), post.getSite(), vandalisedPost.getSeverity());
+				                          post.getIsRollback(), post.getPostType(), post.getComment(), post.getSite(), vandalisedPost.getSeverity(), higgsId);
 		
 		
 		

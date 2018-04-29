@@ -3,14 +3,16 @@ package bugs.stackoverflow.belisarius;
 import java.util.*;
 
 import bugs.stackoverflow.belisarius.models.Chatroom;
+import bugs.stackoverflow.belisarius.models.Higgs;
 import bugs.stackoverflow.belisarius.services.*;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 import bugs.stackoverflow.belisarius.utils.LoginUtils;
 import fr.tunaki.stackoverflow.chat.*;
+import io.swagger.client.ApiException;
 
 public class Application {
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ApiException {
 		
 		StackExchangeClient client = LoginUtils.getClient();
 
@@ -23,9 +25,14 @@ public class Application {
 		DatabaseUtils.createOffensiveWordCaughtTable();
 		DatabaseUtils.createReasonCaughtTable();
 		DatabaseUtils.createFeedbackTable();
-		
+		DatabaseUtils.createHiggsTable();
+
+		Higgs higgs = DatabaseUtils.getHiggs(3); //Hippo
+        if(higgs != null){
+        	HiggsService.initInstance(higgs.getUrl(), higgs.getKey());
+		}
+
 		List<Chatroom> rooms = DatabaseUtils.getRooms();
-		
 		MonitorService monitorService = new MonitorService(client, rooms);
 		monitorService.startMonitor();
 		monitorService.runMonitor();

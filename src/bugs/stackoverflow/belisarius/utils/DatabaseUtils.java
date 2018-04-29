@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import bugs.stackoverflow.belisarius.models.Chatroom;
+import bugs.stackoverflow.belisarius.models.Higgs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,7 @@ public class DatabaseUtils {
 		SQLiteConnection connection = new SQLiteConnection();
 		
 		String sql = "CREATE TABLE IF NOT EXISTS VandalisedPost(PostId integer, \n" +
+                                                              " CreationDate integer, \n" +
 		                                                      " RevisionId integer, \n" +
 		                                                      " RoomId integer, \n" +
 				                                              " OwnerId integer, \n" +
@@ -37,6 +39,7 @@ public class DatabaseUtils {
 				                                              " Comment text, \n" +
 		                                                      " Site text, \n" +
 				                                              " Severity text, \n" +
+                                                              " HiggsId integer, \n" +
 				                                              " PRIMARY KEY(PostId, RevisionId, RoomId));";
 		                                                        
         try (Connection conn = connection.getConnection();
@@ -45,6 +48,22 @@ public class DatabaseUtils {
          } catch (SQLException e) {
 			 LOGGER.info("Failed to create VandalisedPost table.", e);
          }
+    }
+
+    public static void createHiggsTable() {
+        SQLiteConnection connection = new SQLiteConnection();
+
+        String sql = "CREATE TABLE IF NOT EXISTS Higgs(BotId integer, \n" +
+                                                     " Url text, \n" +
+                                                     " Key text, \n" +
+                                                     " PRIMARY KEY(BotId));";
+
+        try (Connection conn = connection.getConnection();
+             Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+        } catch (SQLException e) {
+            LOGGER.info("Failed to create Higgs table.", e);
+        }
     }
 
     public static void createRoomTable() {
@@ -213,11 +232,11 @@ public class DatabaseUtils {
 	}
 	
 	static void storeVandalisedPost(long postId, int revisionId, int roomId, long ownerId, String title, String lastTitle, String body, String lastBody,
-									boolean IsRollback, String postType, String comment, String site, String severity) {
+									boolean IsRollback, String postType, String comment, String site, String severity, int higgsId) {
 		
 		SQLiteConnection connection = new SQLiteConnection();
 		
-		String sql = "INSERT INTO VandalisedPost VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+		String sql = "INSERT INTO VandalisedPost VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 		
         try (Connection conn = connection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -234,6 +253,7 @@ public class DatabaseUtils {
         	pstmt.setString(11, comment);
         	pstmt.setString(12, site);
         	pstmt.setString(14, severity);
+        	pstmt.setInt(15, higgsId);
 
         	pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -281,8 +301,50 @@ public class DatabaseUtils {
 			LOGGER.info("Failed to store feedback for vandalised post. PostId: " + String.valueOf(postId) + "; RevisionId: " + String.valueOf(revisionId) + "; Feedback: " + feedback + ".", e);
 		}
 	}
-	
-	static HashMap<Integer, String> getBlacklistedWords(String postType) {
+
+    public static Higgs getHiggs(int botId) {
+        SQLiteConnection connection = new SQLiteConnection();
+
+        String sql = "SELECT Url, SecretKey FROM Higgs WHERE BotId = ?;";
+
+        Higgs higgs = new Higgs();
+        try (Connection conn = connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, botId);
+
+            ResultSet rs = pstmt.executeQuery();
+            if(rs.next()) {
+                higgs.setUrl(rs.getString("Url"));
+                higgs.setKey(rs.getString("Key"));
+            }
+        } catch (SQLException e) {
+            LOGGER.info("Failed to get Higgs.", e);
+        }
+        return higgs;
+    }
+
+    public static int getHiggsId(long postId, int revisionId, int roomId) {
+        SQLiteConnection connection = new SQLiteConnection();
+
+        String sql = "SELECT HiggsId FROM VandalisedPost WHERE PostId = ? AND RoomId = ?;";
+
+        try (Connection conn = connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, postId);
+            pstmt.setInt(2, revisionId);
+            pstmt.setInt(3, roomId);
+
+            ResultSet rs = pstmt.executeQuery();
+            if(rs.next()) {
+                return rs.getInt("HiggsId");
+            }
+        } catch (SQLException e) {
+            LOGGER.info("Failed to get HiggsId. PostId: " + String.valueOf(postId) + "; RevisionId: " + String.valueOf(revisionId) + "; RoomId: " + String.valueOf(roomId), e);
+        }
+        return 0;
+    }
+
+    static HashMap<Integer, String> getBlacklistedWords(String postType) {
 		SQLiteConnection connection = new SQLiteConnection();
 		
 		String sql = "SELECT BlacklistedWordId, BlacklistedWord FROM BlacklistedWord WHERE PostType = ?;";
@@ -385,6 +447,7 @@ public class DatabaseUtils {
 		SQLiteConnection connection = new SQLiteConnection();
 		
 		String sql = "SELECT PostId, \n" +
+                     "       CreationDate, \n" +
 		             "       RevisionId, \n" +
 				     "       OwnerId, \n" +
 		             "       Title, \n" +
@@ -410,9 +473,9 @@ public class DatabaseUtils {
 
         	ResultSet rs = pstmt.executeQuery();
         	while (rs.next()) {
-        		post = PostUtils.getPost(rs.getInt("PostId"), rs.getInt("RevisionId"), rs.getString("Title"), rs.getString("LastTitle"),
-        			                     rs.getString("Body"),  rs.getString("LastBody"), rs.getBoolean("IsRollback"), rs.getString("PostType"), 
-        			                     rs.getString("Comment"), rs.getInt("OwnerId"), rs.getString("Site"));
+        		post = PostUtils.getPost(rs.getInt("PostId"), rs.getLong("CreationDate"), rs.getInt("RevisionId"), rs.getString("Title"),
+                                         rs.getString("LastTitle"), rs.getString("Body"),  rs.getString("LastBody"), rs.getBoolean("IsRollback"),
+                                         rs.getString("PostType"), rs.getString("Comment"), rs.getInt("OwnerId"), rs.getString("Site"));
         	}
 		} catch (SQLException e) {
 			LOGGER.info("Failed to find vandalised post. PostId: " + String.valueOf(postId) + "; RevisionId: " + String.valueOf(revisionId) + "; RoomId: " + String.valueOf(roomId) + ".", e);
