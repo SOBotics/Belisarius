@@ -1,12 +1,12 @@
 package bugs.stackoverflow.belisarius.models;
 
 public class Post {
-	
-	public final static String postTypeAnswer = "answer";
-	public final static String postTypeQuestion = "question";
-		
+		//
     private int postId;
     private int revisionNumber;
+    private long creationDate;
+    private String revisionUrl;
+    private String allRevisionsUrl;
     private String title;
     private String lastTitle;
     private String body;
@@ -21,7 +21,7 @@ public class Post {
         return postId;
     }
 
-    public void setPostID(int postId) {
+    public void setPostId(int postId) {
         this.postId = postId;
     }
     
@@ -32,6 +32,18 @@ public class Post {
     public void setRevisionNumber(int revisionNumber) {
     	this.revisionNumber = revisionNumber;
     }
+
+    public long getCreationDate() { return creationDate; }
+
+    public void setCreationDate(long creationDate) {this.creationDate = creationDate; }
+
+    public String getRevisionUrl() { return revisionUrl; }
+
+    public void setRevisionUrl(String revisionUrl) { this.revisionUrl = revisionUrl; }
+
+    public String getAllRevisionsUrl() { return allRevisionsUrl; }
+
+    public void setAllRevisionsUrl(String allRevisionsUrl) { this.allRevisionsUrl = allRevisionsUrl; }
     
     public void setTitle(String title) {
     	this.title = title;

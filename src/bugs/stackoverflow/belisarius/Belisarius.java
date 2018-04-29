@@ -22,7 +22,7 @@ public class Belisarius {
 	public static String readMe = "https://stackapps.com/questions/7473";
 	
 	public Belisarius(String site) {
-		this.lastPostTime = System.currentTimeMillis()/1000-1*60;
+		this.lastPostTime = System.currentTimeMillis()/1000-60;
 		this.apiService = new ApiService(site);
 		this.site = site;
 	}
@@ -33,24 +33,23 @@ public class Belisarius {
 		
 		try {
 			if (postIds.size() > 0) {
-				List<Long> postIdsRemaining = new ArrayList<Long>();
+				List<Long> postIdsRemaining = new ArrayList<>();
 				do {
 					if (postIdsRemaining.size()>0) {
 						postIds = postIdsRemaining;
-						postIdsRemaining = new ArrayList<Long>();
+						postIdsRemaining = new ArrayList<>();
 					}
-					String postIdInput = "";
 					int count = 0;
+					StringBuilder postIdInput = new StringBuilder();
 					for (long id : postIds) {
 						if (count != 50) {
-							postIdInput += id + ";";
+							postIdInput.append(id).append(";");
 						} else {
 							postIdsRemaining.add(id);
 						}
 						count++;
 					}
-					postIdInput = postIdInput.substring(0, postIdInput.length()-1);
-					List<Post> postsWithLatestRevisions = getPostsWithLatestRevision(postIdInput);
+					List<Post> postsWithLatestRevisions = getPostsWithLatestRevision(postIdInput.toString());
 					if (postsWithLatestRevisions.size()>0) {
 						posts.addAll(postsWithLatestRevisions);
 					}
@@ -80,9 +79,10 @@ public class Belisarius {
 			e.printStackTrace();
 		}
 		
-	
-		post.setSite(this.site);
-		
+	    if(post != null) {
+            post.setSite(this.site);
+        }
+
 		return post;
 	}
 	
@@ -93,16 +93,18 @@ public class Belisarius {
 		} catch (Exception e){
 			e.printStackTrace();
 		}
-		
-		post.setSite(this.site);
+
+        if(post != null) {
+            post.setSite(this.site);
+        }
 		
 		return post;
 	}
 
 	private List<Long> getPostIds() {
-		List<Long> postIds = new ArrayList<Long>();
+		List<Long> postIds = new ArrayList<>();
 		
-		JsonObject postsJSON = null;
+		JsonObject postsJSON ;
 		try {
 			long lastActivityDate = 0;
 			long maxActivityDate = this.lastPostTime;
@@ -135,7 +137,7 @@ public class Belisarius {
 	}
 	
 	private List<Post> getPostsWithLatestRevision(String postIdFilter) {
-		List<Post> revisions = new ArrayList<Post>();
+		List<Post> revisions = new ArrayList<>();
 		String[] postIds = postIdFilter.split(";");
 		boolean hasMore = false;
 		do {
@@ -151,7 +153,7 @@ public class Belisarius {
 						    if (post.getAsJsonObject().get("post_id").getAsInt() == Integer.parseInt(id) && post.getAsJsonObject().has("revision_number")) {
 						    	if (revisionNo < post.getAsJsonObject().get("revision_number").getAsInt()) {
 						    		revisionNo = post.getAsJsonObject().get("revision_number").getAsInt();
-						    		revision = PostUtils.getPost(post.getAsJsonObject());
+						    		revision = PostUtils.getPost(post.getAsJsonObject(), site);
 						    	}
 						    }
 						}

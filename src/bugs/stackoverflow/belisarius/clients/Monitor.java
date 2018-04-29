@@ -14,9 +14,9 @@ public class Monitor {
 		
 		try {
 			for (Post post : posts) {
-		        if (post.getRevisionNumber()!= 1 && post.getIsRollback() == false) {
+		        if (post.getRevisionNumber() != 1 && !post.getIsRollback()) {
 		        	VandalisedPost vandalisedPost = getVandalisedPost(room, post);
-		        	if (vandalisedPost.getSeverity() != null) {
+		        	if (vandalisedPost != null && vandalisedPost.getSeverity() != null) {
 		        		if(!PostUtils.checkVandalisedPost(room, vandalisedPost))
 		        		{
 		        			PostUtils.storeVandalisedPost(room, vandalisedPost);
@@ -36,9 +36,9 @@ public class Monitor {
 	public void runOnce(Room room, Post post) {
 		
 		try {
-	        if (post.getRevisionNumber()!= 1 && post.getIsRollback() == false) {
+	        if (post.getRevisionNumber() != 1 && !post.getIsRollback()) {
 	        	VandalisedPost vandalisedPost = getVandalisedPost(room, post);
-	        	if (vandalisedPost.getSeverity() != null) {
+	        	if (vandalisedPost != null && vandalisedPost.getSeverity() != null) {
 	        		sendVandalismFoundMessage(room, post, vandalisedPost);
 	        	}
 	        	else
@@ -55,9 +55,9 @@ public class Monitor {
 	public void runOnceLocal(Room room, Post post) {
 		
 		try {
-	        if (post.getRevisionNumber()!= 1 && post.getIsRollback() == false) {
+	        if (post.getRevisionNumber() != 1 && !post.getIsRollback()) {
 	        	VandalisedPost vandalisedPost = getVandalisedPost(room, post);
-	        	if (vandalisedPost.getSeverity() != null) {
+	        	if (vandalisedPost != null && vandalisedPost.getSeverity() != null) {
 	        		sendVandalismFoundMessage(room, post, vandalisedPost);
 	        	}
 	        	else
@@ -89,16 +89,16 @@ public class Monitor {
 		message += " [tag:" + post.getPostType().toLowerCase() + "] ";
 		message += " [tag:severity-" + vandalisedPost.getSeverity() +  "]";
 		message += " Potentially harmful edit found. Reason: " + vandalisedPost.getReasonMessage();
-		message += " [All revisions](https://stackoverflow.com/posts/" + String.valueOf(post.getPostId()) + "/revisions).";
-		message += " Revision: [" + String.valueOf(post.getRevisionNumber()) + "](https://stackoverflow.com/revisions/" + String.valueOf(post.getPostId()) + "/" + String.valueOf(post.getRevisionNumber()) + ").";
+		message += " [All revisions](" + post.getAllRevisionsUrl() + ").";
+		message += " Revision: [" + post.getRevisionUrl() + ").";
 		room.send(message);
 	}
 	
 	private void sendNoVandalismFoundMessage(Room room, Post post) {
 		String message = "[ [Belisarius](" + Belisarius.readMe + ") ]";
 		message += " [tag:" + post.getPostType().toLowerCase() + "] No issues have been found.";
-		message += " [All revisions](https://stackoverflow.com/posts/" + String.valueOf(post.getPostId()) + "/revisions).";
-		message += " Revision: [" + String.valueOf(post.getRevisionNumber()) + "](https://stackoverflow.com/revisions/" + String.valueOf(post.getPostId()) + "/" + String.valueOf(post.getRevisionNumber()) + ").";
+		message += " [All revisions](" + post.getAllRevisionsUrl() + ").";
+		message += " Revision: [" + post.getRevisionUrl() + ").";
 		room.send(message);
 	}
 		

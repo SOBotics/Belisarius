@@ -191,7 +191,7 @@ public class DatabaseUtils {
          }
     }
 	
-	public static boolean checkVandalisedPostExists(long postId, int revisionId, int roomId) {
+	static boolean checkVandalisedPostExists(long postId, int revisionId, int roomId) {
 		SQLiteConnection connection = new SQLiteConnection();
 		
 		String sql = "SELECT (COUNT(*) > 0) As Found FROM VandalisedPost WHERE PostId = ? AND RevisionId = ? AND RoomId = ?;";
@@ -203,7 +203,7 @@ public class DatabaseUtils {
         	pstmt.setInt(3,  roomId);
 
         	ResultSet rs = pstmt.executeQuery();
-        	while (rs.next()) {
+        	if(rs.next()) {
         		return rs.getBoolean("Found");
         	}
         } catch (SQLException e) {
@@ -212,8 +212,8 @@ public class DatabaseUtils {
 		return false;
 	}
 	
-	public static void storeVandalisedPost(long postId, int revisionId, int roomId, long ownerId, String title, String lastTitle, String body, String lastBody,
-			                                boolean IsRollback, String postType, String comment, String site, String severity) {
+	static void storeVandalisedPost(long postId, int revisionId, int roomId, long ownerId, String title, String lastTitle, String body, String lastBody,
+									boolean IsRollback, String postType, String comment, String site, String severity) {
 		
 		SQLiteConnection connection = new SQLiteConnection();
 		
@@ -261,7 +261,7 @@ public class DatabaseUtils {
 		}
 	}
 	
-	public static void storeFeedback(long postId, int revisionId, int roomId, String feedback, long userId) {
+	static void storeFeedback(long postId, int revisionId, int roomId, String feedback, long userId) {
 
 		SQLiteConnection connection = new SQLiteConnection();
 		
@@ -282,12 +282,12 @@ public class DatabaseUtils {
 		}
 	}
 	
-	public static HashMap<Integer, String> getBlacklistedWords(String postType) {
+	static HashMap<Integer, String> getBlacklistedWords(String postType) {
 		SQLiteConnection connection = new SQLiteConnection();
 		
 		String sql = "SELECT BlacklistedWordId, BlacklistedWord FROM BlacklistedWord WHERE PostType = ?;";
 		
-		HashMap<Integer, String> blacklistedWords = new HashMap<Integer, String>();
+		HashMap<Integer, String> blacklistedWords = new HashMap<>();
         try (Connection conn = connection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
         	pstmt.setString(1, postType);
@@ -302,12 +302,12 @@ public class DatabaseUtils {
 		return blacklistedWords;
 	}
 	
-	public static HashMap<Integer, String> getOffensiveWords() {
+	static HashMap<Integer, String> getOffensiveWords() {
 		SQLiteConnection connection = new SQLiteConnection();
 		
 		String sql = "SELECT OffensiveWordId, OffensiveWord FROM OffensiveWord;";
 		
-		HashMap<Integer, String> offensiveWords = new HashMap<Integer, String>();
+		HashMap<Integer, String> offensiveWords = new HashMap<>();
         try (Connection conn = connection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -321,7 +321,7 @@ public class DatabaseUtils {
 		return offensiveWords;
 	}
 	
-	public static int getReasonId(String reason) {
+	static int getReasonId(String reason) {
 		SQLiteConnection connection = new SQLiteConnection();
 		
 		String sql = "SELECT ReasonId FROM Reason WHERE Reason = ?;";
@@ -331,7 +331,7 @@ public class DatabaseUtils {
         	pstmt.setString(1, reason);
 
         	ResultSet rs = pstmt.executeQuery();
-        	while (rs.next()) {
+        	if(rs.next()) {
         		return rs.getInt("ReasonId");
         	}
         } catch (SQLException e) {
@@ -393,7 +393,8 @@ public class DatabaseUtils {
 				     "       LastBody, \n" +
 		             "       IsRollback, \n" +
 				     "       PostType, \n" +
-		             "       Comment \n" +
+		             "       Comment, \n" +
+                     "       Site \n" +
 		             "  FROM VandalisedPost \n" +
 				     " WHERE PostId = ? \n" +
 		             "   AND RevisionId = ? \n" +
@@ -411,7 +412,7 @@ public class DatabaseUtils {
         	while (rs.next()) {
         		post = PostUtils.getPost(rs.getInt("PostId"), rs.getInt("RevisionId"), rs.getString("Title"), rs.getString("LastTitle"),
         			                     rs.getString("Body"),  rs.getString("LastBody"), rs.getBoolean("IsRollback"), rs.getString("PostType"), 
-        			                     rs.getString("Comment"), rs.getInt("OwnerId"));
+        			                     rs.getString("Comment"), rs.getInt("OwnerId"), rs.getString("Site"));
         	}
 		} catch (SQLException e) {
 			LOGGER.info("Failed to find vandalised post. PostId: " + String.valueOf(postId) + "; RevisionId: " + String.valueOf(revisionId) + "; RoomId: " + String.valueOf(roomId) + ".", e);

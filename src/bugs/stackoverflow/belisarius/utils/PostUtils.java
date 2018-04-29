@@ -46,13 +46,17 @@ public class PostUtils {
 		return false;
 	}
 	
-	public static Post getPost(JsonObject post){
+	public static Post getPost(JsonObject post, String site){
 
         Post np = new Post();
 
-        np.setPostID(post.get("post_id").getAsInt());
+        np.setPostId(post.get("post_id").getAsInt());
         
         np.setRevisionNumber(post.get("revision_number").getAsInt());
+        np.setCreationDate(post.get("creation_date").getAsLong());
+
+        np.setRevisionUrl("https://" + site + ".com/revisions/" + post.get("post_id").getAsString() + "/" + post.get("revision_number").getAsString());
+        np.setAllRevisionsUrl("https://" + site + "s.com/posts/" + post.get("post_id").getAsString() + "/revisions");
         
         if (post.has("title")) {
 	        np.setTitle(post.get("title").getAsString());
@@ -95,13 +99,14 @@ public class PostUtils {
         return np;
     }
     static Post getPost(int postId, int revisionId, String title, String lastTitle, String body, String lastBody, boolean isRollback,
-			                    String postType, String comment, int ownerId){
+                        String postType, String comment, int ownerId, String site){
 
         Post np = new Post();
 
-        np.setPostID(postId);
-        
+        np.setPostId(postId);
         np.setRevisionNumber(revisionId);
+        np.setRevisionUrl("https://" + site + ".com/revisions/" + String.valueOf(postId) + "/" + String.valueOf(revisionId));
+        np.setAllRevisionsUrl("https://" + site + "s.com/posts/" + String.valueOf(postId) + "/revisions");
         np.setTitle(title);
         np.setLastBody(lastTitle);
         np.setBody(body);
