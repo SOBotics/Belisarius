@@ -41,28 +41,30 @@ public class MonitorService {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
-			if (chatroom.getUserMentioned(room, this) != null) {
-				room.addEventListener(EventType.USER_MENTIONED, chatroom.getUserMentioned(room, this));
-			}
-			
-			if (chatroom.getPostedReply(room) != null) {
-				room.addEventListener(EventType.MESSAGE_REPLY, chatroom.getPostedReply(room));
-			}
-			
-			if (chatroom.getPostedMessage(room, this) != null) {
-				room.addEventListener(EventType.MESSAGE_POSTED, chatroom.getPostedMessage(room, this));
-			}
-			
-            String site = chatroom.getSiteName();
-			
-            if (!bots.containsKey(site)) {
-            	bots.put(site, new Belisarius(site));
+
+			if (room != null) {
+                if (chatroom.getUserMentioned(room, this) != null) {
+                    room.addEventListener(EventType.USER_MENTIONED, chatroom.getUserMentioned(room, this));
+                }
+
+                if (chatroom.getPostedReply(room) != null) {
+                    room.addEventListener(EventType.MESSAGE_REPLY, chatroom.getPostedReply(room));
+                }
+
+                if (chatroom.getPostedMessage(room) != null) {
+					room.addEventListener(EventType.MESSAGE_POSTED, chatroom.getPostedMessage(room));
+                }
+
+                String site = chatroom.getSiteName();
+
+                if (!bots.containsKey(site)) {
+                    bots.put(site, new Belisarius(site));
+                }
+
+                room.send("[ [Belisarius](" + Belisarius.readMe + ") ] started.");
+
+                rooms.add(room);
             }
-			
-			room.send("[ [Belisarius](" + Belisarius.readMe + ") ] started.");
-			
-			rooms.add(room);
 		}
 	
 		executorService = Executors.newSingleThreadScheduledExecutor();

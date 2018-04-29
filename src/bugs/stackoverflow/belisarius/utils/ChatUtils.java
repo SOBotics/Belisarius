@@ -1,17 +1,18 @@
 package bugs.stackoverflow.belisarius.utils;
 
+import bugs.stackoverflow.belisarius.models.VandalisedPost.Feedback;
 import fr.tunaki.stackoverflow.chat.Room;
 import fr.tunaki.stackoverflow.chat.event.*;
 
 public class ChatUtils {
 
-    public static void reply(Room room, PingMessageEvent event){
+    public static void reply(Room room, PingMessageEvent event) {
 		String message = event.getMessage().getPlainContent().trim();
 		
-		if (message.split(" ")[1].toLowerCase().equals("t") || message.split(" ")[1].toLowerCase().equals("tp")) {
-			PostUtils.storeFeedback(room, event, "tp");
-		} else if (message.split(" ")[1].toLowerCase().equals("f") || message.split(" ")[1].toLowerCase().equals("fp")) {
-			PostUtils.storeFeedback(room, event, "fp");
+		if (message.split(" ")[1].toLowerCase().equals(Feedback.T.toString()) || message.split(" ")[1].toLowerCase().equals(Feedback.TP.toString())) {
+			PostUtils.storeFeedback(room, event, Feedback.TP);
+		} else if (message.split(" ")[1].toLowerCase().equals(Feedback.F.toString()) || message.split(" ")[1].toLowerCase().equals(Feedback.FP.toString())) {
+			PostUtils.storeFeedback(room, event, Feedback.FP);
 		}
     }
 }

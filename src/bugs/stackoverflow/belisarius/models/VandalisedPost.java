@@ -8,10 +8,27 @@ import java.util.HashMap;
 
 public class VandalisedPost {
 
+    public enum Feedback{
+
+        T("t"), TP("tp"), F("f"), FP("fp");
+
+        private final String text;
+
+        Feedback(final String text) {
+            this.text = text;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+
 	private Post post;
-	private Map<String, Double> reasons = new HashMap<String, Double>();
+	private Map<String, Double> reasons;
 	private Severity severity;
-	
+
+
 	public VandalisedPost(Post post, Map<String, Double> reasons, Severity severity) {
 		this.post = post;
 		this.reasons = reasons;
@@ -44,6 +61,10 @@ public class VandalisedPost {
     public Map<String, Double> getReasons() {
     	return this.reasons;
     }
+
+    public double getScore() {
+		return this.reasons.values().stream().mapToDouble(Number::doubleValue).sum();
+	}
     
     public String getSeverity() {
     	if (this.severity == Severity.LOW) {
