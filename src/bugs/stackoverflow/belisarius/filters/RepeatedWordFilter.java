@@ -12,7 +12,7 @@ public class RepeatedWordFilter implements Filter {
 	private Room room;
 	private Post post;
 	private int reasonId;
-	private Set<String> repeatedWords = new HashSet<String>();
+	private Set<String> repeatedWords = new HashSet<>();
 	
 	public RepeatedWordFilter(Room room, Post post, int reasonId) {
 		this.room = room;
@@ -48,14 +48,15 @@ public class RepeatedWordFilter implements Filter {
 	}
 	
 	private String getRepeatedWords() {
-		String words = "";
-		
-		for (String word : this.repeatedWords) {
-			words += word + ", ";
+		StringBuilder words = new StringBuilder();
+
+		for(String word : repeatedWords) {
+			words.append(word);
 		}
-		
-		return words.substring(0, words.trim().length()-1);
+
+		return words.toString();
 	}
+
 
 	@Override
 	public Severity getSeverity() {

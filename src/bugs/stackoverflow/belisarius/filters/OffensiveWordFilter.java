@@ -15,14 +15,12 @@ import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 import fr.tunaki.stackoverflow.chat.Room;
 
 public class OffensiveWordFilter implements Filter {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(OffensiveWordFilter.class);
 	
 	private Room room;
 	private Post post;
 	private int reasonId;
 	
-	private HashMap<Integer, String> offensiveWords = new HashMap<Integer, String>();
+	private HashMap<Integer, String> offensiveWords = new HashMap<>();
 	
 	public OffensiveWordFilter(Room room, Post post, int reasonId) {
 		this.room = room;
@@ -51,15 +49,13 @@ public class OffensiveWordFilter implements Filter {
 	}
 	
 	private String getOffensiveWords() {
-		String words = "";
-		
-		Iterator iterator = this.offensiveWords.entrySet().iterator();
-		while(iterator.hasNext()) {
-			Map.Entry<Integer, String> word = (Map.Entry<Integer, String>)iterator.next();
-			words += word.getValue() + ", ";
+		StringBuilder words = new StringBuilder();
+
+		for(String word : offensiveWords.values()) {
+			words.append(word);
 		}
-		
-		return words.substring(0, words.trim().length()-1);
+
+		return words.toString();
 	}
 
 	@Override
@@ -68,25 +64,14 @@ public class OffensiveWordFilter implements Filter {
 	}
 	
 	private List<Integer> getCaughtOffensiveWordIds() {
-		List<Integer> reasonIds = new ArrayList<Integer>();
-		
-		try {
-			Iterator iterator = this.offensiveWords.entrySet().iterator();
-			while(iterator.hasNext()) {
-				Map.Entry<Integer, String> offensiveWord = (Map.Entry<Integer, String>)iterator.next();
-				reasonIds.add(offensiveWord.getKey());
-			}
-		} catch (Exception e) {
-			LOGGER.info("Failed to get Ids from offensiveWords.", e);
-		}
-		
-		return reasonIds;
+		return new ArrayList<>(offensiveWords.keySet());
 	}
-	
+
+	@Override
 	public void storeHit() {
 		DatabaseUtils.storeReasonCaught(this.post.getPostId(), this.post.getRevisionNumber(), this.room.getRoomId(), this.reasonId, this.getScore());
-		this.getCaughtOffensiveWordIds().stream().forEach(id -> {
-			DatabaseUtils.storeCaughtOffensiveWord(this.post.getPostId(), this.post.getRevisionNumber(), this.room.getRoomId(), id);	
-		});
+		this.getCaughtOffensiveWordIds().forEach(id ->
+			DatabaseUtils.storeCaughtOffensiveWord(this.post.getPostId(), this.post.getRevisionNumber(), this.room.getRoomId(), id)
+        );
 	}
 }
