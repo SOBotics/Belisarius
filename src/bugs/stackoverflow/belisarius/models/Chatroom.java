@@ -37,7 +37,7 @@ public class Chatroom {
 		return event-> ChatUtils.reply(room, event);
 	}
 
-	public Consumer<MessagePostedEvent> getPostedMessage(Room room,  MonitorService service) {
+	public Consumer<MessagePostedEvent> getPostedMessage(Room room) {
 		return event->new CommandList().posted(room, event);
 	}
 
