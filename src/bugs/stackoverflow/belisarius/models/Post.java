@@ -1,7 +1,7 @@
 package bugs.stackoverflow.belisarius.models;
 
 public class Post {
-		//
+
     private int postId;
     private int revisionNumber;
     private long creationDate;
