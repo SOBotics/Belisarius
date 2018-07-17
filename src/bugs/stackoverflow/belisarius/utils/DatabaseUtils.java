@@ -54,8 +54,8 @@ public class DatabaseUtils {
         SQLiteConnection connection = new SQLiteConnection();
 
         String sql = "CREATE TABLE IF NOT EXISTS Higgs(BotId integer, \n" +
+				                                     " SecretKey text, \n" +
                                                      " Url text, \n" +
-                                                     " Key text, \n" +
                                                      " PRIMARY KEY(BotId));";
 
         try (Connection conn = connection.getConnection();
@@ -315,7 +315,7 @@ public class DatabaseUtils {
             ResultSet rs = pstmt.executeQuery();
             if(rs.next()) {
                 higgs.setUrl(rs.getString("Url"));
-                higgs.setKey(rs.getString("Key"));
+                higgs.setKey(rs.getString("SecretKey"));
             }
         } catch (SQLException e) {
             LOGGER.info("Failed to get Higgs.", e);

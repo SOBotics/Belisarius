@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import bugs.stackoverflow.belisarius.services.MonitorService;
 import bugs.stackoverflow.belisarius.utils.CommandUtils;
-import fr.tunaki.stackoverflow.chat.*;
+import org.sobotics.chatexchange.chat.*;
 
 public class StopCommand implements Command {
 

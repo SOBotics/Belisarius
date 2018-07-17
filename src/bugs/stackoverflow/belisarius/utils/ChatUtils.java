@@ -1,8 +1,8 @@
 package bugs.stackoverflow.belisarius.utils;
 
 import bugs.stackoverflow.belisarius.models.VandalisedPost.Feedback;
-import fr.tunaki.stackoverflow.chat.Room;
-import fr.tunaki.stackoverflow.chat.event.*;
+import org.sobotics.chatexchange.chat.Room;
+import org.sobotics.chatexchange.chat.event.*;
 
 public class ChatUtils {
 

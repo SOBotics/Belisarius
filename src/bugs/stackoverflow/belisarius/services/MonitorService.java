@@ -4,8 +4,9 @@ import bugs.stackoverflow.belisarius.*;
 import bugs.stackoverflow.belisarius.clients.Monitor;
 import bugs.stackoverflow.belisarius.models.*;
 
-import fr.tunaki.stackoverflow.chat.*;
-import fr.tunaki.stackoverflow.chat.event.EventType;
+import org.sobotics.chatexchange.chat.event.EventType;
+import org.sobotics.chatexchange.chat.Room;
+import org.sobotics.chatexchange.chat.StackExchangeClient;
 
 import java.util.concurrent.*;
 import java.time.Instant;

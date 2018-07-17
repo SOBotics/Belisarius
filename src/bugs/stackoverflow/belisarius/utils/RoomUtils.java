@@ -1,6 +1,6 @@
 package bugs.stackoverflow.belisarius.utils;
 
-import fr.tunaki.stackoverflow.chat.ChatHost;
+import org.sobotics.chatexchange.chat.ChatHost;
 
 public class RoomUtils {
 

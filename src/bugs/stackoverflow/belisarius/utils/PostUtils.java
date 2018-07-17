@@ -5,9 +5,9 @@ import bugs.stackoverflow.belisarius.filters.Filter.Severity;
 import bugs.stackoverflow.belisarius.models.*;
 import bugs.stackoverflow.belisarius.models.VandalisedPost.Feedback;
 import bugs.stackoverflow.belisarius.services.HiggsService;
-import fr.tunaki.stackoverflow.chat.Message;
-import fr.tunaki.stackoverflow.chat.Room;
-import fr.tunaki.stackoverflow.chat.event.PingMessageEvent;
+import org.sobotics.chatexchange.chat.Message;
+import org.sobotics.chatexchange.chat.Room;
+import org.sobotics.chatexchange.chat.event.PingMessageEvent;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -135,13 +135,13 @@ public class PostUtils {
 
 		DatabaseUtils.storeFeedback(postId, revisionNumber, room.getRoomId(), feedback.toString(), event.getMessage().getUser().getId());
 
-		try {
+		/*try {
             int higgsId = DatabaseUtils.getHiggsId(postId, revisionNumber, event.getRoomId());
             HiggsService.getInstance().sendFeedback(higgsId, (int) event.getMessage().getUser().getId(), feedback);
         }
         catch (ApiException e) {
             e.printStackTrace();;
-        }
+        }*/
 	}
 	
 	public static boolean checkVandalisedPost(Room room, VandalisedPost vandalisedPost) {

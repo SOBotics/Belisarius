@@ -2,17 +2,12 @@ package bugs.stackoverflow.belisarius.filters;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
-import fr.tunaki.stackoverflow.chat.Room;
+import org.sobotics.chatexchange.chat.Room;
 
 public class OffensiveWordFilter implements Filter {
 	

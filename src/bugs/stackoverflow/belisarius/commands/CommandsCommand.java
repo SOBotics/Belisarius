@@ -3,7 +3,7 @@ package bugs.stackoverflow.belisarius.commands;
 import java.util.List;
 
 import bugs.stackoverflow.belisarius.utils.CommandUtils;
-import fr.tunaki.stackoverflow.chat.*;
+import org.sobotics.chatexchange.chat.*;
 
 public class CommandsCommand implements Command {
 

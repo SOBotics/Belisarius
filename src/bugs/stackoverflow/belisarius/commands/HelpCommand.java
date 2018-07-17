@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import bugs.stackoverflow.belisarius.utils.CommandUtils;
-import fr.tunaki.stackoverflow.chat.*;
+import org.sobotics.chatexchange.chat.*;
 
 public class HelpCommand implements Command {
 

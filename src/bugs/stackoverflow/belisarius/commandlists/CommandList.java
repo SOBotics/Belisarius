@@ -5,8 +5,8 @@ import java.util.*;
 import bugs.stackoverflow.belisarius.commands.*;
 import bugs.stackoverflow.belisarius.commands.Command;
 import bugs.stackoverflow.belisarius.services.MonitorService;
-import fr.tunaki.stackoverflow.chat.*;
-import fr.tunaki.stackoverflow.chat.event.*;
+import org.sobotics.chatexchange.chat.*;
+import org.sobotics.chatexchange.chat.event.*;
 
 public class CommandList {
 	public void mention(Room room, PingMessageEvent event, MonitorService service) {

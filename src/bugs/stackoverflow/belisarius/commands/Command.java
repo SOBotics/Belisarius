@@ -1,6 +1,6 @@
 package bugs.stackoverflow.belisarius.commands;
 
-import fr.tunaki.stackoverflow.chat.Room;
+import org.sobotics.chatexchange.chat.Room;
 
 public interface Command {
 

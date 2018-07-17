@@ -7,7 +7,7 @@ import bugs.stackoverflow.belisarius.finders.VandalismFinder;
 import bugs.stackoverflow.belisarius.models.*;
 import bugs.stackoverflow.belisarius.services.HiggsService;
 import bugs.stackoverflow.belisarius.utils.PostUtils;
-import fr.tunaki.stackoverflow.chat.Room;
+import org.sobotics.chatexchange.chat.Room;
 import io.swagger.client.ApiException;
 
 public class Monitor {
@@ -21,7 +21,7 @@ public class Monitor {
 		        	if (vandalisedPost != null && vandalisedPost.getSeverity() != null) {
 		        		if(!PostUtils.checkVandalisedPost(room, vandalisedPost))
 		        		{
-                            int higgsId = HiggsService.getInstance().registerVandalisedPost(vandalisedPost);
+                            int higgsId = 0; //HiggsService.getInstance().registerVandalisedPost(vandalisedPost);
 		        			PostUtils.storeVandalisedPost(room, vandalisedPost, higgsId);
 		        			if (outputMessage) {
 								sendVandalismFoundMessage(room, post, vandalisedPost, higgsId);
@@ -93,7 +93,7 @@ public class Monitor {
 		message += " [tag:severity-" + vandalisedPost.getSeverity() +  "]";
 		message += " Potentially harmful edit found. Reason: " + vandalisedPost.getReasonMessage();
 		message += " [All revisions](" + post.getAllRevisionsUrl() + ").";
-		message += " Revision: [" + post.getRevisionUrl() + ").";
+		message += " Revision: [" + String.valueOf(post.getRevisionNumber()) + "](" + post.getRevisionUrl() + ").";
 		room.send(message);
 	}
 
@@ -104,7 +104,7 @@ public class Monitor {
 		message += " [tag:severity-" + vandalisedPost.getSeverity() +  "]";
 		message += " Potentially harmful edit found. Reason: " + vandalisedPost.getReasonMessage();
 		message += " [All revisions](" + post.getAllRevisionsUrl() + ").";
-		message += " Revision: [" + post.getRevisionUrl() + ").";
+		message += " Revision: [" + String.valueOf(post.getRevisionNumber()) + "](" + post.getRevisionUrl() + ").";
 		room.send(message);
 	}
 	
@@ -112,7 +112,7 @@ public class Monitor {
 		String message = "[ [Belisarius](" + Belisarius.readMe + ") ]";
 		message += " [tag:" + post.getPostType().toLowerCase() + "] No issues have been found.";
 		message += " [All revisions](" + post.getAllRevisionsUrl() + ").";
-		message += " Revision: [" + post.getRevisionUrl() + ").";
+		message += " Revision: [" + String.valueOf(post.getRevisionNumber()) + "](" + post.getRevisionUrl() + ").";
 		room.send(message);
 	}
 		

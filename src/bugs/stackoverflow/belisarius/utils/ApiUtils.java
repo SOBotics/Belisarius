@@ -9,7 +9,7 @@ import java.io.IOException;
 public class ApiUtils {
 
     private static final String postsFilter = "!b0OfN5SJ6GH.YG";
-	private static final String revisionsFilter = "!)Q7oQ)W6KSnSJdOc9XkiUHEf";
+	private static final String revisionsFilter = "!--Ozln_OPoiF"; //"!)Q7oQ)W6KSnSJdOc9XkiUHEf";
 	
 	static JsonUtils jsonUtils = new JsonUtils();
 

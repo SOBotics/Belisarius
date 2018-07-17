@@ -3,7 +3,7 @@ package bugs.stackoverflow.belisarius.filters;
 import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
-import fr.tunaki.stackoverflow.chat.Room;
+import org.sobotics.chatexchange.chat.Room;
 
 public class FewUniqueCharactersFilter implements Filter {
 

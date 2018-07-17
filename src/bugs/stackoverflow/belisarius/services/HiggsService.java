@@ -9,6 +9,10 @@ import org.threeten.bp.*;
 
 import bugs.stackoverflow.belisarius.models.VandalisedPost;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
+
 public class HiggsService {
 
     private static HiggsService instance;
@@ -38,7 +42,7 @@ public class HiggsService {
         this.botApi = new BotApi(Configuration.getDefaultApiClient().setBasePath(this.url));
 
         AquireTokenRequest tokenRequest = new AquireTokenRequest();
-        tokenRequest.botId(3); //Hippo
+        tokenRequest.dashboardId(3);
         tokenRequest.setSecret(key);
 
         AquireTokenResponse tokenResponse = this.botApi.botAquireTokenPost(tokenRequest);
