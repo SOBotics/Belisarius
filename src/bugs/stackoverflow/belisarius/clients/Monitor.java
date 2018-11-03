@@ -24,7 +24,7 @@ public class Monitor {
                             int higgsId = 0; //HiggsService.getInstance().registerVandalisedPost(vandalisedPost);
 		        			PostUtils.storeVandalisedPost(room, vandalisedPost, higgsId);
 		        			if (outputMessage) {
-								sendVandalismFoundMessage(room, post, vandalisedPost, higgsId);
+								sendVandalismFoundMessage(room, post, vandalisedPost);
 							}
 		        		}
 		        	}

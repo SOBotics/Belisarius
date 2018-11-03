@@ -48,6 +48,7 @@ public class PostUtils {
 		}
 		return false;
 	}
+
 	
 	public static Post getPost(JsonObject post, String site){
 
@@ -59,14 +60,14 @@ public class PostUtils {
         np.setCreationDate(post.get("creation_date").getAsLong());
 
         np.setRevisionUrl("https://" + site + ".com/revisions/" + post.get("post_id").getAsString() + "/" + post.get("revision_number").getAsString());
-        np.setAllRevisionsUrl("https://" + site + "s.com/posts/" + post.get("post_id").getAsString() + "/revisions");
+        np.setAllRevisionsUrl("https://" + site + ".com/posts/" + post.get("post_id").getAsString() + "/revisions");
         
         if (post.has("title")) {
 	        np.setTitle(post.get("title").getAsString());
         }
         
         if (post.has("last_title")) {
-            np.setLastBody(post.get("last_title").getAsString());
+            np.setLastBody(post.get("last_title").getAsString( ));
         }
         
         if (post.has("body")) {
