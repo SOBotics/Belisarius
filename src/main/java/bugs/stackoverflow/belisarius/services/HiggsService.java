@@ -53,7 +53,7 @@ public class HiggsService {
     public int registerVandalisedPost(VandalisedPost vandalisedPost) throws ApiException {
 
         RegisterPostRequest postRequest = new RegisterPostRequest();
-        postRequest.setContentId(vandalisedPost.getPost().getPostId());
+        postRequest.setContentId(Long.valueOf(vandalisedPost.getPost().getPostId()));
         postRequest.setContentSite(vandalisedPost.getPost().getSite());
         postRequest.setContentType(vandalisedPost.getPost().getPostType());
         postRequest.setContentUrl(vandalisedPost.getPost().getRevisionUrl());
