@@ -50,6 +50,11 @@
             <version>1.0.0</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.threeten</groupId>
+            <artifactId>threetenbp</artifactId>
+            <version>1.4.4</version>
+        </dependency>
 </dependencies>
     <build>
         <plugins>
