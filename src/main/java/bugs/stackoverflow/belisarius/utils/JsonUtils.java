@@ -21,14 +21,12 @@ public class JsonUtils {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(JsonUtils.class);
 	
-	private long lastCall;
-	private long throttle = 1L * 1000L;
-	
 	public synchronized JsonObject get(String url, String... data) throws IOException {
     	long backOffUntil = ApiService.getBackOffUntil();
     	
     	if (backOffUntil > 0) {
 			try {
+                LOGGER.info("BACKOFF received. Timeout for " + String.valueOf(backOffUntil) + " seconds.");
 				Thread.sleep(1000 * backOffUntil);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -36,18 +34,11 @@ public class JsonUtils {
 			backOffUntil = 0L;
 		}
 
-		long curTime = System.currentTimeMillis();
-		long timeToWait = throttle - (curTime - lastCall);
-    	
-		if (timeToWait > 0) {
-			try {
-				Thread.sleep(timeToWait);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+		try {
+			Thread.sleep(100); // timeout for 100ms anyway
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
-		
-		lastCall = System.currentTimeMillis();
     	
         Connection.Response response = Jsoup.connect(url).data(data).method(Connection.Method.GET).ignoreContentType(true).ignoreHttpErrors(true).execute();
         String json = response.body();
@@ -69,7 +60,7 @@ public class JsonUtils {
         	StatusUtils.remainingQuota = new AtomicInteger(root.get("quota_remaining").getAsInt());
         }
         
-        LOGGER.info(json);
+        LOGGER.info("Received an API response.");
         
         return root;
     }
