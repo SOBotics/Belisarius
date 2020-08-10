@@ -21,7 +21,7 @@ public class Monitor {
 		        	if (vandalisedPost != null && vandalisedPost.getSeverity() != null) {
 		        		if(!PostUtils.checkVandalisedPost(room, vandalisedPost))
 		        		{
-                            int higgsId = 0; //HiggsService.getInstance().registerVandalisedPost(vandalisedPost);
+                            int higgsId = HiggsService.getInstance().registerVandalisedPost(vandalisedPost);
 		        			PostUtils.storeVandalisedPost(room, vandalisedPost, higgsId);
 		        			if (outputMessage) {
 								sendVandalismFoundMessage(room, post, vandalisedPost);
