@@ -327,7 +327,7 @@ public class DatabaseUtils {
     public static int getHiggsId(long postId, int revisionId, int roomId) {
         SQLiteConnection connection = new SQLiteConnection();
 
-        String sql = "SELECT HiggsId FROM VandalisedPost WHERE PostId = ? AND RoomId = ?;";
+        String sql = "SELECT HiggsId FROM VandalisedPost WHERE PostId = ? AND RevisionId = ? AND RoomId = ?;";
 
         try (Connection conn = connection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
