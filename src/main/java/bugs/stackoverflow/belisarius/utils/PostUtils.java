@@ -67,7 +67,7 @@ public class PostUtils {
         }
         
         if (post.has("last_title")) {
-            np.setLastBody(post.get("last_title").getAsString( ));
+            np.setLastTitle(post.get("last_title").getAsString());
         }
         
         if (post.has("body")) {
