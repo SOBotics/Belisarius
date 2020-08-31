@@ -145,9 +145,9 @@ public class PostUtils {
         }
 	}
 	
-	public static boolean checkVandalisedPost(Room room, VandalisedPost vandalisedPost) {
-		return DatabaseUtils.checkVandalisedPostExists(vandalisedPost.getPost().getPostId(), vandalisedPost.getPost().getRevisionNumber(), room.getRoomId());
-	}
+    public static boolean checkVandalisedPost(Room room, Post post) {
+        return DatabaseUtils.checkVandalisedPostExists(post.getPostId(), post.getRevisionNumber(), room.getRoomId());
+    }
 	
 	public static void storeVandalisedPost(Room room, VandalisedPost vandalisedPost, int higgsId) {
 		Post post = vandalisedPost.getPost();
