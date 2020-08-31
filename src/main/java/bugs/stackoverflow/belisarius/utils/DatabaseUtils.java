@@ -231,7 +231,7 @@ public class DatabaseUtils {
 		return false;
 	}
 	
-	static void storeVandalisedPost(long postId, int revisionId, int roomId, long ownerId, String title, String lastTitle, String body, String lastBody,
+	static void storeVandalisedPost(long postId, long creationDate, int revisionId, int roomId, long ownerId, String title, String lastTitle, String body, String lastBody,
 									boolean IsRollback, String postType, String comment, String site, String severity, int higgsId) {
 		
 		SQLiteConnection connection = new SQLiteConnection();
@@ -241,17 +241,18 @@ public class DatabaseUtils {
         try (Connection conn = connection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
         	pstmt.setLong(1, postId);
-        	pstmt.setInt(2,  revisionId);
-        	pstmt.setInt(3,  roomId);
-        	pstmt.setLong(4, ownerId);
-        	pstmt.setString(5, title);
-        	pstmt.setString(6, lastTitle);
-        	pstmt.setString(7, body);
-        	pstmt.setString(8, lastBody);
-        	pstmt.setInt(9, (IsRollback) ? 1 : 0);
-        	pstmt.setString(10, postType);
-        	pstmt.setString(11, comment);
-        	pstmt.setString(12, site);
+            pstmt.setLong(2, creationDate);
+        	pstmt.setInt(3,  revisionId);
+        	pstmt.setInt(4,  roomId);
+        	pstmt.setLong(5, ownerId);
+        	pstmt.setString(6, title);
+        	pstmt.setString(7, lastTitle);
+        	pstmt.setString(8, body);
+        	pstmt.setString(9, lastBody);
+        	pstmt.setInt(10, (IsRollback) ? 1 : 0);
+        	pstmt.setString(11, postType);
+        	pstmt.setString(12, comment);
+        	pstmt.setString(13, site);
         	pstmt.setString(14, severity);
         	pstmt.setInt(15, higgsId);
 
@@ -426,7 +427,7 @@ public class DatabaseUtils {
 
 		SQLiteConnection connection = new SQLiteConnection();
 		
-		String sql = "INSERT INTO OffensivedWordCaught VALUES (?, ?, ?, ?);";
+		String sql = "INSERT INTO OffensiveWordCaught VALUES (?, ?, ?, ?);";
     	
 		try (Connection conn = connection.getConnection();
 			 PreparedStatement pstmt = conn.prepareStatement(sql)) {

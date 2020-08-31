@@ -136,7 +136,7 @@ public class MonitorService {
         this.runMonitor();
         for(int i=0; i<rooms.size(); i++){
             Room room = rooms.get(i);
-            room.send("[ [Belisarius](\\\" + Belisarius.readMe + \\\") ] rebooted at " + Instant.now());
+            room.send("[ [Belisarius](" + Belisarius.readMe + ") ] rebooted at " + Instant.now());
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
