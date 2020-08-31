@@ -7,6 +7,7 @@ import io.swagger.client.api.BotApi;
 import io.swagger.client.model.*;
 import org.threeten.bp.*;
 
+import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.models.VandalisedPost;
 
 import javax.net.ssl.HostnameVerifier;
@@ -50,33 +51,39 @@ public class HiggsService {
         Configuration.getDefaultApiClient().setAccessToken(tokenResponse.getToken());
     }
 
-    public int registerVandalisedPost(VandalisedPost vandalisedPost) throws ApiException {
+    public int registerVandalisedPost(VandalisedPost vandalisedPost, Post post) throws ApiException {
+
+        String body = post.getBody() == null ? "The body was not changed in this revision" : post.getLastBody();
+        String lastBody = post.getLastBody() == null ? "The body was not changed in this revision" : post.getLastBody();
 
         RegisterPostRequest postRequest = new RegisterPostRequest();
-        postRequest.setContentId(Long.valueOf(vandalisedPost.getPost().getPostId()));
-        postRequest.setContentSite(vandalisedPost.getPost().getSite());
-        postRequest.setContentType(vandalisedPost.getPost().getPostType());
-        postRequest.setContentUrl(vandalisedPost.getPost().getRevisionUrl());
-        postRequest.setTitle(vandalisedPost.getPost().getTitle());
-        postRequest.setAuthorName(vandalisedPost.getPost().getUser().getUsername());
-        postRequest.setAuthorReputation((int) vandalisedPost.getPost().getUser().getReputation());
+        postRequest.setContentId(Long.valueOf(post.getPostId()));
+        postRequest.setContentSite(post.getSite());
+        postRequest.setContentType(post.getPostType());
+        postRequest.setContentUrl(post.getRevisionUrl());
+        postRequest.setTitle(post.getTitle());
+        postRequest.setAuthorName(post.getUser().getUsername());
+        postRequest.setAuthorReputation((int) post.getUser().getReputation());
+
+        RegisterPostContentFragment contentFragmentLastBody = new RegisterPostContentFragment();
+        contentFragmentLastBody.setContent(lastBody);
+        contentFragmentLastBody.setName("Last body");
+        contentFragmentLastBody.setOrder(2);
+
+        RegisterPostContentFragment contentFragmentBody = new RegisterPostContentFragment();
+        contentFragmentBody.setContent(body);
+        contentFragmentBody.setName("Current body");
+        contentFragmentBody.setOrder(1);
+
+        RegisterPostContentFragment contentFragmentComment = new RegisterPostContentFragment();
+        contentFragmentComment.setContent(post.getComment());
+        contentFragmentComment.setName("Edit summary");
+        contentFragmentComment.setOrder(3);
 
         List<RegisterPostContentFragment> contentFragments = new ArrayList<>();
-        if(!vandalisedPost.getPost().getLastBody().equals("")) {
-            RegisterPostContentFragment registerPostContentFragment = new RegisterPostContentFragment();
-            registerPostContentFragment.setContent(vandalisedPost.getPost().getLastBody());
-            contentFragments.add(registerPostContentFragment);
-        }
-        if(!vandalisedPost.getPost().getBody().equals("")) {
-            RegisterPostContentFragment registerPostContentFragment = new RegisterPostContentFragment();
-            registerPostContentFragment.setContent(vandalisedPost.getPost().getBody());
-            contentFragments.add(registerPostContentFragment);
-        }
-        if(!vandalisedPost.getPost().getComment().equals("")) {
-            RegisterPostContentFragment registerPostContentFragment = new RegisterPostContentFragment();
-            registerPostContentFragment.setContent(vandalisedPost.getPost().getComment());
-            contentFragments.add(registerPostContentFragment);
-        }
+        contentFragments.add(contentFragmentLastBody);
+        contentFragments.add(contentFragmentBody);
+        contentFragments.add(contentFragmentComment);
         postRequest.contentFragments(contentFragments);
 
         postRequest.setDetectionScore(vandalisedPost.getScore());
@@ -84,7 +91,7 @@ public class HiggsService {
         Instant detected = Instant.ofEpochSecond(System.currentTimeMillis()/1000);
         postRequest.setDetectedDate(OffsetDateTime.ofInstant(detected, ZoneOffset.UTC));
 
-        Instant created = Instant.ofEpochSecond(vandalisedPost.getPost().getCreationDate());
+        Instant created = Instant.ofEpochSecond(post.getCreationDate());
         postRequest.setContentCreationDate(OffsetDateTime.ofInstant(created, ZoneOffset.UTC));
 
         List<RegisterPostReason> reasons = new ArrayList<>();
