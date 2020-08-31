@@ -44,6 +44,11 @@ public class TextRemovedFilter implements Filter {
 		return "**" + percentage*100 + "% or more text removed with a JW score of " + Math.round(this.score*100.0)/100.0  + "**";
 	}
 
+    @Override
+    public String getReasonName() {
+        return "Lots of text removed with a high JW score";
+    }
+
 	@Override
 	public Severity getSeverity() {
 		return Severity.MEDIUM;

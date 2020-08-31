@@ -42,6 +42,11 @@ public class VeryLongWordFilter implements Filter {
 		return "**Contains very long word - ** " + this.listedWord.substring(0, 50) + "...";
 	}
 
+    @Override
+    public String getReasonName() {
+        return "Contains very long word";
+    }
+
 	@Override
 	public Severity getSeverity() {
 		return Severity.MEDIUM;

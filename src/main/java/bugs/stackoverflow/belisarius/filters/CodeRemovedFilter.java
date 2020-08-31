@@ -34,7 +34,12 @@ public class CodeRemovedFilter implements Filter {
 	public String getFormattedReasonMessage() {
 		return "**Code removed**";
 	}
-	
+
+    @Override
+    public String getReasonName() {
+        return "Code removed";
+    }
+
 	@Override
 	public Severity getSeverity() {
 		return Severity.MEDIUM;

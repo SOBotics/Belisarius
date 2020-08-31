@@ -31,8 +31,8 @@ public class BlacklistedFilter implements Filter {
 	@Override
 	public boolean isHit() {
 		
-		if (post.getTitle() != null) {
-			blacklistedWordsTitle = CheckUtils.checkForBlackListedWords(StringUtils.difference(post.getLastTitle(), post.getTitle()), post.getPostType());
+		if (post.getTitle() != null && post.getPostType() == "question") {
+			blacklistedWordsTitle = CheckUtils.checkForBlackListedWords(StringUtils.difference(post.getLastTitle(), post.getTitle()), "question_title");
 		}
 		
 		if (post.getBody() != null) {
@@ -73,6 +73,21 @@ public class BlacklistedFilter implements Filter {
 		}
 		return message.trim();
 	}
+
+    @Override
+    public String getReasonName() {
+        String name = "Contains blacklisted words: ";
+        if (this.blacklistedWordsTitle.size() > 0) {
+            name += getBlacklistedWordsTitle();
+        }
+        if (this.blacklistedWordsBody.size() > 0) {
+            name += getBlacklistedWordsBody();
+        }
+        if (this.blacklistedWordsEditSummary.size() > 0) {
+            name += getBlacklistedWordsComment();
+        }
+        return name;
+    }
 
 	private String getBlacklistedWordsTitle() {
 		StringBuilder words = new StringBuilder();
