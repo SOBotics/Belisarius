@@ -59,7 +59,7 @@ public class HiggsService {
         postRequest.setContentUrl(vandalisedPost.getPost().getRevisionUrl());
         postRequest.setTitle(vandalisedPost.getPost().getTitle());
         postRequest.setAuthorName(vandalisedPost.getPost().getUser().getUsername());
-        postRequest.setAuthorReputation((int)vandalisedPost.getPost().getUser().getReputation());
+        postRequest.setAuthorReputation((int) vandalisedPost.getPost().getUser().getReputation());
 
         List<RegisterPostContentFragment> contentFragments = new ArrayList<>();
         if(!vandalisedPost.getPost().getLastBody().equals("")) {

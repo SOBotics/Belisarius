@@ -111,7 +111,7 @@ public class PostUtils {
         np.setCreationDate(creationDate);
         np.setRevisionNumber(revisionId);
         np.setRevisionUrl("https://" + site + ".com/revisions/" + String.valueOf(postId) + "/" + String.valueOf(revisionId));
-        np.setAllRevisionsUrl("https://" + site + "s.com/posts/" + String.valueOf(postId) + "/revisions");
+        np.setAllRevisionsUrl("https://" + site + ".com/posts/" + String.valueOf(postId) + "/revisions");
         np.setTitle(title);
         np.setLastBody(lastTitle);
         np.setBody(body);
@@ -136,13 +136,13 @@ public class PostUtils {
 
 		DatabaseUtils.storeFeedback(postId, revisionNumber, room.getRoomId(), feedback.toString(), event.getMessage().getUser().getId());
 
-		/*try {
+		try {
             int higgsId = DatabaseUtils.getHiggsId(postId, revisionNumber, event.getRoomId());
             HiggsService.getInstance().sendFeedback(higgsId, (int) event.getMessage().getUser().getId(), feedback);
         }
         catch (ApiException e) {
-            e.printStackTrace();;
-        }*/
+            e.printStackTrace();
+        }
 	}
 	
 	public static boolean checkVandalisedPost(Room room, VandalisedPost vandalisedPost) {
@@ -151,7 +151,7 @@ public class PostUtils {
 	
 	public static void storeVandalisedPost(Room room, VandalisedPost vandalisedPost, int higgsId) {
 		Post post = vandalisedPost.getPost();
-		DatabaseUtils.storeVandalisedPost(post.getPostId(), post.getRevisionNumber(), room.getRoomId(), post.getUser().getUserId(), post.getTitle(), post.getLastTitle(), post.getBody(), post.getLastBody(),
+		DatabaseUtils.storeVandalisedPost(post.getPostId(), post.getCreationDate(), post.getRevisionNumber(), room.getRoomId(), post.getUser().getUserId(), post.getTitle(), post.getLastTitle(), post.getBody(), post.getLastBody(),
 				                          post.getIsRollback(), post.getPostType(), post.getComment(), post.getSite(), vandalisedPost.getSeverity(), higgsId);
 		
 		
@@ -164,8 +164,7 @@ public class PostUtils {
 	}
 	
 	private static int getRevisionNumberFromMessage(String message) {
-        message = message.split("Revision:")[1];
-        return Integer.parseInt(message.trim());
+        return Integer.parseInt(message.substring(message.length() - 2, message.length() - 1));
 	}
 	 
     public static VandalisedPost getVandalisedPost(Room room, Post post) {
