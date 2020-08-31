@@ -88,7 +88,7 @@ public class HiggsService {
         postRequest.setContentCreationDate(OffsetDateTime.ofInstant(created, ZoneOffset.UTC));
 
         List<RegisterPostReason> reasons = new ArrayList<>();
-        for(Map.Entry<String, Double> reason : vandalisedPost.getReasons().entrySet()){
+        for(Map.Entry<String, Double> reason : vandalisedPost.getReasonNames().entrySet()){
             RegisterPostReason registerPostReason = new RegisterPostReason();
             registerPostReason.setReasonName(reason.getKey());
             registerPostReason.setTripped(true);

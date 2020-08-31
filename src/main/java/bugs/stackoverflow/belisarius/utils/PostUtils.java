@@ -181,10 +181,12 @@ public class PostUtils {
         Severity severity = null;
        
         HashMap<String, Double> formattedReasonMessages = new HashMap<>();
+        HashMap<String, Double> reasonNames = new HashMap<>();
         for(Filter filter: filters){
             if(filter.isHit()){
             	filter.storeHit();
             	formattedReasonMessages.put(filter.getFormattedReasonMessage(), filter.getScore());
+                reasonNames.put(filter.getReasonName(), filter.getScore());
             	if (severity == null) {
             		severity = filter.getSeverity();
             	} else if (severity == Severity.LOW && (filter.getSeverity() == Severity.MEDIUM || filter.getSeverity() == Severity.HIGH)) {
@@ -195,6 +197,6 @@ public class PostUtils {
             }
         }
 
-        return new VandalisedPost(post, formattedReasonMessages, severity);
+        return new VandalisedPost(post, formattedReasonMessages, severity, reasonNames);
     }
 }

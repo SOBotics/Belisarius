@@ -40,9 +40,14 @@ public class OffensiveWordFilter implements Filter {
 
 	@Override
 	public String getFormattedReasonMessage() {
-		return "**Comment contains offensive " + (this.offensiveWords.size() > 0 ? "words" : "word") + " - ** " + getOffensiveWords();
+		return "**Edit summary contains offensive " + (this.offensiveWords.size() > 0 ? "words" : "word") + " - ** " + getOffensiveWords();
 	}
-	
+
+    @Override
+    public String getReasonName() {
+        return "Edit summary contains offensive " + (this.offensiveWords.size() > 1 ? "words: " : "word: ") + getOffensiveWords();
+    }
+
 	private String getOffensiveWords() {
 		StringBuilder words = new StringBuilder();
 

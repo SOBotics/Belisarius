@@ -40,6 +40,11 @@ public class FewUniqueCharactersFilter implements Filter {
 		return "**Few unique characters detected - ** " + this.listedWord;
 	}
 
+    @Override
+    public String getReasonName() {
+        return "Few unique characters in body";
+    }
+
 	@Override
 	public Severity getSeverity() {
 		return Severity.HIGH;

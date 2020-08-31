@@ -27,12 +27,14 @@ public class VandalisedPost {
 	private Post post;
 	private Map<String, Double> reasons;
 	private Severity severity;
+    private Map<String, Double> reasonNames;
 
 
-	public VandalisedPost(Post post, Map<String, Double> reasons, Severity severity) {
+	public VandalisedPost(Post post, Map<String, Double> reasons, Severity severity, Map<String, Double> reasonNames) {
 		this.post = post;
 		this.reasons = reasons;
 		this.severity = severity;
+        this.reasonNames = reasonNames;
 	}
 	
 	public Post getPost() {
@@ -60,6 +62,10 @@ public class VandalisedPost {
     
     public Map<String, Double> getReasons() {
     	return this.reasons;
+    }
+
+    public Map<String, Double> getReasonNames() {
+        return this.reasonNames;
     }
 
     public double getScore() {

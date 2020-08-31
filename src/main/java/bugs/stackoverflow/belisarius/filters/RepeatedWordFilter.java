@@ -41,12 +41,17 @@ public class RepeatedWordFilter implements Filter {
 		String message = "";
 		
 		if (this.repeatedWords.size()>0) {
-			message += "**Question contains repeated " + (this.repeatedWords.size()>1 ? "words" : "word") + " - ** " + getRepeatedWords() + " ";
+			message += "**Post contains repeated " + (this.repeatedWords.size()>1 ? "words" : "word") + " - ** " + getRepeatedWords() + " ";
 		}
 		
 		return message.trim();
 	}
-	
+
+	@Override
+    public String getReasonName() {
+        return "Contains repeated words";
+    }
+
 	private String getRepeatedWords() {
 		StringBuilder words = new StringBuilder();
 
