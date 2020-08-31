@@ -76,7 +76,7 @@ public class Monitor {
 
     private void reportPost(Room room, VandalisedPost vandalisedPost, Post post, boolean outputMessage) {
         try {
-            int higgsId = HiggsService.getInstance().registerVandalisedPost(vandalisedPost);
+            int higgsId = HiggsService.getInstance().registerVandalisedPost(vandalisedPost, post);
             PostUtils.storeVandalisedPost(room, vandalisedPost, higgsId);
             if (outputMessage) {
                 sendVandalismFoundMessage(room, post, vandalisedPost, higgsId);
