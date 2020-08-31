@@ -187,13 +187,7 @@ public class PostUtils {
             	filter.storeHit();
             	formattedReasonMessages.put(filter.getFormattedReasonMessage(), filter.getScore());
                 reasonNames.put(filter.getReasonName(), filter.getScore());
-            	if (severity == null) {
-            		severity = filter.getSeverity();
-            	} else if (severity == Severity.LOW && (filter.getSeverity() == Severity.MEDIUM || filter.getSeverity() == Severity.HIGH)) {
-            		severity = filter.getSeverity();
-            	} else if (severity == Severity.MEDIUM && filter.getSeverity() == Severity.HIGH) {
-            		severity = filter.getSeverity();
-            	}
+            	severity = filter.getSeverity();
             }
         }
 
