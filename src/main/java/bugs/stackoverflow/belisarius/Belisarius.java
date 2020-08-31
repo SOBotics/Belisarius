@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.sobotics.chatexchange.chat.Room;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -14,12 +15,30 @@ import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 import bugs.stackoverflow.belisarius.utils.PostUtils;
 
 public class Belisarius {
-	
+
+    public static final String README = "[ [Belisarius](https://stackapps.com/questions/7473) ";
+    public static final String HIGGS_URL = "| [Hippo](https://higgs.sobotics.org/Hippo/report/";
+    public static final String ALREADY_REPORTED = "The post has already been reported.";
+    public static final String NO_ISSUES = "No issues have been found.";
+    public static final String POTENTIAL_VANDALISM = "Potentially harmful edit found. Reason: ";
+
 	private long lastPostTime;
 	private ApiService apiService;
     private String site;
-    
-	public static String readMe = "https://stackapps.com/questions/7473";
+
+    public static String buildMessage(Room room, int higgsId, String postType, String severity, String status, String allRevs, int revNum, String revUrl) {
+        String message = README;
+        if (higgsId != 0) {
+            message += HIGGS_URL + String.valueOf(higgsId) + ") ";
+        }
+        message += "] [tag:" + postType + "]";
+        if (severity != null) {
+            message += " [tag:severity-" + severity + "]";
+        }
+        message += " " + status + " [All revisions](" + allRevs + "). Revision: [" + String.valueOf(revNum) + "](" + revUrl + ")";
+        room.send(message);
+        return message;
+    }
 	
 	public Belisarius(String site) {
 		this.lastPostTime = System.currentTimeMillis()/1000-60;

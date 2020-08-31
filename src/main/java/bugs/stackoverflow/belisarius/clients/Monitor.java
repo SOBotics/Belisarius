@@ -6,28 +6,28 @@ import bugs.stackoverflow.belisarius.Belisarius;
 import bugs.stackoverflow.belisarius.finders.VandalismFinder;
 import bugs.stackoverflow.belisarius.models.*;
 import bugs.stackoverflow.belisarius.services.HiggsService;
+import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 import bugs.stackoverflow.belisarius.utils.PostUtils;
 import org.sobotics.chatexchange.chat.Room;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import io.swagger.client.ApiException;
 
 public class Monitor {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Monitor.class);
 
 	public void run(Room room, List<Post> posts, boolean outputMessage) {
 		
 		try {
 			for (Post post : posts) {
 		        if (post.getRevisionNumber() != 1 && !post.getIsRollback()) {
-		        	VandalisedPost vandalisedPost = getVandalisedPost(room, post);
-		        	if (vandalisedPost != null && vandalisedPost.getSeverity() != null) {
-		        		if(!PostUtils.checkVandalisedPost(room, vandalisedPost))
-		        		{
-                            int higgsId = HiggsService.getInstance().registerVandalisedPost(vandalisedPost);
-		        			PostUtils.storeVandalisedPost(room, vandalisedPost, higgsId);
-		        			if (outputMessage) {
-								sendVandalismFoundMessage(room, post, vandalisedPost);
-							}
-		        		}
-		        	}
+                    VandalisedPost vandalisedPost = getVandalisedPost(room, post);
+                    boolean postExists = PostUtils.checkVandalisedPost(room, post);
+
+                    if (vandalisedPost != null && vandalisedPost.getSeverity() != null && !postExists) {
+                        reportPost(room, vandalisedPost, post, outputMessage);
+                    }
 		        }
 			}
 		} catch (Exception e) {
@@ -36,38 +36,25 @@ public class Monitor {
 		
 	}
 	
-	public void runOnce(Room room, Post post) {
+	public void runOnce(Room room, Post post, boolean outputMessage) {
 		
 		try {
 	        if (post.getRevisionNumber() != 1 && !post.getIsRollback()) {
-	        	VandalisedPost vandalisedPost = getVandalisedPost(room, post);
-	        	if (vandalisedPost != null && vandalisedPost.getSeverity() != null) {
-	        		sendVandalismFoundMessage(room, post, vandalisedPost);
-	        	}
-	        	else
-	        	{
-	        		sendNoVandalismFoundMessage(room, post);
-	        	}
-	        }
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-	}
-	
-	public void runOnceLocal(Room room, Post post) {
-		
-		try {
-	        if (post.getRevisionNumber() != 1 && !post.getIsRollback()) {
-	        	VandalisedPost vandalisedPost = getVandalisedPost(room, post);
-	        	if (vandalisedPost != null && vandalisedPost.getSeverity() != null) {
-	        		sendVandalismFoundMessage(room, post, vandalisedPost);
-	        	}
-	        	else
-	        	{
-	        		sendNoVandalismFoundMessage(room, post);
-	        	}
-	        }
+                VandalisedPost vandalisedPost = getVandalisedPost(room, post);
+                if (PostUtils.checkVandalisedPost(room, post)) { // the post already exists
+                    LOGGER.info("The given post has already been reported.");
+                    int higgsId = DatabaseUtils.getHiggsId(post.getPostId(), post.getRevisionNumber(), room.getRoomId());
+                    sendPostAlreadyReportedMessage(room, post, higgsId, vandalisedPost.getSeverity());
+                } else if (vandalisedPost != null && vandalisedPost.getSeverity() != null) {
+                    reportPost(room, vandalisedPost, post, outputMessage);
+                } else { // the revision is unlikely to be bad
+                    LOGGER.info("No vandalism was found for given post.");
+                    sendNoVandalismFoundMessage(room, post);
+                }
+            } else { // either revision number is one or the post is rollback
+                LOGGER.info("No vandalism found was found for given post.");
+                sendNoVandalismFoundMessage(room, post);
+            }
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -86,34 +73,33 @@ public class Monitor {
 
 		 return null;
 	}
-		
-	private void sendVandalismFoundMessage(Room room, Post post, VandalisedPost vandalisedPost) {
-		String message = "[ [Belisarius](" + Belisarius.readMe + ") ]";
-		message += " [tag:" + post.getPostType().toLowerCase() + "] ";
-		message += " [tag:severity-" + vandalisedPost.getSeverity() +  "]";
-		message += " Potentially harmful edit found. Reason: " + vandalisedPost.getReasonMessage();
-		message += " [All revisions](" + post.getAllRevisionsUrl() + ").";
-		message += " Revision: [" + String.valueOf(post.getRevisionNumber()) + "](" + post.getRevisionUrl() + ").";
-		room.send(message);
-	}
 
-	private void sendVandalismFoundMessage(Room room, Post post, VandalisedPost vandalisedPost, int higgsId) throws ApiException {
-		String message = "[ [Belisarius](" + Belisarius.readMe + ") ]";
-		message += "[ [Hippo](" + HiggsService.getInstance().getUrl()  + "/report/" + String.valueOf(higgsId) + ") ]";
-		message += " [tag:" + post.getPostType().toLowerCase() + "] ";
-		message += " [tag:severity-" + vandalisedPost.getSeverity() +  "]";
-		message += " Potentially harmful edit found. Reason: " + vandalisedPost.getReasonMessage();
-		message += " [All revisions](" + post.getAllRevisionsUrl() + ").";
-		message += " Revision: [" + String.valueOf(post.getRevisionNumber()) + "](" + post.getRevisionUrl() + ").";
-		room.send(message);
-	}
-	
-	private void sendNoVandalismFoundMessage(Room room, Post post) {
-		String message = "[ [Belisarius](" + Belisarius.readMe + ") ]";
-		message += " [tag:" + post.getPostType().toLowerCase() + "] No issues have been found.";
-		message += " [All revisions](" + post.getAllRevisionsUrl() + ").";
-		message += " Revision: [" + String.valueOf(post.getRevisionNumber()) + "](" + post.getRevisionUrl() + ").";
-		room.send(message);
-	}
+    private void reportPost(Room room, VandalisedPost vandalisedPost, Post post, boolean outputMessage) {
+        try {
+            int higgsId = HiggsService.getInstance().registerVandalisedPost(vandalisedPost);
+            PostUtils.storeVandalisedPost(room, vandalisedPost, higgsId);
+            if (outputMessage) {
+                sendVandalismFoundMessage(room, post, vandalisedPost, higgsId);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendVandalismFoundMessage(Room room, Post post,VandalisedPost vandalisedPost, int higgsId) throws ApiException {
+        Belisarius.buildMessage(room, higgsId, post.getPostType().toLowerCase(), vandalisedPost.getSeverity(),
+                                Belisarius.POTENTIAL_VANDALISM + vandalisedPost.getReasonMessage(), post.getAllRevisionsUrl(),
+                                post.getRevisionNumber(), post.getRevisionUrl());
+    }
+
+    private void sendNoVandalismFoundMessage(Room room, Post post) {
+        Belisarius.buildMessage(room, 0, post.getPostType().toLowerCase(), null, Belisarius.NO_ISSUES, post.getAllRevisionsUrl(),
+                                post.getRevisionNumber(), post.getRevisionUrl());
+    }
+
+    private void sendPostAlreadyReportedMessage(Room room, Post post, int higgsId, String severity) {
+        Belisarius.buildMessage(room, higgsId, post.getPostType().toLowerCase(), severity, Belisarius.ALREADY_REPORTED, post.getAllRevisionsUrl(),
+                                post.getRevisionNumber(), post.getRevisionUrl());
+    }
 		
 }

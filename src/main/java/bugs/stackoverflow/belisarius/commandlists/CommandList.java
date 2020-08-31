@@ -16,7 +16,6 @@ public class CommandList {
 		List<Command> commands = new ArrayList<>(Arrays.asList(
 				new AliveCommand(message),
 				new CheckCommand(message, service),
-				new CheckLocalCommand(message, service),
 				new HelpCommand(message),
 				new QuotaCommand(message),
 				new RebootCommand(message, service),

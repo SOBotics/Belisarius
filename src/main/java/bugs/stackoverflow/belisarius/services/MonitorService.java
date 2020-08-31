@@ -62,7 +62,7 @@ public class MonitorService {
                     bots.put(site, new Belisarius(site));
                 }
 
-                room.send("[ [Belisarius](" + Belisarius.readMe + ") ] started.");
+                room.send(Belisarius.README + "] started.");
 
                 rooms.add(room);
             }
@@ -106,23 +106,7 @@ public class MonitorService {
 		if (chatroom != null)
 		{
 			Post post = postMap.get(chatroom.getSiteName());
-			new Monitor().runOnce(room, post);
-		}
-    }
-    
-    public void executeOnceLocal(String postId, String revisionId, Room room) {
-    	Map<String, Post> postMap = new HashMap<>();
-    	
-    	for (String site : bots.keySet()) {
-    		postMap.put(site, bots.get(site).getPostLocal(Long.valueOf(postId), Integer.valueOf(revisionId), room.getRoomId()));
-    	}
-
-		Chatroom chatroom = chatrooms.stream().filter((r) -> r.getRoomId() == room.getRoomId()).findFirst().orElse(null);
-    	
-		if (chatroom != null)
-		{
-			Post post = postMap.get(chatroom.getSiteName());
-			new Monitor().runOnceLocal(room, post);
+			new Monitor().runOnce(room, post, chatroom.getOutputMessage());
 		}
     }
 	
@@ -136,7 +120,7 @@ public class MonitorService {
         this.runMonitor();
         for(int i=0; i<rooms.size(); i++){
             Room room = rooms.get(i);
-            room.send("[ [Belisarius](" + Belisarius.readMe + ") ] rebooted at " + Instant.now());
+            room.send(Belisarius.README + "] rebooted at " + Instant.now());
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
