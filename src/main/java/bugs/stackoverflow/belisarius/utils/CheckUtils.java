@@ -21,11 +21,6 @@ public class CheckUtils {
         return getCaughtByRegex(blacklistedWords, removeHtml(stripTags(target)));
     }
 
-    public static boolean checkIfContainsKeyword(String target, String keyword) {
-        String body = stripTags(target);
-        return body.toLowerCase().contains(keyword.toLowerCase());
-    }
-
     private static String stripTags(String target) {
         Document doc = Jsoup.parse("<body>" + target + "</body>");
         doc.getElementsByTag("a").remove();
