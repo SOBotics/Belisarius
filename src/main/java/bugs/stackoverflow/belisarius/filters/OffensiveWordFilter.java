@@ -42,7 +42,7 @@ public class OffensiveWordFilter implements Filter {
 
     @Override
     public String getFormattedReasonMessage() {
-        return "**Edit summary contains offensive " + (this.offensiveWords.size() > 0 ? "words" : "word") + " - ** " + getOffensiveWords();
+        return "**Edit summary contains offensive " + (this.offensiveWords.size() > 0 ? "words" : "word") + ":** " + getOffensiveWords();
     }
 
     @Override

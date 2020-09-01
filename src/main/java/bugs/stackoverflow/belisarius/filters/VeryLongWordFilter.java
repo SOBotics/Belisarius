@@ -39,7 +39,7 @@ public class VeryLongWordFilter implements Filter {
 
     @Override
     public String getFormattedReasonMessage() {
-        return "**Contains very long word - ** " + this.listedWord.substring(0, 50) + "...";
+        return "**Contains very long word:** " + this.listedWord.substring(0, 40) + "...";
     }
 
     @Override
