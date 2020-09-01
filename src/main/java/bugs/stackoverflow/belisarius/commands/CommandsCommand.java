@@ -20,15 +20,15 @@ public class CommandsCommand implements Command {
 		return CommandUtils.checkForCommand(this.message.getPlainContent(),this.getName());
 	}
 
-	@Override
-	public void execute(Room room) {
-		String commandString = "";
-		for (Command c : this.commands) {
-			commandString += "    " + padRight(c.getName(), 15) + " - " + c.getDescription() + "\n";
-		}
-		room.replyTo(this.message.getId(), "The list of commands are as follows:");
-		room.send(commandString);
-	}
+    @Override
+    public void execute(Room room) {
+        StringBuilder commandString = new StringBuilder();
+        for (Command c : this.commands) {
+            commandString.append("    ").append(padRight(c.getName(), 15)).append(" - ").append(c.getDescription()).append("\n");
+        }
+        room.replyTo(this.message.getId(), "The list of commands are as follows:");
+        room.send(commandString.toString());
+    }
 	
     public static String padRight(String s, int n) {
         return String.format("%1$-" + n + "s", s);
