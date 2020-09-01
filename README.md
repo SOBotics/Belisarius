@@ -60,7 +60,7 @@ The source code is available on [GitHub][8] and suggestions are welcome. The pro
  [1]: https://api.stackexchange.com/docs/posts
  [2]: https://api.stackexchange.com/docs/revisions-by-ids
  [3]: https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance
- [4]: https://stackoverflow.com/users/8149646/belisarius
+ [4]: https://stackoverflow.com/users/13903854/belisarius
  [5]: http://chat.stackoverflow.com/rooms/111347/sobotics
  [6]: http://belisarius.sobotics.org/commands
  [7]: https://i.stack.imgur.com/521ML.png
