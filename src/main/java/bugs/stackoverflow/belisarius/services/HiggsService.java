@@ -5,6 +5,7 @@ import java.util.*;
 import io.swagger.client.*;
 import io.swagger.client.api.BotApi;
 import io.swagger.client.model.*;
+import org.jsoup.parser.Parser;
 import org.threeten.bp.*;
 
 import bugs.stackoverflow.belisarius.models.Post;
@@ -56,12 +57,17 @@ public class HiggsService {
         String body = bodyMarkdown == null ? "The body was not changed in this revision" : bodyMarkdown;
         String lastBody = lastBodyMarkdown == null ? "The body was not changed in this revision" : lastBodyMarkdown;
 
+        String title = Parser.unescapeEntities(post.getTitle(), true);
+        if (post.getPostType().equals("answer")) {
+            title = "Answer to: " + title; // make it clear it's an answer
+        }
+
         RegisterPostRequest postRequest = new RegisterPostRequest();
         postRequest.setContentId(Long.valueOf(post.getPostId()));
         postRequest.setContentSite(post.getSite());
         postRequest.setContentType(post.getPostType());
         postRequest.setContentUrl(post.getRevisionUrl());
-        postRequest.setTitle(post.getTitle());
+        postRequest.setTitle(title);
         postRequest.setAuthorName(post.getUser().getUsername());
         postRequest.setAuthorReputation((int) post.getUser().getReputation());
 
@@ -76,7 +82,7 @@ public class HiggsService {
         contentFragmentBody.setOrder(1);
 
         RegisterPostContentFragment contentFragmentComment = new RegisterPostContentFragment();
-        contentFragmentComment.setContent(post.getComment());
+        contentFragmentComment.setContent(Parser.unescapeEntities(post.getComment(), true)); // unescape HTML in summary
         contentFragmentComment.setName("Edit summary");
         contentFragmentComment.setOrder(3);
 
