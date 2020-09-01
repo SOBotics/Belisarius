@@ -1,9 +1,11 @@
 package bugs.stackoverflow.belisarius;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.sobotics.chatexchange.chat.Room;
 
 import com.google.gson.JsonElement;
@@ -11,7 +13,6 @@ import com.google.gson.JsonObject;
 
 import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.services.ApiService;
-import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 import bugs.stackoverflow.belisarius.utils.PostUtils;
 
 public class Belisarius {
@@ -46,149 +47,143 @@ public class Belisarius {
 		this.site = site;
 	}
 	
-	public List<Post> getPosts() {
-		List<Post> posts = new ArrayList<>();
-		List<Long> postIds = getPostIds();
-		
-		try {
-			if (postIds.size() > 0) {
-				List<Long> postIdsRemaining = new ArrayList<>();
-				do {
-					if (postIdsRemaining.size()>0) {
-						postIds = postIdsRemaining;
-						postIdsRemaining = new ArrayList<>();
-					}
-					int count = 0;
-					StringBuilder postIdInput = new StringBuilder();
-					for (long id : postIds) {
-						if (count != 50) {
-							postIdInput.append(id).append(";");
-						} else {
-							postIdsRemaining.add(id);
-						}
-						count++;
-					}
-					List<Post> postsWithLatestRevisions = getPostsWithLatestRevision(postIdInput.toString());
-					if (postsWithLatestRevisions.size()>0) {
-						posts.addAll(postsWithLatestRevisions);
-					}
-				} while (postIdsRemaining.size()>0);
-			}
-		} catch (Exception e){
-			e.printStackTrace();
-		}
-		
-		for (Post post : posts) {
-			post.setSite(this.site);
-		}
-		
-		return posts;
-	}
-	
-	public Post getPost(String postId) {
-		Post post = null;
-		try {
-			if (postId != null) {
-				List<Post> postsWithLatestRevisions = getPostsWithLatestRevision(postId);
-				if (postsWithLatestRevisions.size()==1) {
-					post = postsWithLatestRevisions.get(0);
-				}
-			}
-		} catch (Exception e){
-			e.printStackTrace();
-		}
-		
-	    if(post != null) {
+    public List<Post> getPosts() {
+        List<Post> posts = new ArrayList<>();
+        List<Post> postsWithLatestRevisions = new ArrayList<>();
+        Map<Long, String> postIdsAndTitles = getPostIdsAndTitles();
+
+        try {
+            if (postIdsAndTitles.size() > 0) {
+                postsWithLatestRevisions = getPostsWithLatestRevision(postIdsAndTitles);
+                if (postsWithLatestRevisions.size() > 0) {
+                    posts.addAll(postsWithLatestRevisions);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        for (Post post : posts) {
             post.setSite(this.site);
         }
 
-		return post;
-	}
+        return posts;
+    }
 	
-	public Post getPostLocal(long postId, int revisionId, int roomId) {
-		Post post = null;
-		try {
-			post = DatabaseUtils.getPost(postId, revisionId, roomId);
-		} catch (Exception e){
-			e.printStackTrace();
-		}
+    public Post getPost(String postId) {
+        Post post = null;
+        Map<Long, String> postIdAndTitle = new HashMap<>();
+        postIdAndTitle.put(Long.valueOf(postId), getPostTitle(postId));
+        try {
+            if (postId != null) {
+                List<Post> postsWithLatestRevisions = getPostsWithLatestRevision(postIdAndTitle);
+                if (postsWithLatestRevisions.size() == 1) {
+                    post = postsWithLatestRevisions.get(0);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        if(post != null) {
+        if (post != null) {
             post.setSite(this.site);
         }
-		
-		return post;
-	}
+        return post;
+    }
 
-	private List<Long> getPostIds() {
-		List<Long> postIds = new ArrayList<>();
-		
-		JsonObject postsJSON ;
-		try {
-			long lastActivityDate = 0;
-			long maxActivityDate = this.lastPostTime;
-			int page = 1;
-			do {
-				postsJSON = apiService.getPostIdsByActivityDesc(page);
-	            for (JsonElement post : postsJSON.get("items").getAsJsonArray()) {
-            		lastActivityDate = post.getAsJsonObject().get("last_activity_date").getAsLong();
-	            	
-            		if (PostUtils.postBeenEdited(post) && PostUtils.editorAlsoOwner(post) && lastPostTime < lastActivityDate) {
-	            		long postId = post.getAsJsonObject().get("post_id").getAsLong();
-	            		if (!postIds.contains(postId)) {
-	            			postIds.add(postId);
-	            		}
-	            	}
-            		
-	                if (maxActivityDate < lastActivityDate) {
-	            		maxActivityDate = lastActivityDate;
-	            	}
-	            }
-	            page++;
-			} while (lastPostTime < lastActivityDate & page<10);
-		
-           	this.lastPostTime = maxActivityDate;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return postIds;
-	}
+    private Map<Long, String> getPostIdsAndTitles() {
+        Map<Long, String> postIdsAndTitles = new HashMap<>();
+
+        JsonObject postsJson;
+        try {
+            long lastActivityDate = 0;
+            long maxActivityDate = this.lastPostTime;
+            int page = 1;
+            do {
+                postsJson = apiService.getPostIdsByActivityDesc(page);
+                for (JsonElement post : postsJson.get("items").getAsJsonArray()) {
+                    lastActivityDate = post.getAsJsonObject().get("last_activity_date").getAsLong();
+
+                    if (PostUtils.postBeenEdited(post) && PostUtils.editorAlsoOwner(post) && lastPostTime < lastActivityDate) {
+                        long postId = post.getAsJsonObject().get("post_id").getAsLong();
+                        String title = post.getAsJsonObject().get("title").getAsString();
+                        if (!postIdsAndTitles.containsKey(postId) && !postIdsAndTitles.containsValue(title)) {
+                            postIdsAndTitles.put(postId, title);
+                        }
+                    }
+
+                    if (maxActivityDate < lastActivityDate) {
+                        maxActivityDate = lastActivityDate;
+                    }
+                }
+                page++;
+            } while (lastPostTime < lastActivityDate & page < 10);
+            this.lastPostTime = maxActivityDate;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return postIdsAndTitles;
+    }
+
+    private String getPostTitle(String postId) {
+        String title = null;
+        try {
+            JsonObject postJson = apiService.getMorePostInformation(postId);
+            for (JsonElement post : postJson.get("items").getAsJsonArray()) {
+                title = post.getAsJsonObject().get("title").getAsString();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return title;
+    }
 	
-	private List<Post> getPostsWithLatestRevision(String postIdFilter) {
-		List<Post> revisions = new ArrayList<>();
-		String[] postIds = postIdFilter.split(";");
-		boolean hasMore = false;
-		do {
-			
-			try {
-				if (postIds.length>0) {
-					JsonObject postsJSON = apiService.getLastestRevisions(String.join(";", postIds));
-					hasMore = postsJSON.get("has_more").getAsBoolean();
-					for (String id : postIds) {
-						int revisionNo = 0;
-						Post revision = null;
-						for (JsonElement post : postsJSON.get("items").getAsJsonArray()) {
-						    if (post.getAsJsonObject().get("post_id").getAsInt() == Integer.parseInt(id) && post.getAsJsonObject().has("revision_number")) {
-						    	if (revisionNo < post.getAsJsonObject().get("revision_number").getAsInt()) {
-						    		revisionNo = post.getAsJsonObject().get("revision_number").getAsInt();
-						    		revision = PostUtils.getPost(post.getAsJsonObject(), site);
-						    	}
-						    }
-						}
-					    if (revision != null) {
-					    	revisions.add(revision);
-					    }
-						postIds = ArrayUtils.removeElement(postIds, id);
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-		} while (hasMore && postIds.length>0);
-		
-		return revisions;
-	}
+    private List<Post> getPostsWithLatestRevision(Map<Long, String> idsAndTitles) {
+        List<Post> revisions = new ArrayList<>();
+        String[] postIds = idsAndTitles.keySet().stream().map(t -> t.toString()).toArray(String[]::new); // for .join()
+        boolean hasMore = false;
+        Iterator<Map.Entry<Long, String>> iter = idsAndTitles.entrySet().iterator();
+
+        do {
+            try {
+                if (postIds.length > 0) {
+                    JsonObject postsJson = apiService.getLastestRevisions(String.join(";", postIds));
+                    hasMore = postsJson.get("has_more").getAsBoolean();
+
+                    while (iter.hasNext()) {
+                        Map.Entry<Long, String> entry = iter.next();
+                        Long postId = entry.getKey();
+                        String title = entry.getValue();
+                        int revisionNo = 0;
+                        Post revision = null;
+                        JsonObject getPostJson = null;
+                        for (JsonElement post : postsJson.get("items").getAsJsonArray()) {
+                            JsonObject postJson = post.getAsJsonObject();
+                            if (postJson.get("post_id").getAsInt() == postId.intValue() && postJson.has("revision_number")) {
+                                int currentRevisionNumber = postJson.get("revision_number").getAsInt();
+                                if (revisionNo == 0) { // current revision; get title and guid
+                                    revisionNo = currentRevisionNumber;
+                                    getPostJson = postJson;
+                                } else if (revisionNo == currentRevisionNumber + 1) {
+                                    String prevRevisionGuid = postJson.get("revision_guid").getAsString();
+                                    revision = PostUtils.getPost(getPostJson, site, title);
+                                    break;
+                                }
+                            }
+                        }
+                        if (revision != null) {
+                            revisions.add(revision);
+                        }
+                        iter.remove();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } while (hasMore && postIds.length > 0);
+
+        return revisions;
+    }
 	
 }
