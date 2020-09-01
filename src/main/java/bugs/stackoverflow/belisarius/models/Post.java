@@ -20,7 +20,7 @@ public class Post {
     private String site;
     private String revisionGuid;
     private String previousRevisionGuid;
-    
+
     public int getPostId() {
         return postId;
     }
@@ -28,13 +28,13 @@ public class Post {
     public void setPostId(int postId) {
         this.postId = postId;
     }
-    
+
     public int getRevisionNumber() {
-    	return revisionNumber;
+        return revisionNumber;
     }
-    
+
     public void setRevisionNumber(int revisionNumber) {
-    	this.revisionNumber = revisionNumber;
+        this.revisionNumber = revisionNumber;
     }
 
     public long getCreationDate() { return creationDate; }
@@ -48,23 +48,23 @@ public class Post {
     public String getAllRevisionsUrl() { return allRevisionsUrl; }
 
     public void setAllRevisionsUrl(String allRevisionsUrl) { this.allRevisionsUrl = allRevisionsUrl; }
-    
+
     public void setTitle(String title) {
-    	this.title = title;
+        this.title = title;
     }
-    
+
     public String getTitle() {
-    	return title;
+        return title;
     }
 
     public void setLastTitle(String lastTitle) {
-    	this.lastTitle = lastTitle;
+        this.lastTitle = lastTitle;
     }
-    
+
     public String getLastTitle() {
-    	return lastTitle;
+        return lastTitle;
     }
-    
+
     public String getBody() {
         return body;
     }
@@ -104,31 +104,31 @@ public class Post {
     public void setUser(SOUser user) {
         this.user = user;
     }
-    
+
     public boolean getIsRollback() {
-    	return isRollback;
+        return isRollback;
     }
-    
+
     public void setIsRollback(boolean isRollback) {
-    	this.isRollback = isRollback;
+        this.isRollback = isRollback;
     }
-    
+
     public String getPostType() {
-    	return postType;
+        return postType;
     }
-    
+
     public void setPostType(String postType) {
-    	this.postType = postType;
+        this.postType = postType;
     }
-    
+
     public String getComment() {
-    	return comment;
+        return comment;
     }
-    
+
     public void setComment(String comment) {
-    	this.comment = comment;
+        this.comment = comment;
     }
-    
+
     public String getSite() {
         return site;
     }

@@ -12,30 +12,30 @@ import io.swagger.client.ApiException;
 
 public class Application {
 
-	public static void main(String[] args) throws ApiException {
+    public static void main(String[] args) throws ApiException {
 
-		StackExchangeClient client = LoginUtils.getClient();
+        StackExchangeClient client = LoginUtils.getClient();
 
-		DatabaseUtils.createRoomTable();
-		DatabaseUtils.createVandalisedPostTable();
-		DatabaseUtils.createReasonTable();
-		DatabaseUtils.createBlacklistedWordTable();
-		DatabaseUtils.createBlacklistedWordCaughtTable();
-		DatabaseUtils.createOffensiveWordTable();
-		DatabaseUtils.createOffensiveWordCaughtTable();
-		DatabaseUtils.createReasonCaughtTable();
-		DatabaseUtils.createFeedbackTable();
-		DatabaseUtils.createHiggsTable();
+        DatabaseUtils.createRoomTable();
+        DatabaseUtils.createVandalisedPostTable();
+        DatabaseUtils.createReasonTable();
+        DatabaseUtils.createBlacklistedWordTable();
+        DatabaseUtils.createBlacklistedWordCaughtTable();
+        DatabaseUtils.createOffensiveWordTable();
+        DatabaseUtils.createOffensiveWordCaughtTable();
+        DatabaseUtils.createReasonCaughtTable();
+        DatabaseUtils.createFeedbackTable();
+        DatabaseUtils.createHiggsTable();
 
-		Higgs higgs = DatabaseUtils.getHiggs(3); //Hippo
+        Higgs higgs = DatabaseUtils.getHiggs(3); //Hippo
         if(higgs != null){
-        	HiggsService.initInstance(higgs.getUrl(), higgs.getKey());
-		}
+            HiggsService.initInstance(higgs.getUrl(), higgs.getKey());
+        }
 
-		List<Chatroom> rooms = DatabaseUtils.getRooms();
-		MonitorService monitorService = new MonitorService(client, rooms);
-		monitorService.startMonitor();
-		monitorService.runMonitor();
-	}
+        List<Chatroom> rooms = DatabaseUtils.getRooms();
+        MonitorService monitorService = new MonitorService(client, rooms);
+        monitorService.startMonitor();
+        monitorService.runMonitor();
+    }
 
 }

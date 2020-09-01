@@ -11,33 +11,33 @@ import org.sobotics.chatexchange.chat.event.*;
 
 public class Chatroom {
 
-	private int roomId;
-	private ChatHost chatHost;
-	private String site;
-	private boolean outputMessage;
+    private int roomId;
+    private ChatHost chatHost;
+    private String site;
+    private boolean outputMessage;
 
-	public Chatroom(int roomId, ChatHost chatHost, String site, boolean outputMessage) {
-		this.roomId = roomId;
-		this.chatHost = chatHost;
-		this.site = site;
-		this.outputMessage = outputMessage;
-	}
+    public Chatroom(int roomId, ChatHost chatHost, String site, boolean outputMessage) {
+        this.roomId = roomId;
+        this.chatHost = chatHost;
+        this.site = site;
+        this.outputMessage = outputMessage;
+    }
 
-	public int getRoomId() { return roomId; }
-	public ChatHost getHost() { return chatHost; }
-	public String getSiteName() { return site; }
-	public boolean getOutputMessage() { return outputMessage; }
-	
-	public Consumer<UserMentionedEvent> getUserMentioned(Room room, MonitorService service){
-		return event->new CommandList().mention(room, event, service);
-	}
+    public int getRoomId() { return roomId; }
+    public ChatHost getHost() { return chatHost; }
+    public String getSiteName() { return site; }
+    public boolean getOutputMessage() { return outputMessage; }
 
-	public Consumer<MessageReplyEvent> getPostedReply(Room room) {
-		return event-> ChatUtils.reply(room, event);
-	}
+    public Consumer<UserMentionedEvent> getUserMentioned(Room room, MonitorService service){
+        return event->new CommandList().mention(room, event, service);
+    }
 
-	public Consumer<MessagePostedEvent> getPostedMessage(Room room) {
-		return event->new CommandList().posted(room, event);
-	}
+    public Consumer<MessageReplyEvent> getPostedReply(Room room) {
+        return event-> ChatUtils.reply(room, event);
+    }
+
+    public Consumer<MessagePostedEvent> getPostedMessage(Room room) {
+        return event->new CommandList().posted(room, event);
+    }
 
 }

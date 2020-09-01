@@ -17,7 +17,7 @@ public class PostReport {
     }
 
     public Map<String, Double> getReasons() {
-    	return this.reasons;
+        return this.reasons;
     }
-    
+
 }
