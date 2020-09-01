@@ -5,6 +5,7 @@ import com.google.gson.*;
 import bugs.stackoverflow.belisarius.services.ApiService;
 
 import org.jsoup.*;
+import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,6 +73,10 @@ public class JsonUtils {
         return message.replaceAll("(\\[|\\]|_|\\*|`)", "\\\\$1");
     }
     
-
+    public static String getHtml(String url) throws IOException {
+    	Document document = Jsoup.connect(url).get();  
+		String bodyMarkdown = document.body().getElementsByTag("pre").text();
+		return bodyMarkdown;
+    }
 
 }

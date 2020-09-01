@@ -40,6 +40,10 @@ public class DatabaseUtils {
 		                                                      " Site text, \n" +
 				                                              " Severity text, \n" +
                                                               " HiggsId integer, \n" +
+                                                              " RevisionGuid text, \n" +
+                                                              " PreviousRevisionGuid text, \n" +
+		                                                      " LastBodyMarkdown text, \n" +
+		                                                      " BodyMarkdown text, \n" +
 				                                              " PRIMARY KEY(PostId, RevisionId, RoomId));";
 		                                                        
         try (Connection conn = connection.getConnection();
@@ -232,11 +236,12 @@ public class DatabaseUtils {
 	}
 	
 	static void storeVandalisedPost(long postId, long creationDate, int revisionId, int roomId, long ownerId, String title, String lastTitle, String body, String lastBody,
-									boolean IsRollback, String postType, String comment, String site, String severity, int higgsId) {
+									boolean IsRollback, String postType, String comment, String site, String severity, int higgsId, String revisionGuid,
+									String previousRevisionGuid, String lastBodyMarkdown, String bodyMarkdown) {
 		
 		SQLiteConnection connection = new SQLiteConnection();
 		
-		String sql = "INSERT INTO VandalisedPost VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+		String sql = "INSERT INTO VandalisedPost VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 		
         try (Connection conn = connection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -255,6 +260,10 @@ public class DatabaseUtils {
         	pstmt.setString(13, site);
         	pstmt.setString(14, severity);
         	pstmt.setInt(15, higgsId);
+        	pstmt.setString(16, revisionGuid);
+        	pstmt.setString(17, previousRevisionGuid);
+        	pstmt.setString(18, lastBodyMarkdown);
+        	pstmt.setString(19, bodyMarkdown);
 
         	pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -459,6 +468,9 @@ public class DatabaseUtils {
 				     "       PostType, \n" +
 		             "       Comment, \n" +
                      "       Site \n" +
+                     "       HiggsId \n" +
+                     "       RevisionGuid \n" +
+                     "       PreviousRevisionGuid \n" +
 		             "  FROM VandalisedPost \n" +
 				     " WHERE PostId = ? \n" +
 		             "   AND RevisionId = ? \n" +
@@ -476,7 +488,8 @@ public class DatabaseUtils {
         	while (rs.next()) {
         		post = PostUtils.getPost(rs.getInt("PostId"), rs.getLong("CreationDate"), rs.getInt("RevisionId"), rs.getString("Title"),
                                          rs.getString("LastTitle"), rs.getString("Body"),  rs.getString("LastBody"), rs.getBoolean("IsRollback"),
-                                         rs.getString("PostType"), rs.getString("Comment"), rs.getInt("OwnerId"), rs.getString("Site"));
+                                         rs.getString("PostType"), rs.getString("Comment"), rs.getInt("OwnerId"), rs.getString("Site"),
+                                         rs.getString("RevisionGuid"), rs.getString("PreviousRevisionGuid"));
         	}
 		} catch (SQLException e) {
 			LOGGER.info("Failed to find vandalised post. PostId: " + String.valueOf(postId) + "; RevisionId: " + String.valueOf(revisionId) + "; RoomId: " + String.valueOf(roomId) + ".", e);

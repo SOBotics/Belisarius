@@ -51,10 +51,10 @@ public class HiggsService {
         Configuration.getDefaultApiClient().setAccessToken(tokenResponse.getToken());
     }
 
-    public int registerVandalisedPost(VandalisedPost vandalisedPost, Post post) throws ApiException {
+    public int registerVandalisedPost(VandalisedPost vandalisedPost, Post post, String lastBodyMarkdown, String bodyMarkdown) throws ApiException {
 
-        String body = post.getBody() == null ? "The body was not changed in this revision" : post.getLastBody();
-        String lastBody = post.getLastBody() == null ? "The body was not changed in this revision" : post.getLastBody();
+        String body = bodyMarkdown == null ? "The body was not changed in this revision" : bodyMarkdown;
+        String lastBody = lastBodyMarkdown == null ? "The body was not changed in this revision" : lastBodyMarkdown;
 
         RegisterPostRequest postRequest = new RegisterPostRequest();
         postRequest.setContentId(Long.valueOf(post.getPostId()));

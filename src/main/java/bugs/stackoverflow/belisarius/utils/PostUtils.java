@@ -50,7 +50,7 @@ public class PostUtils {
 	}
 
 	
-	public static Post getPost(JsonObject post, String site, String title){
+	public static Post getPost(JsonObject post, String site, String title, String previousRevisionGuid){
 
         Post np = new Post();
 
@@ -81,7 +81,10 @@ public class PostUtils {
         if (post.has("comment")) {
         	np.setComment(post.get("comment").getAsString());
         }
-        
+
+        np.setRevisionGuid(post.get("revision_guid").getAsString());
+        np.setPreviousRevisionGuid(previousRevisionGuid);
+
         JsonObject userJSON = post.get("user").getAsJsonObject();
         SOUser user = new SOUser();
        
@@ -99,8 +102,8 @@ public class PostUtils {
         
         return np;
     }
-    static Post getPost(int postId, long creationDate, int revisionId, String title, String lastTitle, String body, String lastBody, boolean isRollback,
-                        String postType, String comment, int ownerId, String site){
+    static Post getPost(int postId, long creationDate, int revisionId, String title, String lastTitle, String body, String lastBody,
+    					boolean isRollback, String postType, String comment, int ownerId, String site, String revisionGuid, String previousRevisionGuid) {
 
         Post np = new Post();
 
@@ -110,12 +113,14 @@ public class PostUtils {
         np.setRevisionUrl("https://" + site + ".com/revisions/" + String.valueOf(postId) + "/" + String.valueOf(revisionId));
         np.setAllRevisionsUrl("https://" + site + ".com/posts/" + String.valueOf(postId) + "/revisions");
         np.setTitle(title);
-        np.setLastBody(lastTitle);
+        np.setLastTitle(lastTitle);
         np.setBody(body);
         np.setLastBody(lastBody);
         np.setIsRollback(isRollback);
         np.setPostType(postType);
         np.setComment(comment);
+		np.setRevisionGuid(revisionGuid);
+		np.setPreviousRevisionGuid(previousRevisionGuid);
 
         SOUser user = new SOUser();
         user.setUserId(ownerId);
@@ -146,10 +151,12 @@ public class PostUtils {
         return DatabaseUtils.checkVandalisedPostExists(post.getPostId(), post.getRevisionNumber(), room.getRoomId());
     }
 	
-	public static void storeVandalisedPost(Room room, VandalisedPost vandalisedPost, int higgsId) {
+	public static void storeVandalisedPost(Room room, VandalisedPost vandalisedPost, int higgsId, String lastBodyMarkdown, String bodyMarkdown) {
 		Post post = vandalisedPost.getPost();
-		DatabaseUtils.storeVandalisedPost(post.getPostId(), post.getCreationDate(), post.getRevisionNumber(), room.getRoomId(), post.getUser().getUserId(), post.getTitle(), post.getLastTitle(), post.getBody(), post.getLastBody(),
-				                          post.getIsRollback(), post.getPostType(), post.getComment(), post.getSite(), vandalisedPost.getSeverity(), higgsId);
+		DatabaseUtils.storeVandalisedPost(post.getPostId(), post.getCreationDate(), post.getRevisionNumber(), room.getRoomId(), post.getUser().getUserId(),
+										  post.getTitle(), post.getLastTitle(), post.getBody(), post.getLastBody(), post.getIsRollback(), post.getPostType(),
+										  post.getComment(), post.getSite(), vandalisedPost.getSeverity(), higgsId, post.getRevisionGuid(),
+										  post.getPreviousRevisionGuid(), lastBodyMarkdown, bodyMarkdown);
 		
 		
 		
