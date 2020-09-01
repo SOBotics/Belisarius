@@ -9,3 +9,4 @@
 *.MF
 url*.txt
 json*.txt
+dependency-reduced-pom.xml
