@@ -30,7 +30,7 @@ public class OffensiveWordFilter implements Filter {
             offensiveWords = CheckUtils.checkForOffensiveWords(this.post.getComment());
         }
 
-        return getScore()>0;
+        return getScore() > 0;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class OffensiveWordFilter implements Filter {
     private String getOffensiveWords() {
         StringBuilder words = new StringBuilder();
 
-        for(String word : offensiveWords.values()) {
+        for (String word : offensiveWords.values()) {
             words.append(word);
         }
 

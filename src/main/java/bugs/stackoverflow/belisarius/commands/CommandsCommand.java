@@ -17,7 +17,7 @@ public class CommandsCommand implements Command {
 
     @Override
     public boolean validate() {
-        return CommandUtils.checkForCommand(this.message.getPlainContent(),this.getName());
+        return CommandUtils.checkForCommand(this.message.getPlainContent(), this.getName());
     }
 
     @Override

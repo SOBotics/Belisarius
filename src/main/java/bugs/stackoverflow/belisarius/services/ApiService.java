@@ -8,11 +8,11 @@ import bugs.stackoverflow.belisarius.utils.ApiUtils;
 
 public class ApiService {
 
+    private static int quota = 0;
+    private static long backOffUntil = 0L;
+
     private String apiKey;
     private String site;
-
-    private static int quota=0;
-    private static long backOffUntil = 0L;
 
     public ApiService(String site) {
         PropertyService ps = new PropertyService();
@@ -55,6 +55,4 @@ public class ApiService {
     public static long getBackOffUntil() {
         return backOffUntil;
     }
-
-
 }

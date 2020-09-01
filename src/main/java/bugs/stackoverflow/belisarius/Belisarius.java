@@ -27,6 +27,12 @@ public class Belisarius {
     private ApiService apiService;
     private String site;
 
+    public Belisarius(String site) {
+        this.lastPostTime = System.currentTimeMillis() / 1000 - 60;
+        this.apiService = new ApiService(site);
+        this.site = site;
+    }
+
     public static String buildMessage(Room room, int higgsId, String postType, String severity, String status, String allRevs, int revNum, String revUrl) {
         String message = README;
         if (higgsId != 0) {
@@ -40,13 +46,7 @@ public class Belisarius {
         room.send(message);
         return message;
     }
-    
-    public Belisarius(String site) {
-        this.lastPostTime = System.currentTimeMillis()/1000-60;
-        this.apiService = new ApiService(site);
-        this.site = site;
-    }
-    
+
     public List<Post> getPosts() {
         List<Post> posts = new ArrayList<>();
         List<Post> postsWithLatestRevisions = new ArrayList<>();
@@ -69,7 +69,7 @@ public class Belisarius {
 
         return posts;
     }
-    
+
     public Post getPost(String postId) {
         Post post = null;
         Map<Long, String> postIdAndTitle = new HashMap<>();
@@ -138,7 +138,7 @@ public class Belisarius {
         }
         return title;
     }
-    
+
     private List<Post> getPostsWithLatestRevision(Map<Long, String> idsAndTitles) {
         List<Post> revisions = new ArrayList<>();
         String[] postIds = idsAndTitles.keySet().stream().map(t -> t.toString()).toArray(String[]::new); // for .join()
@@ -185,5 +185,5 @@ public class Belisarius {
 
         return revisions;
     }
-    
+
 }

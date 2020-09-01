@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class VandalisedPost {
 
-    public enum Feedback{
+    public enum Feedback {
 
         T("t"), TP("tp"), F("f"), FP("fp");
 
@@ -28,7 +28,6 @@ public class VandalisedPost {
     private Map<String, Double> reasons;
     private Severity severity;
     private Map<String, Double> reasonNames;
-
 
     public VandalisedPost(Post post, Map<String, Double> reasons, Severity severity, Map<String, Double> reasonNames) {
         this.post = post;

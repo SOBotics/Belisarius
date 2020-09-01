@@ -18,7 +18,7 @@ public class BlacklistedFilter implements Filter {
     private Room room;
     private Post post;
     private int reasonId;
-    private HashMap<Integer, String> blacklistedWordsTitle = new HashMap<> ();
+    private HashMap<Integer, String> blacklistedWordsTitle = new HashMap<>();
     private HashMap<Integer, String> blacklistedWordsBody = new HashMap<>();
     private HashMap<Integer, String> blacklistedWordsEditSummary = new HashMap<>();
 
@@ -43,7 +43,7 @@ public class BlacklistedFilter implements Filter {
             blacklistedWordsEditSummary = CheckUtils.checkForBlackListedWords(post.getComment(), post.getPostType());
         }
 
-        return getScore()>0;
+        return getScore() > 0;
     }
 
     @Override
@@ -56,21 +56,21 @@ public class BlacklistedFilter implements Filter {
         String message = "";
 
         try {
-            if (this.blacklistedWordsTitle.size()>0) {
-                message += "**Title contains blacklisted " + (this.blacklistedWordsTitle.size()>1 ? "words" : "word") + ":** " + getBlacklistedWordsTitle() + " ";
+            if (this.blacklistedWordsTitle.size() > 0) {
+                message += "**Title contains blacklisted " + (this.blacklistedWordsTitle.size() > 1 ? "words" : "word") + ":** " + getBlacklistedWordsTitle() + " ";
             }
 
-            if (this.blacklistedWordsBody.size()>0) {
-                message += "**Body contains blacklisted " + (this.blacklistedWordsBody.size()>1 ? "words" : "word") + ":** " + getBlacklistedWordsBody() + " ";
+            if (this.blacklistedWordsBody.size() > 0) {
+                message += "**Body contains blacklisted " + (this.blacklistedWordsBody.size() > 1 ? "words" : "word") + ":** " + getBlacklistedWordsBody() + " ";
             }
 
-            if (this.blacklistedWordsEditSummary.size()>0) {
-                message += "**Edit summary contains blacklisted " + (this.blacklistedWordsEditSummary.size()>1 ? "words" : "word") + ":** " + getBlacklistedWordsComment() + " ";
+            if (this.blacklistedWordsEditSummary.size() > 0) {
+                message += "**Edit summary contains blacklisted " + (this.blacklistedWordsEditSummary.size() > 1 ? "words" : "word") + ":** " + getBlacklistedWordsComment() + " ";
             }
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             LOGGER.info("Failed to get formatted reason message.", e);
         }
+
         return message.trim();
     }
 
@@ -92,7 +92,7 @@ public class BlacklistedFilter implements Filter {
     private String getBlacklistedWordsTitle() {
         StringBuilder words = new StringBuilder();
 
-        for(String word : blacklistedWordsTitle.values()) {
+        for (String word : blacklistedWordsTitle.values()) {
             words.append(word);
         }
 
@@ -102,7 +102,7 @@ public class BlacklistedFilter implements Filter {
     private String getBlacklistedWordsBody() {
         StringBuilder words = new StringBuilder();
 
-        for(String word : blacklistedWordsBody.values()) {
+        for (String word : blacklistedWordsBody.values()) {
             words.append(word);
         }
 
@@ -112,7 +112,7 @@ public class BlacklistedFilter implements Filter {
     private String getBlacklistedWordsComment() {
         StringBuilder words = new StringBuilder();
 
-        for(String word : blacklistedWordsEditSummary.values()) {
+        for (String word : blacklistedWordsEditSummary.values()) {
             words.append(word);
         }
 

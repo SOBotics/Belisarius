@@ -27,8 +27,8 @@ public class Application {
         DatabaseUtils.createFeedbackTable();
         DatabaseUtils.createHiggsTable();
 
-        Higgs higgs = DatabaseUtils.getHiggs(3); //Hippo
-        if(higgs != null){
+        Higgs higgs = DatabaseUtils.getHiggs(3); // Hippo
+        if (higgs != null) {
             HiggsService.initInstance(higgs.getUrl(), higgs.getKey());
         }
 

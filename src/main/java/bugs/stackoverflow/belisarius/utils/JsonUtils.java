@@ -44,8 +44,8 @@ public class JsonUtils {
         Connection.Response response = Jsoup.connect(url).data(data).method(Connection.Method.GET).ignoreContentType(true).ignoreHttpErrors(true).execute();
         String json = response.body();
         if (response.statusCode() != 200) {
-            throw new IOException("HTTP " + response.statusCode() + " fetching URL " + (url) + ". Body is: " + response.body());
-       }
+            throw new IOException("HTTP " + response.statusCode() + " fetching URL " + url + ". Body is: " + response.body());
+        }
         JsonObject root = null;
 
         try {
@@ -55,7 +55,6 @@ public class JsonUtils {
             org.apache.commons.io.FileUtils.writeStringToFile(new java.io.File("jsondump" + timeStampPattern.format(java.time.LocalDateTime.now()) + ".txt"), json);
             org.apache.commons.io.FileUtils.writeStringToFile(new java.io.File("url" + timeStampPattern.format(java.time.LocalDateTime.now()) + ".txt"), response.url().getQuery());
         }
-
 
         if (root.has("quota_remaining")) {
             StatusUtils.remainingQuota = new AtomicInteger(root.get("quota_remaining").getAsInt());
@@ -69,6 +68,7 @@ public class JsonUtils {
     public static String escapeHtmlEncoding(String message) {
         return Parser.unescapeEntities(JsonUtils.sanitizeChatMessage(message), false).trim();
     }
+
     public static String sanitizeChatMessage(String message) {
         return message.replaceAll("(\\[|\\]|_|\\*|`)", "\\\\$1");
     }

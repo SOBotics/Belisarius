@@ -2,9 +2,9 @@ package bugs.stackoverflow.belisarius.utils;
 
 public class PathUtils {
 
-    public static String roomSOBoticsPropertiesFile ="./properties/SOBotics.properties";
+    public static String roomSOBoticsPropertiesFile = "./properties/SOBotics.properties";
 
-    public static final String dbFile = "jdbc:sqlite:./database/belisarius.db";
+    public static final String DATABASE_FILE = "jdbc:sqlite:./database/belisarius.db";
 
     public static String loginPropertiesFile = "./properties/login.properties";
 

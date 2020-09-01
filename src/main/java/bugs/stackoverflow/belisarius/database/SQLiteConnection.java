@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 import bugs.stackoverflow.belisarius.utils.PathUtils;
 
-public class  SQLiteConnection {
+public class SQLiteConnection {
 
     Connection conn = null;
 
@@ -20,7 +20,7 @@ public class  SQLiteConnection {
 
     public Connection connect() {
         try {
-            conn = DriverManager.getConnection(PathUtils.dbFile);
+            conn = DriverManager.getConnection(PathUtils.DATABASE_FILE);
         } catch (SQLException e) {
             e.printStackTrace();
         }

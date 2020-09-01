@@ -37,17 +37,29 @@ public class Post {
         this.revisionNumber = revisionNumber;
     }
 
-    public long getCreationDate() { return creationDate; }
+    public long getCreationDate() {
+        return creationDate;
+    }
 
-    public void setCreationDate(long creationDate) {this.creationDate = creationDate; }
+    public void setCreationDate(long creationDate) {
+        this.creationDate = creationDate;
+    }
 
-    public String getRevisionUrl() { return revisionUrl; }
+    public String getRevisionUrl() {
+        return revisionUrl;
+    }
 
-    public void setRevisionUrl(String revisionUrl) { this.revisionUrl = revisionUrl; }
+    public void setRevisionUrl(String revisionUrl) {
+        this.revisionUrl = revisionUrl;
+    }
 
-    public String getAllRevisionsUrl() { return allRevisionsUrl; }
+    public String getAllRevisionsUrl() {
+        return allRevisionsUrl;
+    }
 
-    public void setAllRevisionsUrl(String allRevisionsUrl) { this.allRevisionsUrl = allRevisionsUrl; }
+    public void setAllRevisionsUrl(String allRevisionsUrl) {
+        this.allRevisionsUrl = allRevisionsUrl;
+    }
 
     public void setTitle(String title) {
         this.title = title;

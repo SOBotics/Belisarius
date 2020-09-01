@@ -10,13 +10,12 @@ import org.sobotics.chatexchange.chat.Room;
 
 public class CheckCommand implements Command {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CheckCommand.class);
+
     private Message message;
     private MonitorService service;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CheckCommand.class);
-
-    public CheckCommand(Message message, MonitorService service)
-    {
+    public CheckCommand(Message message, MonitorService service) {
         this.message = message;
         this.service = service;
     }
@@ -30,9 +29,9 @@ public class CheckCommand implements Command {
     public void execute(Room room) {
         LOGGER.info(this.message.getUser().getName() + " (" + this.message.getUser().getId() + ") is checking a post for vandalism.");
         if (this.message.getUser().isModerator() || this.message.getUser().isRoomOwner()) {
-            String args[] = CommandUtils.extractData(message.getPlainContent()).trim().split(" ");
+            String[] args = CommandUtils.extractData(message.getPlainContent()).trim().split(" ");
 
-            if(args.length!=1){
+            if (args.length != 1) {
                 room.send("Error in arguments passed.");
                 return;
             }

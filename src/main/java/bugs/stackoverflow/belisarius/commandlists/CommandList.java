@@ -39,7 +39,7 @@ public class CommandList {
         if (message.toLowerCase().startsWith("@bots alive")) {
             room.send("Yeah, I'm alive.");
         } else {
-            if (cp == 128642 || (cp>=128644 && cp<=128650)) {
+            if (cp == 128642 || (cp >= 128644 && cp <= 128650)) {
                 room.send("[\uD83D\uDE83](https://www.youtube.com/watch?v=oKk-2Pu2N8g)");
             }
         }

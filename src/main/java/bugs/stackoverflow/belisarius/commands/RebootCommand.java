@@ -9,10 +9,10 @@ import org.sobotics.chatexchange.chat.*;
 
 public class RebootCommand implements Command {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(RebootCommand.class);
+
     private Message message;
     private MonitorService service;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(RebootCommand.class);
 
     public RebootCommand(Message message, MonitorService service) {
         this.message = message;

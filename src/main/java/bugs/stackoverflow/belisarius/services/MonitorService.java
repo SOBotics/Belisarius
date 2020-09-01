@@ -73,7 +73,7 @@ public class MonitorService {
     }
 
     public void runMonitor() {
-         handle = executorService.scheduleAtFixedRate(() -> execute(), 0, presentInterval, TimeUnit.SECONDS);
+        handle = executorService.scheduleAtFixedRate(() -> execute(), 0, presentInterval, TimeUnit.SECONDS);
     }
 
     private void execute() {
@@ -83,11 +83,10 @@ public class MonitorService {
             postMap.put(site, bots.get(site).getPosts());
         }
 
-        for (int i=0; i<rooms.size(); i++) {
+        for (int i = 0; i < rooms.size(); i++) {
             Room room = rooms.get(i);
-            Chatroom chatroom = chatrooms.stream().filter((r) -> r.getRoomId() == room.getRoomId()).findFirst().orElse(null);
-            if (chatroom != null)
-            {
+            Chatroom chatroom = chatrooms.stream().filter(r -> r.getRoomId() == room.getRoomId()).findFirst().orElse(null);
+            if (chatroom != null) {
                 List<Post> posts = postMap.get(chatroom.getSiteName());
                 new Monitor().run(room, posts, chatroom.getOutputMessage());
             }
@@ -101,16 +100,15 @@ public class MonitorService {
             postMap.put(site, bots.get(site).getPost(postId));
         }
 
-        Chatroom chatroom = chatrooms.stream().filter((r) -> r.getRoomId() == room.getRoomId()).findFirst().orElse(null);
+        Chatroom chatroom = chatrooms.stream().filter(r -> r.getRoomId() == room.getRoomId()).findFirst().orElse(null);
 
-        if (chatroom != null)
-        {
+        if (chatroom != null) {
             Post post = postMap.get(chatroom.getSiteName());
             new Monitor().runOnce(room, post, chatroom.getOutputMessage());
         }
     }
 
-    public void stop(){
+    public void stop() {
         executorService.shutdown();
     }
 
@@ -118,7 +116,7 @@ public class MonitorService {
         this.stop();
         executorService = Executors.newSingleThreadScheduledExecutor();
         this.runMonitor();
-        for(int i=0; i<rooms.size(); i++){
+        for (int i = 0; i < rooms.size(); i++) {
             Room room = rooms.get(i);
             room.send(Belisarius.README + "] rebooted at " + Instant.now());
             try {
