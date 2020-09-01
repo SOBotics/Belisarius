@@ -25,13 +25,13 @@ public class CommandList {
         Message message = event.getMessage();
 
         List<Command> commands = new ArrayList<>(Arrays.asList(
-                new AliveCommand(message),
-                new CheckCommand(message, service),
-                new HelpCommand(message),
-                new QuotaCommand(message),
-                new RebootCommand(message, service),
-                new StopCommand(message, service)
-                ));
+            new AliveCommand(message),
+            new CheckCommand(message, service),
+            new HelpCommand(message),
+            new QuotaCommand(message),
+            new RebootCommand(message, service),
+            new StopCommand(message, service)
+        ));
 
         commands.add(new CommandsCommand(message, commands));
 
