@@ -7,6 +7,7 @@ import bugs.stackoverflow.belisarius.finders.VandalismFinder;
 import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.models.VandalisedPost;
 import bugs.stackoverflow.belisarius.services.HiggsService;
+import bugs.stackoverflow.belisarius.services.PropertyService;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 import bugs.stackoverflow.belisarius.utils.JsonUtils;
 import bugs.stackoverflow.belisarius.utils.PostUtils;
@@ -87,7 +88,13 @@ public class Monitor {
                 bodyMarkdown = JsonUtils.getHtml("https://" + post.getSite() + ".com/revisions/" + post.getRevisionGuid() + "/view-source");
             }
 
-            int higgsId = HiggsService.getInstance().registerVandalisedPost(vandalisedPost, vandalisedPost.getPost(), lastBodyMarkdown, bodyMarkdown);
+            PropertyService propertyService = new PropertyService();
+            int higgsId;
+            if (propertyService.getUseHiggs()) {
+                higgsId = HiggsService.getInstance().registerVandalisedPost(vandalisedPost, vandalisedPost.getPost(), lastBodyMarkdown, bodyMarkdown);
+            } else { // do not use Higgs otherwise!
+                higgsId = 0;
+            }
             PostUtils.storeVandalisedPost(room, vandalisedPost, higgsId, lastBodyMarkdown, bodyMarkdown);
             if (outputMessage) {
                 sendVandalismFoundMessage(room, post, vandalisedPost, higgsId);

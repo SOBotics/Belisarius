@@ -19,6 +19,7 @@ import bugs.stackoverflow.belisarius.models.SOUser;
 import bugs.stackoverflow.belisarius.models.VandalisedPost;
 import bugs.stackoverflow.belisarius.models.VandalisedPost.Feedback;
 import bugs.stackoverflow.belisarius.services.HiggsService;
+import bugs.stackoverflow.belisarius.services.PropertyService;
 
 import org.sobotics.chatexchange.chat.Message;
 import org.sobotics.chatexchange.chat.Room;
@@ -149,9 +150,12 @@ public class PostUtils {
 
         DatabaseUtils.storeFeedback(postId, revisionNumber, room.getRoomId(), feedback.toString(), event.getMessage().getUser().getId());
 
+        PropertyService propertyService = new PropertyService();
         try {
-            int higgsId = DatabaseUtils.getHiggsId(postId, revisionNumber, event.getRoomId());
-            HiggsService.getInstance().sendFeedback(higgsId, (int) event.getMessage().getUser().getId(), feedback);
+            if (propertyService.getUseHiggs()) { // make sure the user is using Higgs!
+                int higgsId = DatabaseUtils.getHiggsId(postId, revisionNumber, event.getRoomId());
+                HiggsService.getInstance().sendFeedback(higgsId, (int) event.getMessage().getUser().getId(), feedback);
+            }
         }
         catch (ApiException e) {
             e.printStackTrace();

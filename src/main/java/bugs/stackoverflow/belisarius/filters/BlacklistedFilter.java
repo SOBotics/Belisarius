@@ -70,7 +70,7 @@ public class BlacklistedFilter implements Filter {
             }
 
             if (this.blacklistedWordsEditSummary.size() > 0) {
-                message += "**Edit summary contains blacklisted " + (this.blacklistedWordsEditSummary.size() > 1 ? "words" : "word") + ":** "
+                message += "**Edit summary contains blacklisted " + (this.blacklistedWordsEditSummary.size() > 1 ? "words" : "word") + ":** ";
                 message += getBlacklistedWordsComment() + " ";
             }
         } catch (Exception e) {
