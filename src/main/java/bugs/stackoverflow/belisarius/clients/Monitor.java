@@ -7,6 +7,7 @@ import bugs.stackoverflow.belisarius.finders.VandalismFinder;
 import bugs.stackoverflow.belisarius.models.*;
 import bugs.stackoverflow.belisarius.services.HiggsService;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
+import bugs.stackoverflow.belisarius.utils.JsonUtils;
 import bugs.stackoverflow.belisarius.utils.PostUtils;
 import org.sobotics.chatexchange.chat.Room;
 import org.slf4j.Logger;
@@ -76,8 +77,17 @@ public class Monitor {
 
     private void reportPost(Room room, VandalisedPost vandalisedPost, Post post, boolean outputMessage) {
         try {
-            int higgsId = HiggsService.getInstance().registerVandalisedPost(vandalisedPost, post);
-            PostUtils.storeVandalisedPost(room, vandalisedPost, higgsId);
+            String lastBodyMarkdown = null;
+            String bodyMarkdown = null;
+            if (post.getLastBody() != null) {
+                lastBodyMarkdown = JsonUtils.getHtml("https://" + post.getSite() + ".com/revisions/" + post.getPreviousRevisionGuid() + "/view-source");
+            }
+            if (post.getBody() != null) {
+                bodyMarkdown = JsonUtils.getHtml("https://" + post.getSite() + ".com/revisions/" + post.getRevisionGuid() + "/view-source");
+            }
+
+            int higgsId = HiggsService.getInstance().registerVandalisedPost(vandalisedPost, vandalisedPost.getPost(), lastBodyMarkdown, bodyMarkdown);
+            PostUtils.storeVandalisedPost(room, vandalisedPost, higgsId, lastBodyMarkdown, bodyMarkdown);
             if (outputMessage) {
                 sendVandalismFoundMessage(room, post, vandalisedPost, higgsId);
             }

@@ -167,7 +167,7 @@ public class Belisarius {
                                     getPostJson = postJson;
                                 } else if (revisionNo == currentRevisionNumber + 1) {
                                     String prevRevisionGuid = postJson.get("revision_guid").getAsString();
-                                    revision = PostUtils.getPost(getPostJson, site, title);
+                                    revision = PostUtils.getPost(getPostJson, site, title, prevRevisionGuid);
                                     break;
                                 }
                             }

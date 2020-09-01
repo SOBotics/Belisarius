@@ -11,11 +11,15 @@ public class Post {
     private String lastTitle;
     private String body;
     private String lastBody;
+    private String bodyMarkdown;
+    private String lastBodyMarkdown;
     private SOUser user;
     private boolean isRollback;
     private String postType;
     private String comment;
     private String site;
+    private String revisionGuid;
+    private String previousRevisionGuid;
     
     public int getPostId() {
         return postId;
@@ -77,6 +81,22 @@ public class Post {
         this.lastBody = lastBody;
     }
 
+    public String getBodyMarkdown() {
+        return bodyMarkdown;
+    }
+
+    public void setBodyMarkdown(String bodyMarkdown) {
+        this.bodyMarkdown = bodyMarkdown;
+    }
+
+    public String getLastBodyMarkdown() {
+        return lastBodyMarkdown;
+    }
+
+    public void setLastBodyMarkdown(String lastBodyMarkdown) {
+        this.lastBodyMarkdown = lastBodyMarkdown;
+    }
+
     public SOUser getUser() {
         return user;
     }
@@ -116,5 +136,21 @@ public class Post {
     public void setSite(String site) {
         this.site = site;
     }
-    
+
+    public String getRevisionGuid() {
+        return revisionGuid;
+    }
+
+    public void setRevisionGuid(String revisionGuid) {
+        this.revisionGuid = revisionGuid;
+    }
+
+    public String getPreviousRevisionGuid() {
+        return previousRevisionGuid;
+    }
+
+    public void setPreviousRevisionGuid(String previousRevisionGuid) {
+        this.previousRevisionGuid = previousRevisionGuid;
+    }
+
 }
