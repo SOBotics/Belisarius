@@ -6,7 +6,6 @@
 /.project
 /.settings
 /properties
-/ini
 *.MF
 url*.txt
 json*.txt

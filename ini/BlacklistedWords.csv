@@ -1,0 +1,10 @@
+1,(?i)(problem|error|issue)\s+(re|now\s+)?(solved|fixed),question
+2,(?i)help\W?me[^\w],answer
+3,"(?:problem|error|issue).{0,10}(?<!n't|not)\s+(?:now\s+)?fixed(?!\W*\?)",question
+4,"(?<!(?:(?:n(?:'|o)t|if|what).{0,10}))\b(?:found|is|my)\s(?:an?\s)?(?:fix|answer|solution)s?\b(?!\W*\?)",question
+5,(?i)(answer -|answer:),question
+6,(?i)approval overridden,question
+7,(?i)approval overridden,answer
+8,(?i)\b(solved|fixed|answered)(?!\s(?:position|size|length|numbers?|rows?))\b,question_title
+9,(?i)(solved -|solved(?:\s)?:),question
+10,(?i)fixed -,question
