@@ -67,11 +67,17 @@ public class OffensiveWordFilter implements Filter {
 		return new ArrayList<>(offensiveWords.keySet());
 	}
 
-	@Override
-	public void storeHit() {
-		DatabaseUtils.storeReasonCaught(this.post.getPostId(), this.post.getRevisionNumber(), this.room.getRoomId(), this.reasonId, this.getScore());
-		this.getCaughtOffensiveWordIds().forEach(id ->
-			DatabaseUtils.storeCaughtOffensiveWord(this.post.getPostId(), this.post.getRevisionNumber(), this.room.getRoomId(), id)
-        );
-	}
+    @Override
+    public void storeHit() {
+        long postId = this.post.getPostId();
+        int revisionNumber = this.post.getRevisionNumber();
+        int roomId = this.room.getRoomId();
+        if (!DatabaseUtils.checkReasonCaughtExists(postId, revisionNumber, roomId, this.reasonId)) {
+            DatabaseUtils.storeReasonCaught(postId, revisionNumber, roomId, this.reasonId, this.getScore());
+        }
+
+        this.getCaughtOffensiveWordIds().forEach(id -> {
+            DatabaseUtils.storeCaughtOffensiveWord(postId, revisionNumber, roomId, id);
+        });
+    }
 }

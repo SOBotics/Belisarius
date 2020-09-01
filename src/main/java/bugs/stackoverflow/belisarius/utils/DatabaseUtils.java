@@ -234,7 +234,52 @@ public class DatabaseUtils {
         }
 		return false;
 	}
-	
+
+    public static boolean checkReasonCaughtExists(long postId, int revisionId, int roomId, int reasonId) {
+        SQLiteConnection connection = new SQLiteConnection();
+
+        String sql = "SELECT (COUNT(*) > 0) As Found FROM ReasonCaught WHERE PostId = ? AND RevisionId = ? AND RoomId = ? AND ReasonId = ?;";
+
+        try (Connection conn = connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, postId);
+            pstmt.setInt(2, revisionId);
+            pstmt.setInt(3, roomId);
+            pstmt.setInt(4, reasonId);
+
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getBoolean("Found");
+            }
+        } catch (SQLException e) {
+            LOGGER.info("Failed to check for ReasonCaught. PostId: " + String.valueOf(postId) + "; ReasonId: " + String.valueOf(reasonId) + ".", e);
+        }
+        return false;
+    }
+
+    public static boolean checkBlacklistedWordCaughtExists(long postId, int revisionId, int roomId, int blacklistedWordId) {
+        SQLiteConnection connection = new SQLiteConnection();
+
+        String sql = "SELECT (COUNT(*) > 0) As Found FROM BlacklistedWordCaught WHERE PostId = ? AND RevisionId = ? AND RoomId = ? \n"
+                   + "AND BlacklistedWordId = ?;";
+
+        try (Connection conn = connection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, postId);
+            pstmt.setInt(2, revisionId);
+            pstmt.setInt(3, roomId);
+            pstmt.setInt(4, blacklistedWordId);
+
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getBoolean("Found");
+            }
+        } catch (SQLException e) {
+            LOGGER.info("Failed to check for blacklisted word. PostId: " + String.valueOf(postId) + "; Word id: " + String.valueOf(blacklistedWordId), e);
+        }
+        return false;
+    }
+
 	static void storeVandalisedPost(long postId, long creationDate, int revisionId, int roomId, long ownerId, String title, String lastTitle, String body, String lastBody,
 									boolean IsRollback, String postType, String comment, String site, String severity, int higgsId, String revisionGuid,
 									String previousRevisionGuid, String lastBodyMarkdown, String bodyMarkdown) {

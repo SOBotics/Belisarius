@@ -67,8 +67,14 @@ public class RepeatedWordFilter implements Filter {
 	public Severity getSeverity() {
 		return Severity.HIGH;
 	}	
-	
-	public void storeHit() {
-		DatabaseUtils.storeReasonCaught(this.post.getPostId(), this.post.getRevisionNumber(), this.room.getRoomId(), this.reasonId, this.getScore());
-	}
+
+    @Override
+    public void storeHit() {
+        long postId = this.post.getPostId();
+        int revisionNumber = this.post.getRevisionNumber();
+        int roomId = this.room.getRoomId();
+        if (!DatabaseUtils.checkReasonCaughtExists(postId, revisionNumber, roomId, this.reasonId)) {
+            DatabaseUtils.storeReasonCaught(postId, revisionNumber, roomId, this.reasonId, this.getScore());
+        }
+    }
 }

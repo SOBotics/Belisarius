@@ -134,11 +134,19 @@ public class BlacklistedFilter implements Filter {
 		return blacklistedWordIds;
 	}
 
-	@Override
-	public void storeHit() {
-		DatabaseUtils.storeReasonCaught(this.post.getPostId(), this.post.getRevisionNumber(), this.room.getRoomId(), this.reasonId, this.getScore());
-		this.getCaughtBlacklistedWordIds().forEach(id ->
-			DatabaseUtils.storeCaughtBlacklistedWord(this.post.getPostId(), this.post.getRevisionNumber(), this.room.getRoomId(), id)
-		);
-	}
+    @Override
+    public void storeHit() {
+        long postId = this.post.getPostId();
+        int revisionNumber = this.post.getRevisionNumber();
+        int roomId = this.room.getRoomId();
+        if (!DatabaseUtils.checkReasonCaughtExists(postId, revisionNumber, roomId, this.reasonId)) {
+            DatabaseUtils.storeReasonCaught(postId, revisionNumber, roomId, this.reasonId, this.getScore());
+        }
+
+        this.getCaughtBlacklistedWordIds().forEach(id -> {
+            if (!DatabaseUtils.checkBlacklistedWordCaughtExists(postId, revisionNumber, roomId, id)) {
+                DatabaseUtils.storeCaughtBlacklistedWord(postId, revisionNumber, roomId, id);
+            }
+        });
+    }
 }
