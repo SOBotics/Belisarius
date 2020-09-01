@@ -6,6 +6,7 @@ import bugs.stackoverflow.belisarius.models.Chatroom;
 import bugs.stackoverflow.belisarius.models.Higgs;
 import bugs.stackoverflow.belisarius.services.HiggsService;
 import bugs.stackoverflow.belisarius.services.MonitorService;
+import bugs.stackoverflow.belisarius.services.PropertyService;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 import bugs.stackoverflow.belisarius.utils.LoginUtils;
 
@@ -30,8 +31,9 @@ public class Application {
         DatabaseUtils.createFeedbackTable();
         DatabaseUtils.createHiggsTable();
 
+        PropertyService propertyService = new PropertyService();
         Higgs higgs = DatabaseUtils.getHiggs(3); // Hippo
-        if (higgs != null) {
+        if (higgs != null && propertyService.getUseHiggs()) {
             HiggsService.initInstance(higgs.getUrl(), higgs.getKey());
         }
 
