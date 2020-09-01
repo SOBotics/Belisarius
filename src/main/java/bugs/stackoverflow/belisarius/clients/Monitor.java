@@ -26,7 +26,7 @@ public class Monitor {
 
         try {
             for (Post post : posts) {
-                if (post.getRevisionNumber() != 1 && !post.getIsRollback()) {
+                if (post.getRevisionNumber() != 1) {
                     VandalisedPost vandalisedPost = getVandalisedPost(room, post);
                     boolean postExists = PostUtils.checkVandalisedPost(room, post);
 
@@ -44,7 +44,7 @@ public class Monitor {
     public void runOnce(Room room, Post post, boolean outputMessage) {
 
         try {
-            if (post.getRevisionNumber() != 1 && !post.getIsRollback()) {
+            if (post.getRevisionNumber() != 1) {
                 VandalisedPost vandalisedPost = getVandalisedPost(room, post);
                 if (PostUtils.checkVandalisedPost(room, post)) { // the post already exists
                     LOGGER.info("The given post has already been reported.");
