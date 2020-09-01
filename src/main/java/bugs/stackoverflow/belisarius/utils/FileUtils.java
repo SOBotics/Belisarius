@@ -10,7 +10,7 @@ import java.util.List;
 
 public class FileUtils {
 
-	
+
     public static String readLineFromFileStartswith(String filename, String message) throws IOException{
         List<String> lines = readFile(filename);
         for (String line : lines){
@@ -20,15 +20,15 @@ public class FileUtils {
         }
         return null;
     }
-    
+
     public static List<String> readFile(String filename) throws IOException{
         return Files.readAllLines(Paths.get(filename));
     }
-    
+
     public static void appendToFile(String filename, String word) throws IOException{
         Files.write(Paths.get(filename), Arrays.asList(word), StandardOpenOption.APPEND, StandardOpenOption.WRITE);
     }
-    
+
     public static void removeFromFile(String filename, String message) throws IOException{
         List<String> lines = readFile(filename);
         List<String> newLines = new ArrayList<>();
@@ -40,5 +40,5 @@ public class FileUtils {
         }
         Files.write(Paths.get(filename), newLines, StandardOpenOption.TRUNCATE_EXISTING,StandardOpenOption.WRITE);
     }
-	
+
 }

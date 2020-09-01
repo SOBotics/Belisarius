@@ -13,66 +13,66 @@ import org.sobotics.chatexchange.chat.Room;
 
 public class BlacklistedFilter implements Filter {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BlacklistedFilter.class);
-	
-	private Room room;
-	private Post post;
-	private int reasonId;
-	private HashMap<Integer, String> blacklistedWordsTitle = new HashMap<> ();
-	private HashMap<Integer, String> blacklistedWordsBody = new HashMap<>();
-	private HashMap<Integer, String> blacklistedWordsEditSummary = new HashMap<>();
-	
-	public BlacklistedFilter(Room room, Post post, int reasonId) {
-		this.room = room;
-		this.post = post;
-		this.reasonId = reasonId;
-	}
-	
-	@Override
-	public boolean isHit() {
-		
-		if (post.getTitle() != null && post.getPostType() == "question") {
-			blacklistedWordsTitle = CheckUtils.checkForBlackListedWords(StringUtils.difference(post.getLastTitle(), post.getTitle()), "question_title");
-		}
-		
-		if (post.getBody() != null) {
-			blacklistedWordsBody = CheckUtils.checkForBlackListedWords(StringUtils.difference(post.getLastBody(), post.getBody()), post.getPostType());
-		}
-		
-		if (post.getComment() != null) {
-			blacklistedWordsEditSummary = CheckUtils.checkForBlackListedWords(post.getComment(), post.getPostType());
-		}
-		
-		return getScore()>0;
-	}
-	
-	@Override
-	public double getScore() {
-		return this.blacklistedWordsTitle.size() + this.blacklistedWordsBody.size() + this.blacklistedWordsEditSummary.size();
-	}
+    private static final Logger LOGGER = LoggerFactory.getLogger(BlacklistedFilter.class);
 
-	@Override
-	public String getFormattedReasonMessage() {
-		String message = "";
-		
-		try {
-			if (this.blacklistedWordsTitle.size()>0) {
-				message += "**Title contains blacklisted " + (this.blacklistedWordsTitle.size()>1 ? "words" : "word") + ":** " + getBlacklistedWordsTitle() + " ";
-			}
-			
-			if (this.blacklistedWordsBody.size()>0) {
-				message += "**Body contains blacklisted " + (this.blacklistedWordsBody.size()>1 ? "words" : "word") + ":** " + getBlacklistedWordsBody() + " ";
-			}
-		
-			if (this.blacklistedWordsEditSummary.size()>0) {
-				message += "**Edit summary contains blacklisted " + (this.blacklistedWordsEditSummary.size()>1 ? "words" : "word") + ":** " + getBlacklistedWordsComment() + " ";
-			}
-		} catch (Exception e)
-		{
-			LOGGER.info("Failed to get formatted reason message.", e);
-		}
-		return message.trim();
-	}
+    private Room room;
+    private Post post;
+    private int reasonId;
+    private HashMap<Integer, String> blacklistedWordsTitle = new HashMap<> ();
+    private HashMap<Integer, String> blacklistedWordsBody = new HashMap<>();
+    private HashMap<Integer, String> blacklistedWordsEditSummary = new HashMap<>();
+
+    public BlacklistedFilter(Room room, Post post, int reasonId) {
+        this.room = room;
+        this.post = post;
+        this.reasonId = reasonId;
+    }
+
+    @Override
+    public boolean isHit() {
+
+        if (post.getTitle() != null && post.getPostType() == "question") {
+            blacklistedWordsTitle = CheckUtils.checkForBlackListedWords(StringUtils.difference(post.getLastTitle(), post.getTitle()), "question_title");
+        }
+
+        if (post.getBody() != null) {
+            blacklistedWordsBody = CheckUtils.checkForBlackListedWords(StringUtils.difference(post.getLastBody(), post.getBody()), post.getPostType());
+        }
+
+        if (post.getComment() != null) {
+            blacklistedWordsEditSummary = CheckUtils.checkForBlackListedWords(post.getComment(), post.getPostType());
+        }
+
+        return getScore()>0;
+    }
+
+    @Override
+    public double getScore() {
+        return this.blacklistedWordsTitle.size() + this.blacklistedWordsBody.size() + this.blacklistedWordsEditSummary.size();
+    }
+
+    @Override
+    public String getFormattedReasonMessage() {
+        String message = "";
+
+        try {
+            if (this.blacklistedWordsTitle.size()>0) {
+                message += "**Title contains blacklisted " + (this.blacklistedWordsTitle.size()>1 ? "words" : "word") + ":** " + getBlacklistedWordsTitle() + " ";
+            }
+
+            if (this.blacklistedWordsBody.size()>0) {
+                message += "**Body contains blacklisted " + (this.blacklistedWordsBody.size()>1 ? "words" : "word") + ":** " + getBlacklistedWordsBody() + " ";
+            }
+
+            if (this.blacklistedWordsEditSummary.size()>0) {
+                message += "**Edit summary contains blacklisted " + (this.blacklistedWordsEditSummary.size()>1 ? "words" : "word") + ":** " + getBlacklistedWordsComment() + " ";
+            }
+        } catch (Exception e)
+        {
+            LOGGER.info("Failed to get formatted reason message.", e);
+        }
+        return message.trim();
+    }
 
     @Override
     public String getReasonName() {
@@ -89,27 +89,27 @@ public class BlacklistedFilter implements Filter {
         return name;
     }
 
-	private String getBlacklistedWordsTitle() {
-		StringBuilder words = new StringBuilder();
+    private String getBlacklistedWordsTitle() {
+        StringBuilder words = new StringBuilder();
 
-		for(String word : blacklistedWordsTitle.values()) {
-		    words.append(word);
+        for(String word : blacklistedWordsTitle.values()) {
+            words.append(word);
         }
 
-		return words.toString();
-	}
-	
-	private String getBlacklistedWordsBody() {
-		StringBuilder words = new StringBuilder();
+        return words.toString();
+    }
+
+    private String getBlacklistedWordsBody() {
+        StringBuilder words = new StringBuilder();
 
         for(String word : blacklistedWordsBody.values()) {
             words.append(word);
         }
 
-		return words.toString();
-	}
-		
-	private String getBlacklistedWordsComment() {
+        return words.toString();
+    }
+
+    private String getBlacklistedWordsComment() {
         StringBuilder words = new StringBuilder();
 
         for(String word : blacklistedWordsEditSummary.values()) {
@@ -119,20 +119,20 @@ public class BlacklistedFilter implements Filter {
         return words.toString();
     }
 
-	@Override
-	public Severity getSeverity() {
-		return Severity.MEDIUM;
-	}
-	
-	private List<Integer> getCaughtBlacklistedWordIds() {
-		List<Integer> blacklistedWordIds = new ArrayList<>();
+    @Override
+    public Severity getSeverity() {
+        return Severity.MEDIUM;
+    }
 
-		blacklistedWordIds.addAll(blacklistedWordsTitle.keySet());
-		blacklistedWordIds.addAll(blacklistedWordsBody.keySet());
-		blacklistedWordIds.addAll(blacklistedWordsEditSummary.keySet());
-		
-		return blacklistedWordIds;
-	}
+    private List<Integer> getCaughtBlacklistedWordIds() {
+        List<Integer> blacklistedWordIds = new ArrayList<>();
+
+        blacklistedWordIds.addAll(blacklistedWordsTitle.keySet());
+        blacklistedWordIds.addAll(blacklistedWordsBody.keySet());
+        blacklistedWordIds.addAll(blacklistedWordsEditSummary.keySet());
+
+        return blacklistedWordIds;
+    }
 
     @Override
     public void storeHit() {

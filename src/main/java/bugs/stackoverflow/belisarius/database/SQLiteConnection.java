@@ -7,17 +7,17 @@ import java.sql.SQLException;
 import bugs.stackoverflow.belisarius.utils.PathUtils;
 
 public class  SQLiteConnection {
-	
-	Connection conn = null;
-	
-	public SQLiteConnection() {
-		conn = connect();
-	}
-	
-	public Connection getConnection() {
-		return conn;
-	}
-	
+
+    Connection conn = null;
+
+    public SQLiteConnection() {
+        conn = connect();
+    }
+
+    public Connection getConnection() {
+        return conn;
+    }
+
     public Connection connect() {
         try {
             conn = DriverManager.getConnection(PathUtils.dbFile);
@@ -26,5 +26,5 @@ public class  SQLiteConnection {
         }
         return conn;
     }
-	
+
 }

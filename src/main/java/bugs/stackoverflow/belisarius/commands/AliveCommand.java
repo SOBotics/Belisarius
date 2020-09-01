@@ -8,34 +8,34 @@ import org.sobotics.chatexchange.chat.*;
 
 public class AliveCommand implements Command {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AliveCommand.class);
-	
-	private Message message;
+    private static final Logger LOGGER = LoggerFactory.getLogger(AliveCommand.class);
 
-	public AliveCommand(Message message) {
-		this.message = message;
-	}
-	
-	@Override
-	public boolean validate() {
-		return CommandUtils.checkForCommand(this.message.getPlainContent(), this.getName());
-	}
+    private Message message;
 
-	@Override
-	public void execute(Room room) {
-		LOGGER.info(this.message.getUser().getName() + " (" + this.message.getUser().getId() + ") wants to know if I'm alive.");
-		room.replyTo(this.message.getId(), "Yeah, I'm alive.");
-		
-	}
+    public AliveCommand(Message message) {
+        this.message = message;
+    }
 
-	@Override
-	public String getDescription() {
-		return "Test to check if the bot is alive or not.";
-	}
+    @Override
+    public boolean validate() {
+        return CommandUtils.checkForCommand(this.message.getPlainContent(), this.getName());
+    }
 
-	@Override
-	public String getName() {
-		return "alive";
-	}
+    @Override
+    public void execute(Room room) {
+        LOGGER.info(this.message.getUser().getName() + " (" + this.message.getUser().getId() + ") wants to know if I'm alive.");
+        room.replyTo(this.message.getId(), "Yeah, I'm alive.");
+
+    }
+
+    @Override
+    public String getDescription() {
+        return "Test to check if the bot is alive or not.";
+    }
+
+    @Override
+    public String getName() {
+        return "alive";
+    }
 
 }

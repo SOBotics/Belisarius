@@ -7,18 +7,18 @@ import org.sobotics.chatexchange.chat.*;
 
 public class CommandsCommand implements Command {
 
-	private Message message;
-	private List<Command> commands;
-	
-	public CommandsCommand(Message message, List<Command> commands) {
-		this.message = message;
-		this.commands = commands;
-	}
-	
-	@Override
-	public boolean validate() {
-		return CommandUtils.checkForCommand(this.message.getPlainContent(),this.getName());
-	}
+    private Message message;
+    private List<Command> commands;
+
+    public CommandsCommand(Message message, List<Command> commands) {
+        this.message = message;
+        this.commands = commands;
+    }
+
+    @Override
+    public boolean validate() {
+        return CommandUtils.checkForCommand(this.message.getPlainContent(),this.getName());
+    }
 
     @Override
     public void execute(Room room) {
@@ -29,21 +29,21 @@ public class CommandsCommand implements Command {
         room.replyTo(this.message.getId(), "The list of commands are as follows:");
         room.send(commandString.toString());
     }
-	
+
     public static String padRight(String s, int n) {
         return String.format("%1$-" + n + "s", s);
     }
 
-	@Override
-	public String getDescription() {
-		return "Returns the list of commands associated with this bot.";
-	}
+    @Override
+    public String getDescription() {
+        return "Returns the list of commands associated with this bot.";
+    }
 
-	@Override
-	public String getName() {
-		return "commands";
-	}
+    @Override
+    public String getName() {
+        return "commands";
+    }
 
-	
-	
+
+
 }

@@ -18,29 +18,29 @@ public class Monitor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Monitor.class);
 
-	public void run(Room room, List<Post> posts, boolean outputMessage) {
-		
-		try {
-			for (Post post : posts) {
-		        if (post.getRevisionNumber() != 1 && !post.getIsRollback()) {
+    public void run(Room room, List<Post> posts, boolean outputMessage) {
+
+        try {
+            for (Post post : posts) {
+                if (post.getRevisionNumber() != 1 && !post.getIsRollback()) {
                     VandalisedPost vandalisedPost = getVandalisedPost(room, post);
                     boolean postExists = PostUtils.checkVandalisedPost(room, post);
 
                     if (vandalisedPost != null && vandalisedPost.getSeverity() != null && !postExists) {
                         reportPost(room, vandalisedPost, post, outputMessage);
                     }
-		        }
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-	}
-	
-	public void runOnce(Room room, Post post, boolean outputMessage) {
-		
-		try {
-	        if (post.getRevisionNumber() != 1 && !post.getIsRollback()) {
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void runOnce(Room room, Post post, boolean outputMessage) {
+
+        try {
+            if (post.getRevisionNumber() != 1 && !post.getIsRollback()) {
                 VandalisedPost vandalisedPost = getVandalisedPost(room, post);
                 if (PostUtils.checkVandalisedPost(room, post)) { // the post already exists
                     LOGGER.info("The given post has already been reported.");
@@ -56,24 +56,24 @@ public class Monitor {
                 LOGGER.info("No vandalism found was found for given post.");
                 sendNoVandalismFoundMessage(room, post);
             }
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-	}
-	
-	private VandalisedPost getVandalisedPost(Room room, Post post) {
-		 try {
-			  {
-		         VandalismFinder vandalismFinder = new VandalismFinder(room, post);
-		         return vandalismFinder.findReasons();
-			 }
-		 } catch (Exception e) {
-			 e.printStackTrace();
-		 }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-		 return null;
-	}
+    }
+
+    private VandalisedPost getVandalisedPost(Room room, Post post) {
+         try {
+              {
+                 VandalismFinder vandalismFinder = new VandalismFinder(room, post);
+                 return vandalismFinder.findReasons();
+             }
+         } catch (Exception e) {
+             e.printStackTrace();
+         }
+
+         return null;
+    }
 
     private void reportPost(Room room, VandalisedPost vandalisedPost, Post post, boolean outputMessage) {
         try {
@@ -111,5 +111,5 @@ public class Monitor {
         Belisarius.buildMessage(room, higgsId, post.getPostType().toLowerCase(), severity, Belisarius.ALREADY_REPORTED, post.getAllRevisionsUrl(),
                                 post.getRevisionNumber(), post.getRevisionUrl());
     }
-		
+
 }

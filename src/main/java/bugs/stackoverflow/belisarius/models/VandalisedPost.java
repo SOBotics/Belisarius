@@ -24,23 +24,23 @@ public class VandalisedPost {
         }
     }
 
-	private Post post;
-	private Map<String, Double> reasons;
-	private Severity severity;
+    private Post post;
+    private Map<String, Double> reasons;
+    private Severity severity;
     private Map<String, Double> reasonNames;
 
 
-	public VandalisedPost(Post post, Map<String, Double> reasons, Severity severity, Map<String, Double> reasonNames) {
-		this.post = post;
-		this.reasons = reasons;
-		this.severity = severity;
+    public VandalisedPost(Post post, Map<String, Double> reasons, Severity severity, Map<String, Double> reasonNames) {
+        this.post = post;
+        this.reasons = reasons;
+        this.severity = severity;
         this.reasonNames = reasonNames;
-	}
-	
-	public Post getPost() {
-		return this.post;
-	}
-	
+    }
+
+    public Post getPost() {
+        return this.post;
+    }
+
     public String getReasonMessage() {
         String reasons = null;
         ArrayList<String> reasonNames = new ArrayList<>();
@@ -57,9 +57,9 @@ public class VandalisedPost {
 
         return reasons;
     }
-    
+
     public Map<String, Double> getReasons() {
-    	return this.reasons;
+        return this.reasons;
     }
 
     public Map<String, Double> getReasonNames() {
@@ -67,18 +67,18 @@ public class VandalisedPost {
     }
 
     public double getScore() {
-		return this.reasons.values().stream().mapToDouble(Number::doubleValue).sum();
-	}
-    
-    public String getSeverity() {
-    	if (this.severity == Severity.LOW) {
-    		return "low";
-    	} else if (this.severity == Severity.MEDIUM) {
-    		return "medium";
-    	} else if (this.severity == Severity.HIGH) {
-    		return "high";
-    	}
-    	return null;
+        return this.reasons.values().stream().mapToDouble(Number::doubleValue).sum();
     }
-   
+
+    public String getSeverity() {
+        if (this.severity == Severity.LOW) {
+            return "low";
+        } else if (this.severity == Severity.MEDIUM) {
+            return "medium";
+        } else if (this.severity == Severity.HIGH) {
+            return "high";
+        }
+        return null;
+    }
+
 }

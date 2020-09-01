@@ -8,36 +8,36 @@ import org.sobotics.chatexchange.chat.*;
 
 public class HelpCommand implements Command {
 
-	private Message message;
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(HelpCommand.class);
-	
-	public HelpCommand(Message message) {
-		this.message = message;
-	}
-	
-	@Override
-	public boolean validate() {
-		return CommandUtils.checkForCommand(this.message.getPlainContent(), this.getName());
-	}
+    private Message message;
 
-	@Override
-	public void execute(Room room) {
-		LOGGER.info(this.message.getUser().getName() + " (" + this.message.getUser().getId() + ") wants to know more about me.");
-		room.replyTo(message.getId(), "I'm a bot that monitors for bad edits and possible vandalism on posts.");
-		
-	}
+    private static final Logger LOGGER = LoggerFactory.getLogger(HelpCommand.class);
 
-	@Override
-	public String getDescription() {
-		return "Returns the description of the bot.";
-	}
+    public HelpCommand(Message message) {
+        this.message = message;
+    }
 
-	@Override
-	public String getName() {
-		return "help";
-	}
+    @Override
+    public boolean validate() {
+        return CommandUtils.checkForCommand(this.message.getPlainContent(), this.getName());
+    }
 
-	
-	
+    @Override
+    public void execute(Room room) {
+        LOGGER.info(this.message.getUser().getName() + " (" + this.message.getUser().getId() + ") wants to know more about me.");
+        room.replyTo(message.getId(), "I'm a bot that monitors for bad edits and possible vandalism on posts.");
+
+    }
+
+    @Override
+    public String getDescription() {
+        return "Returns the description of the bot.";
+    }
+
+    @Override
+    public String getName() {
+        return "help";
+    }
+
+
+
 }
