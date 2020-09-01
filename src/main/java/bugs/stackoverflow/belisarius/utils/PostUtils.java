@@ -50,7 +50,7 @@ public class PostUtils {
 	}
 
 	
-	public static Post getPost(JsonObject post, String site){
+	public static Post getPost(JsonObject post, String site, String title){
 
         Post np = new Post();
 
@@ -62,10 +62,7 @@ public class PostUtils {
         np.setRevisionUrl("https://" + site + ".com/revisions/" + post.get("post_id").getAsString() + "/" + post.get("revision_number").getAsString());
         np.setAllRevisionsUrl("https://" + site + ".com/posts/" + post.get("post_id").getAsString() + "/revisions");
         
-        if (post.has("title")) {
-	        np.setTitle(post.get("title").getAsString());
-        }
-        
+	    np.setTitle(title);
         if (post.has("last_title")) {
             np.setLastTitle(post.get("last_title").getAsString());
         }

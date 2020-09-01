@@ -34,7 +34,14 @@ public class ApiService {
     	setBackOffUntil(revisionJSON);
     	return revisionJSON;
     }
- 
+
+    public JsonObject getMorePostInformation(String postId) throws IOException {
+    	JsonObject postJSON = ApiUtils.getMorePostInformation(postId, site, apiKey);
+    	quota = postJSON.get("quota_remaining").getAsInt();
+    	setBackOffUntil(postJSON);
+    	return postJSON;
+    }
+
     public static int getQuota() {
     	return quota;
     }
