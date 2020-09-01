@@ -3,7 +3,9 @@ package bugs.stackoverflow.belisarius.commands;
 import java.util.List;
 
 import bugs.stackoverflow.belisarius.utils.CommandUtils;
-import org.sobotics.chatexchange.chat.*;
+
+import org.sobotics.chatexchange.chat.Message;
+import org.sobotics.chatexchange.chat.Room;
 
 public class CommandsCommand implements Command {
 

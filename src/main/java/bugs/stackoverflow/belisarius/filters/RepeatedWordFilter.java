@@ -1,10 +1,12 @@
 package bugs.stackoverflow.belisarius.filters;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
+
 import org.sobotics.chatexchange.chat.Room;
 
 public class RepeatedWordFilter implements Filter {

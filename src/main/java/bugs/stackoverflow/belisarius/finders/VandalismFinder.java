@@ -1,7 +1,9 @@
 package bugs.stackoverflow.belisarius.finders;
 
-import bugs.stackoverflow.belisarius.models.*;
+import bugs.stackoverflow.belisarius.models.Post;
+import bugs.stackoverflow.belisarius.models.VandalisedPost;
 import bugs.stackoverflow.belisarius.utils.PostUtils;
+
 import org.sobotics.chatexchange.chat.Room;
 
 public class VandalismFinder {

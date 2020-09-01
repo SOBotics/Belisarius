@@ -1,13 +1,16 @@
 package bugs.stackoverflow.belisarius;
 
-import java.util.*;
+import java.util.List;
 
 import bugs.stackoverflow.belisarius.models.Chatroom;
 import bugs.stackoverflow.belisarius.models.Higgs;
-import bugs.stackoverflow.belisarius.services.*;
+import bugs.stackoverflow.belisarius.services.HiggsService;
+import bugs.stackoverflow.belisarius.services.MonitorService;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 import bugs.stackoverflow.belisarius.utils.LoginUtils;
+
 import org.sobotics.chatexchange.chat.StackExchangeClient;
+
 import io.swagger.client.ApiException;
 
 public class Application {

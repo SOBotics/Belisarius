@@ -8,7 +8,7 @@ import bugs.stackoverflow.belisarius.utils.PathUtils;
 
 public class SQLiteConnection {
 
-    Connection conn = null;
+    Connection conn;
 
     public SQLiteConnection() {
         conn = connect();

@@ -1,10 +1,12 @@
 package bugs.stackoverflow.belisarius.commands;
 
+import bugs.stackoverflow.belisarius.utils.CommandUtils;
+import bugs.stackoverflow.belisarius.utils.StatusUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import bugs.stackoverflow.belisarius.utils.*;
-import org.sobotics.chatexchange.chat.*;
+import org.sobotics.chatexchange.chat.Message;
+import org.sobotics.chatexchange.chat.Room;
 
 public class QuotaCommand implements Command {
 

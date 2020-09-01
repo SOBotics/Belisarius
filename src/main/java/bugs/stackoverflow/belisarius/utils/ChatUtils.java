@@ -1,8 +1,9 @@
 package bugs.stackoverflow.belisarius.utils;
 
 import bugs.stackoverflow.belisarius.models.VandalisedPost.Feedback;
+
 import org.sobotics.chatexchange.chat.Room;
-import org.sobotics.chatexchange.chat.event.*;
+import org.sobotics.chatexchange.chat.event.PingMessageEvent;
 
 public class ChatUtils {
 

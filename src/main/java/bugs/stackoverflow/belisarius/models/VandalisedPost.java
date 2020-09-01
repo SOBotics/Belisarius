@@ -1,10 +1,9 @@
 package bugs.stackoverflow.belisarius.models;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import bugs.stackoverflow.belisarius.filters.Filter.Severity;
-
-import java.util.HashMap;
 
 public class VandalisedPost {
 

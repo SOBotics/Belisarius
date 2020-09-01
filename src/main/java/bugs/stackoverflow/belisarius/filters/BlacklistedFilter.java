@@ -1,14 +1,17 @@
 package bugs.stackoverflow.belisarius.filters;
 
-import java.util.*;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sobotics.chatexchange.chat.Room;
 
 public class BlacklistedFilter implements Filter {
@@ -18,9 +21,9 @@ public class BlacklistedFilter implements Filter {
     private Room room;
     private Post post;
     private int reasonId;
-    private HashMap<Integer, String> blacklistedWordsTitle = new HashMap<>();
-    private HashMap<Integer, String> blacklistedWordsBody = new HashMap<>();
-    private HashMap<Integer, String> blacklistedWordsEditSummary = new HashMap<>();
+    private Map<Integer, String> blacklistedWordsTitle = new HashMap<>();
+    private Map<Integer, String> blacklistedWordsBody = new HashMap<>();
+    private Map<Integer, String> blacklistedWordsEditSummary = new HashMap<>();
 
     public BlacklistedFilter(Room room, Post post, int reasonId) {
         this.room = room;
@@ -31,7 +34,7 @@ public class BlacklistedFilter implements Filter {
     @Override
     public boolean isHit() {
 
-        if (post.getTitle() != null && post.getPostType() == "question") {
+        if (post.getTitle() != null && "question".equals(post.getPostType())) {
             blacklistedWordsTitle = CheckUtils.checkForBlackListedWords(StringUtils.difference(post.getLastTitle(), post.getTitle()), "question_title");
         }
 

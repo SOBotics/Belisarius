@@ -13,8 +13,8 @@ public class PropertyService {
     public PropertyService() {
         prop = new Properties();
         try {
-            prop.load(new FileInputStream(PathUtils.loginPropertiesFile));
-        } catch(IOException e) {
+            prop.load(new FileInputStream(PathUtils.LOGIN_PROPERTIES_FILE));
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

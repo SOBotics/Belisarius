@@ -1,10 +1,8 @@
 package bugs.stackoverflow.belisarius.utils;
 
-import com.google.gson.JsonObject;
-
-import bugs.stackoverflow.belisarius.utils.JsonUtils;
-
 import java.io.IOException;
+
+import com.google.gson.JsonObject;
 
 public class ApiUtils {
 

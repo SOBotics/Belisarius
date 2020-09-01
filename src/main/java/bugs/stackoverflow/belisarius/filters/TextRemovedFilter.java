@@ -3,6 +3,7 @@ package bugs.stackoverflow.belisarius.filters;
 import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
+
 import org.sobotics.chatexchange.chat.Room;
 
 public class TextRemovedFilter implements Filter {

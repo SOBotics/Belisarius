@@ -3,10 +3,12 @@ package bugs.stackoverflow.belisarius.filters;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
+
 import org.sobotics.chatexchange.chat.Room;
 
 public class OffensiveWordFilter implements Filter {
@@ -15,7 +17,7 @@ public class OffensiveWordFilter implements Filter {
     private Post post;
     private int reasonId;
 
-    private HashMap<Integer, String> offensiveWords = new HashMap<>();
+    private Map<Integer, String> offensiveWords = new HashMap<>();
 
     public OffensiveWordFilter(Room room, Post post, int reasonId) {
         this.room = room;

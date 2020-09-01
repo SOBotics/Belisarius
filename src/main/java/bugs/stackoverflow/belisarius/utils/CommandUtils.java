@@ -1,6 +1,6 @@
 package bugs.stackoverflow.belisarius.utils;
 
-import java.util.*;
+import java.util.Arrays;
 
 public class CommandUtils {
 

@@ -6,14 +6,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import bugs.stackoverflow.belisarius.models.Post;
+import bugs.stackoverflow.belisarius.services.ApiService;
+import bugs.stackoverflow.belisarius.utils.PostUtils;
+
 import org.sobotics.chatexchange.chat.Room;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
-import bugs.stackoverflow.belisarius.models.Post;
-import bugs.stackoverflow.belisarius.services.ApiService;
-import bugs.stackoverflow.belisarius.utils.PostUtils;
 
 public class Belisarius {
 

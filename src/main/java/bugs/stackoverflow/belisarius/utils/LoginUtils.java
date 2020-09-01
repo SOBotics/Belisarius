@@ -1,6 +1,7 @@
 package bugs.stackoverflow.belisarius.utils;
 
 import bugs.stackoverflow.belisarius.services.PropertyService;
+
 import org.sobotics.chatexchange.chat.StackExchangeClient;
 
 public class LoginUtils {

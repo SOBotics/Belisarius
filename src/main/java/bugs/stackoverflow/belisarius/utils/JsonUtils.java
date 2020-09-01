@@ -1,18 +1,22 @@
 package bugs.stackoverflow.belisarius.utils;
 
-import com.google.gson.*;
+import java.io.File;
+import java.io.IOException;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import bugs.stackoverflow.belisarius.services.ApiService;
 
-import org.jsoup.*;
+import org.apache.commons.io.FileUtils;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.time.format.DateTimeFormatter;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 /**
  * Created by bhargav.h on 22-Jan-17.
@@ -52,8 +56,8 @@ public class JsonUtils {
             root = new JsonParser().parse(json).getAsJsonObject();
         } catch (Exception e) {
             DateTimeFormatter timeStampPattern = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-            org.apache.commons.io.FileUtils.writeStringToFile(new java.io.File("jsondump" + timeStampPattern.format(java.time.LocalDateTime.now()) + ".txt"), json);
-            org.apache.commons.io.FileUtils.writeStringToFile(new java.io.File("url" + timeStampPattern.format(java.time.LocalDateTime.now()) + ".txt"), response.url().getQuery());
+            FileUtils.writeStringToFile(new File("jsondump" + timeStampPattern.format(java.time.LocalDateTime.now()) + ".txt"), json);
+            FileUtils.writeStringToFile(new File("url" + timeStampPattern.format(java.time.LocalDateTime.now()) + ".txt"), response.url().getQuery());
         }
 
         if (root.has("quota_remaining")) {
