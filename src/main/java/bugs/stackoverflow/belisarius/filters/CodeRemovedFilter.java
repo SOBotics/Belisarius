@@ -20,7 +20,7 @@ public class CodeRemovedFilter implements Filter {
 
     @Override
     public boolean isHit() {
-        if (post.getLastBody() != null && post.getBody() != null) {
+        if (post.getLastBody() != null && post.getBody() != null && "question".equals(post.getPostType())) { // https://chat.stackoverflow.com/transcript/message/50208463
             return !CheckUtils.checkIfNoCodeBlock(post.getLastBody()) && CheckUtils.checkIfNoCodeBlock(post.getBody());
         }
         return false;
