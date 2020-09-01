@@ -38,7 +38,7 @@ public class FewUniqueCharactersFilter implements Filter {
 
     @Override
     public String getFormattedReasonMessage() {
-        return "**Few unique characters detected - ** " + this.listedWord;
+        return "**Few unique characters detected:** " + this.listedWord;
     }
 
     @Override
