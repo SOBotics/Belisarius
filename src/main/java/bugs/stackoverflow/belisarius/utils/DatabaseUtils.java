@@ -285,7 +285,7 @@ public class DatabaseUtils {
 
         SQLiteConnection connection = new SQLiteConnection();
 
-        String sql = "INSERT INTO VandalisedPost VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        String sql = "INSERT INTO VandalisedPost VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
         try (Connection conn = connection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
