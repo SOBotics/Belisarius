@@ -18,7 +18,7 @@ public class CheckUtils {
 
     public static Map<Integer, String> checkForBlackListedWords(String target, String postType) {
         Map<Integer, String> blacklistedWords = DatabaseUtils.getBlacklistedWords(postType);
-        return getCaughtByRegex(blacklistedWords, target);
+        return getCaughtByRegex(blacklistedWords, removeHtml(stripTags(target)));
     }
 
     public static boolean checkIfContainsKeyword(String target, String keyword) {
