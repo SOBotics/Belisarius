@@ -67,4 +67,12 @@ public class PropertyService {
         }
         return site;
     }
+
+    public boolean getUseHiggs() {
+        String useHiggs = prop.getProperty("useHiggs");
+        if (useHiggs == null) {
+            useHiggs = System.getenv("useHiggs");
+        }
+        return "true".equals(useHiggs);
+    }
 }
