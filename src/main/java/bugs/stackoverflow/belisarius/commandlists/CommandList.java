@@ -1,12 +1,23 @@
 package bugs.stackoverflow.belisarius.commandlists;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import bugs.stackoverflow.belisarius.commands.*;
+import bugs.stackoverflow.belisarius.commands.AliveCommand;
+import bugs.stackoverflow.belisarius.commands.CheckCommand;
 import bugs.stackoverflow.belisarius.commands.Command;
+import bugs.stackoverflow.belisarius.commands.CommandsCommand;
+import bugs.stackoverflow.belisarius.commands.HelpCommand;
+import bugs.stackoverflow.belisarius.commands.QuotaCommand;
+import bugs.stackoverflow.belisarius.commands.RebootCommand;
+import bugs.stackoverflow.belisarius.commands.StopCommand;
 import bugs.stackoverflow.belisarius.services.MonitorService;
-import org.sobotics.chatexchange.chat.*;
-import org.sobotics.chatexchange.chat.event.*;
+
+import org.sobotics.chatexchange.chat.Message;
+import org.sobotics.chatexchange.chat.Room;
+import org.sobotics.chatexchange.chat.event.MessagePostedEvent;
+import org.sobotics.chatexchange.chat.event.PingMessageEvent;
 
 public class CommandList {
     public void mention(Room room, PingMessageEvent event, MonitorService service) {

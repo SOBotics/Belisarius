@@ -2,14 +2,14 @@ package bugs.stackoverflow.belisarius.services;
 
 import java.io.IOException;
 
-import com.google.gson.JsonObject;
-
 import bugs.stackoverflow.belisarius.utils.ApiUtils;
+
+import com.google.gson.JsonObject;
 
 public class ApiService {
 
-    private static int quota = 0;
-    private static long backOffUntil = 0L;
+    private static int quota;
+    private static long backOffUntil;
 
     private String apiKey;
     private String site;

@@ -1,10 +1,25 @@
 package bugs.stackoverflow.belisarius.utils;
 
-import bugs.stackoverflow.belisarius.filters.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import bugs.stackoverflow.belisarius.filters.BlacklistedFilter;
+import bugs.stackoverflow.belisarius.filters.CodeRemovedFilter;
+import bugs.stackoverflow.belisarius.filters.FewUniqueCharactersFilter;
+import bugs.stackoverflow.belisarius.filters.Filter;
 import bugs.stackoverflow.belisarius.filters.Filter.Severity;
-import bugs.stackoverflow.belisarius.models.*;
+import bugs.stackoverflow.belisarius.filters.OffensiveWordFilter;
+import bugs.stackoverflow.belisarius.filters.RepeatedWordFilter;
+import bugs.stackoverflow.belisarius.filters.TextRemovedFilter;
+import bugs.stackoverflow.belisarius.filters.VeryLongWordFilter;
+import bugs.stackoverflow.belisarius.models.Post;
+import bugs.stackoverflow.belisarius.models.SOUser;
+import bugs.stackoverflow.belisarius.models.VandalisedPost;
 import bugs.stackoverflow.belisarius.models.VandalisedPost.Feedback;
 import bugs.stackoverflow.belisarius.services.HiggsService;
+
 import org.sobotics.chatexchange.chat.Message;
 import org.sobotics.chatexchange.chat.Room;
 import org.sobotics.chatexchange.chat.event.PingMessageEvent;
@@ -12,10 +27,6 @@ import org.sobotics.chatexchange.chat.event.PingMessageEvent;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.swagger.client.ApiException;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class PostUtils {
 
@@ -181,8 +192,8 @@ public class PostUtils {
 
         Severity severity = null;
 
-        HashMap<String, Double> formattedReasonMessages = new HashMap<>();
-        HashMap<String, Double> reasonNames = new HashMap<>();
+        Map<String, Double> formattedReasonMessages = new HashMap<>();
+        Map<String, Double> reasonNames = new HashMap<>();
         for (Filter filter: filters) {
             if (filter.isHit()) {
                 filter.storeHit();

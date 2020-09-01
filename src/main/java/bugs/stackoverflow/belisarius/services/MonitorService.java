@@ -1,16 +1,23 @@
 package bugs.stackoverflow.belisarius.services;
 
-import bugs.stackoverflow.belisarius.*;
-import bugs.stackoverflow.belisarius.clients.Monitor;
-import bugs.stackoverflow.belisarius.models.*;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
-import org.sobotics.chatexchange.chat.event.EventType;
+import bugs.stackoverflow.belisarius.Belisarius;
+import bugs.stackoverflow.belisarius.clients.Monitor;
+import bugs.stackoverflow.belisarius.models.Chatroom;
+import bugs.stackoverflow.belisarius.models.Post;
+
 import org.sobotics.chatexchange.chat.Room;
 import org.sobotics.chatexchange.chat.StackExchangeClient;
-
-import java.util.concurrent.*;
-import java.time.Instant;
-import java.util.*;
+import org.sobotics.chatexchange.chat.event.EventType;
 
 public class MonitorService {
 

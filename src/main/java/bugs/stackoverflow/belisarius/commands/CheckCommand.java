@@ -1,10 +1,10 @@
 package bugs.stackoverflow.belisarius.commands;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import bugs.stackoverflow.belisarius.services.MonitorService;
 import bugs.stackoverflow.belisarius.utils.CommandUtils;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sobotics.chatexchange.chat.Message;
 import org.sobotics.chatexchange.chat.Room;
 

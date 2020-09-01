@@ -1,28 +1,36 @@
 package bugs.stackoverflow.belisarius.services;
 
-import java.util.*;
-
-import io.swagger.client.*;
-import io.swagger.client.api.BotApi;
-import io.swagger.client.model.*;
-import org.jsoup.parser.Parser;
-import org.threeten.bp.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.models.VandalisedPost;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLSession;
+import org.jsoup.parser.Parser;
+import org.threeten.bp.Instant;
+import org.threeten.bp.OffsetDateTime;
+import org.threeten.bp.ZoneOffset;
 
-public class HiggsService {
+import io.swagger.client.ApiException;
+import io.swagger.client.Configuration;
+import io.swagger.client.api.BotApi;
+import io.swagger.client.model.AquireTokenRequest;
+import io.swagger.client.model.AquireTokenResponse;
+import io.swagger.client.model.RegisterPostContentFragment;
+import io.swagger.client.model.RegisterPostReason;
+import io.swagger.client.model.RegisterPostRequest;
+import io.swagger.client.model.RegisterUserFeedbackRequest;
+
+public final class HiggsService {
 
     private static HiggsService instance;
     private String url;
     private BotApi botApi;
 
     private HiggsService(String url, String key) throws ApiException {
-        super();
+        // super();
         this.url = url;
         initHiggs(key);
     }

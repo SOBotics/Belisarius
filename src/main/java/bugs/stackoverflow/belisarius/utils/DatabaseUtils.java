@@ -1,22 +1,22 @@
 package bugs.stackoverflow.belisarius.utils;
 
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import bugs.stackoverflow.belisarius.models.Chatroom;
-import bugs.stackoverflow.belisarius.models.Higgs;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import bugs.stackoverflow.belisarius.database.SQLiteConnection;
+import bugs.stackoverflow.belisarius.models.Chatroom;
+import bugs.stackoverflow.belisarius.models.Higgs;
 import bugs.stackoverflow.belisarius.models.Post;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DatabaseUtils {
 
@@ -331,7 +331,7 @@ public class DatabaseUtils {
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            LOGGER.info("Failed to store reason for vandalised post. PostId: " + String.valueOf(postId) + "; RevisionId: " + String.valueOf(revisionId) + "; ReasonId: " + String.valueOf(reasonId) + ".", e);
+            LOGGER.info("Failed to store reason caught. Post id: " + String.valueOf(postId) + "; Reason id: " + String.valueOf(reasonId), e);
         }
     }
 
@@ -399,12 +399,12 @@ public class DatabaseUtils {
         return 0;
     }
 
-    static HashMap<Integer, String> getBlacklistedWords(String postType) {
+    static Map<Integer, String> getBlacklistedWords(String postType) {
         SQLiteConnection connection = new SQLiteConnection();
 
         String sql = "SELECT BlacklistedWordId, BlacklistedWord FROM BlacklistedWord WHERE PostType = ?;";
 
-        HashMap<Integer, String> blacklistedWords = new HashMap<>();
+        Map<Integer, String> blacklistedWords = new HashMap<>();
         try (Connection conn = connection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, postType);
@@ -419,12 +419,12 @@ public class DatabaseUtils {
         return blacklistedWords;
     }
 
-    static HashMap<Integer, String> getOffensiveWords() {
+    static Map<Integer, String> getOffensiveWords() {
         SQLiteConnection connection = new SQLiteConnection();
 
         String sql = "SELECT OffensiveWordId, OffensiveWord FROM OffensiveWord;";
 
-        HashMap<Integer, String> offensiveWords = new HashMap<>();
+        Map<Integer, String> offensiveWords = new HashMap<>();
         try (Connection conn = connection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -473,7 +473,7 @@ public class DatabaseUtils {
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            LOGGER.info("Failed to store caught blacklisted word for vandalised post. PostId: " + String.valueOf(postId) + "; RevisionId: " + String.valueOf(revisionId) + "; BlacklistedWordId: " + String.valueOf(blacklistedWordId) + ".", e);
+            LOGGER.info("Failed to store caught blacklisted word. Post: " + String.valueOf(postId) + "; Word: " + String.valueOf(blacklistedWordId), e);
         }
     }
 
@@ -493,7 +493,7 @@ public class DatabaseUtils {
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            LOGGER.info("Failed to store caught offensive word for vandalised post. PostId: " + String.valueOf(postId) + "; RevisionId: " + String.valueOf(revisionId) + "; OffensiveWordId: " + String.valueOf(offensiveWordId) + ".", e);
+            LOGGER.info("Failed to store caught offensive word. PostId: " + String.valueOf(postId) + "; WordId: " + String.valueOf(offensiveWordId), e);
         }
     }
 

@@ -4,14 +4,17 @@ import java.util.List;
 
 import bugs.stackoverflow.belisarius.Belisarius;
 import bugs.stackoverflow.belisarius.finders.VandalismFinder;
-import bugs.stackoverflow.belisarius.models.*;
+import bugs.stackoverflow.belisarius.models.Post;
+import bugs.stackoverflow.belisarius.models.VandalisedPost;
 import bugs.stackoverflow.belisarius.services.HiggsService;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 import bugs.stackoverflow.belisarius.utils.JsonUtils;
 import bugs.stackoverflow.belisarius.utils.PostUtils;
-import org.sobotics.chatexchange.chat.Room;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sobotics.chatexchange.chat.Room;
+
 import io.swagger.client.ApiException;
 
 public class Monitor {

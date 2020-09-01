@@ -1,11 +1,14 @@
 package bugs.stackoverflow.belisarius.utils;
 
-import java.io.*;
-import java.nio.file.*;
-import java.util.*;
+// import java.nio.file.StringWriter;
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -13,8 +16,8 @@ import info.debatty.java.stringsimilarity.JaroWinkler;
 
 public class CheckUtils {
 
-    public static HashMap<Integer, String> checkForBlackListedWords(String target, String postType) {
-        HashMap<Integer, String> blacklistedWords = DatabaseUtils.getBlacklistedWords(postType);
+    public static Map<Integer, String> checkForBlackListedWords(String target, String postType) {
+        Map<Integer, String> blacklistedWords = DatabaseUtils.getBlacklistedWords(postType);
         return getCaughtByRegex(blacklistedWords, target);
     }
 
@@ -76,13 +79,13 @@ public class CheckUtils {
         return null;
     }
 
-    public static HashMap<Integer, String> checkForOffensiveWords(String target) {
-        HashMap<Integer, String> offensiveWords = DatabaseUtils.getOffensiveWords();
+    public static Map<Integer, String> checkForOffensiveWords(String target) {
+        Map<Integer, String> offensiveWords = DatabaseUtils.getOffensiveWords();
         return getCaughtByRegex(offensiveWords, target);
     }
 
-    private static HashMap<Integer, String> getCaughtByRegex(HashMap<Integer, String> words, String target) {
-        HashMap<Integer, String> caught = new HashMap<Integer, String>();
+    private static Map<Integer, String> getCaughtByRegex(Map<Integer, String> words, String target) {
+        Map<Integer, String> caught = new HashMap<Integer, String>();
 
         try {
             Iterator iterator = words.entrySet().iterator();
