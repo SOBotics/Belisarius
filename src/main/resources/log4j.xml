@@ -13,7 +13,7 @@
         <param name="append" value="false"/>
         <param name="maxFileSize" value="1GB"/>
         <param name="maxBackupIndex" value="2"/>
-        <param name="file" value="/logs/bd.log"/>
+        <param name="file" value="~/logs/bd.log"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%-5p %c{1} - %m%n"/>
         </layout>
