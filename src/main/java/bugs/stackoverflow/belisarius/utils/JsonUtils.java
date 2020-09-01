@@ -56,8 +56,10 @@ public class JsonUtils {
             root = new JsonParser().parse(json).getAsJsonObject();
         } catch (Exception e) {
             DateTimeFormatter timeStampPattern = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-            FileUtils.writeStringToFile(new File("jsondump" + timeStampPattern.format(java.time.LocalDateTime.now()) + ".txt"), json);
-            FileUtils.writeStringToFile(new File("url" + timeStampPattern.format(java.time.LocalDateTime.now()) + ".txt"), response.url().getQuery());
+            String jsonDumpFilename = "jsondump" + timeStampPattern.format(java.time.LocalDateTime.now()) + ".txt";
+            String urlDumpFilename = "url" + timeStampPattern.format(java.time.LocalDateTime.now()) + ".txt";
+            FileUtils.writeStringToFile(new File(jsonDumpFilename), json);
+            FileUtils.writeStringToFile(new File(urlDumpFilename), response.url().getQuery());
         }
 
         if (root.has("quota_remaining")) {
