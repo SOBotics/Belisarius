@@ -9,10 +9,10 @@ import org.sobotics.chatexchange.chat.*;
 
 public class StopCommand implements Command {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(StopCommand.class);
+
     private Message message;
     private MonitorService service;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(StopCommand.class);
 
     public StopCommand(Message message, MonitorService service) {
         this.message = message;

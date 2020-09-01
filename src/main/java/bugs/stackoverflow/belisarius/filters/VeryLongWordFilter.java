@@ -25,7 +25,7 @@ public class VeryLongWordFilter implements Filter {
         this.listedWord = "";
         if (post.getBody() != null) {
             this.listedWord = CheckUtils.checkForLongWords(StringUtils.difference(post.getLastBody(), post.getBody()));
-            if(this.listedWord!=null){
+            if (this.listedWord != null) {
                 return true;
             }
         }

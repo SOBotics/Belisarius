@@ -23,13 +23,13 @@ public class PostUtils {
         if (post.getAsJsonObject().has("last_edit_date")) {
             long lastActivityDate = post.getAsJsonObject().get("last_activity_date").getAsLong();
             long lastEditDate = post.getAsJsonObject().get("last_edit_date").getAsLong();
-            return (lastActivityDate == lastEditDate);
+            return lastActivityDate == lastEditDate;
         }
         return false;
     }
 
     public static boolean editorAlsoOwner(JsonElement post) {
-        try{
+        try {
             if (!post.getAsJsonObject().has("owner")) {
                 return true;
             } else {
@@ -50,7 +50,7 @@ public class PostUtils {
     }
 
 
-    public static Post getPost(JsonObject post, String site, String title, String previousRevisionGuid){
+    public static Post getPost(JsonObject post, String site, String title, String previousRevisionGuid) {
 
         Post np = new Post();
 
@@ -88,13 +88,12 @@ public class PostUtils {
         JsonObject userJSON = post.get("user").getAsJsonObject();
         SOUser user = new SOUser();
 
-        try{
+        try {
             user.setReputation(userJSON.get("reputation").getAsLong());
             user.setUsername(JsonUtils.escapeHtmlEncoding(userJSON.get("display_name").getAsString()));
             user.setUserType(userJSON.get("user_type").getAsString());
             user.setUserId(userJSON.get("user_id").getAsInt());
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -102,6 +101,7 @@ public class PostUtils {
 
         return np;
     }
+
     static Post getPost(int postId, long creationDate, int revisionId, String title, String lastTitle, String body, String lastBody,
                         boolean isRollback, String postType, String comment, int ownerId, String site, String revisionGuid, String previousRevisionGuid) {
 
@@ -158,13 +158,11 @@ public class PostUtils {
                                           post.getComment(), post.getSite(), vandalisedPost.getSeverity(), higgsId, post.getRevisionGuid(),
                                           post.getPreviousRevisionGuid(), lastBodyMarkdown, bodyMarkdown);
 
-
-
     }
 
     private static long getPostIdFromMessage(String message) {
         message = message.split("//stackoverflow.com/posts/")[1];
-        return Long.parseLong(message.substring(0,message.indexOf("/")));
+        return Long.parseLong(message.substring(0, message.indexOf("/")));
     }
 
     private static int getRevisionNumberFromMessage(String message) {
@@ -172,22 +170,21 @@ public class PostUtils {
     }
 
     public static VandalisedPost getVandalisedPost(Room room, Post post) {
-        List<Filter> filters = new ArrayList<Filter>(){{
-            add(new BlacklistedFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(BlacklistedFilter.class.getName()))));
-            add(new VeryLongWordFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(VeryLongWordFilter.class.getName()))));
-            add(new CodeRemovedFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(CodeRemovedFilter.class.getName()))));
-            add(new TextRemovedFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(TextRemovedFilter.class.getName()))));
-            add(new FewUniqueCharactersFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(FewUniqueCharactersFilter.class.getName()))));
-            add(new OffensiveWordFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(OffensiveWordFilter.class.getName()))));
-            add(new RepeatedWordFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(RepeatedWordFilter.class.getName()))));
-        }};
+        List<Filter> filters = new ArrayList<Filter>();
+        filters.add(new BlacklistedFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(BlacklistedFilter.class.getName()))));
+        filters.add(new VeryLongWordFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(VeryLongWordFilter.class.getName()))));
+        filters.add(new CodeRemovedFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(CodeRemovedFilter.class.getName()))));
+        filters.add(new TextRemovedFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(TextRemovedFilter.class.getName()))));
+        filters.add(new FewUniqueCharactersFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(FewUniqueCharactersFilter.class.getName()))));
+        filters.add(new OffensiveWordFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(OffensiveWordFilter.class.getName()))));
+        filters.add(new RepeatedWordFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(RepeatedWordFilter.class.getName()))));
 
         Severity severity = null;
 
         HashMap<String, Double> formattedReasonMessages = new HashMap<>();
         HashMap<String, Double> reasonNames = new HashMap<>();
-        for(Filter filter: filters){
-            if(filter.isHit()){
+        for (Filter filter: filters) {
+            if (filter.isHit()) {
                 filter.storeHit();
                 formattedReasonMessages.put(filter.getFormattedReasonMessage(), filter.getScore());
                 reasonNames.put(filter.getReasonName(), filter.getScore());

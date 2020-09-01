@@ -8,9 +8,9 @@ import org.sobotics.chatexchange.chat.*;
 
 public class QuotaCommand implements Command {
 
-    private Message message;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(QuotaCommand.class);
+
+    private Message message;
 
     public QuotaCommand(Message message) {
         this.message = message;

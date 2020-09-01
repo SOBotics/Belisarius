@@ -23,21 +23,32 @@ public class Chatroom {
         this.outputMessage = outputMessage;
     }
 
-    public int getRoomId() { return roomId; }
-    public ChatHost getHost() { return chatHost; }
-    public String getSiteName() { return site; }
-    public boolean getOutputMessage() { return outputMessage; }
+    public int getRoomId() {
+        return roomId;
+    }
 
-    public Consumer<UserMentionedEvent> getUserMentioned(Room room, MonitorService service){
-        return event->new CommandList().mention(room, event, service);
+    public ChatHost getHost() {
+        return chatHost;
+    }
+
+    public String getSiteName() {
+        return site;
+    }
+
+    public boolean getOutputMessage() {
+        return outputMessage;
+    }
+
+    public Consumer<UserMentionedEvent> getUserMentioned(Room room, MonitorService service) {
+        return event -> new CommandList().mention(room, event, service);
     }
 
     public Consumer<MessageReplyEvent> getPostedReply(Room room) {
-        return event-> ChatUtils.reply(room, event);
+        return event -> ChatUtils.reply(room, event);
     }
 
     public Consumer<MessagePostedEvent> getPostedMessage(Room room) {
-        return event->new CommandList().posted(room, event);
+        return event -> new CommandList().posted(room, event);
     }
 
 }

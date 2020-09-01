@@ -28,7 +28,7 @@ public class RepeatedWordFilter implements Filter {
         }
 
         double score = getScore();
-        return score>0 && score<=5;
+        return score > 0 && score <= 5;
     }
 
     @Override
@@ -40,8 +40,8 @@ public class RepeatedWordFilter implements Filter {
     public String getFormattedReasonMessage() {
         String message = "";
 
-        if (this.repeatedWords.size()>0) {
-            message += "**Post contains repeated " + (this.repeatedWords.size()>1 ? "words" : "word") + " - ** " + getRepeatedWords() + " ";
+        if (this.repeatedWords.size() > 0) {
+            message += "**Post contains repeated " + (this.repeatedWords.size() > 1 ? "words" : "word") + " - ** " + getRepeatedWords() + " ";
         }
 
         return message.trim();
@@ -55,7 +55,7 @@ public class RepeatedWordFilter implements Filter {
     private String getRepeatedWords() {
         StringBuilder words = new StringBuilder();
 
-        for(String word : repeatedWords) {
+        for (String word : repeatedWords) {
             words.append(word);
         }
 

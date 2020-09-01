@@ -12,9 +12,9 @@ public class PropertyService {
 
     public PropertyService() {
         prop = new Properties();
-        try{
+        try {
             prop.load(new FileInputStream(PathUtils.loginPropertiesFile));
-        } catch(IOException e){
+        } catch(IOException e) {
             e.printStackTrace();
         }
     }
@@ -51,9 +51,9 @@ public class PropertyService {
         }
 
         int returnRoomId = 0;
-        try{
+        try {
             returnRoomId = Integer.parseInt(roomId);
-        } catch(NumberFormatException e){
+        } catch (NumberFormatException e) {
             System.out.println("Error parsing roomId: " + e.getMessage());
         }
 

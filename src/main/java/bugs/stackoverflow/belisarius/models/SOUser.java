@@ -48,12 +48,12 @@ public class SOUser {
         return getJson().toString();
     }
 
-    public JsonObject getJson(){
+    public JsonObject getJson() {
         JsonObject json = new JsonObject();
-        json.addProperty("username" , username);
-        json.addProperty("userId" , userId);
-        json.addProperty("reputation" , reputation);
-        json.addProperty("userType" , userType);
+        json.addProperty("username", username);
+        json.addProperty("userId", userId);
+        json.addProperty("reputation", reputation);
+        json.addProperty("userType", userType);
         return json;
     }
 }

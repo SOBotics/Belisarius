@@ -63,16 +63,14 @@ public class Monitor {
     }
 
     private VandalisedPost getVandalisedPost(Room room, Post post) {
-         try {
-              {
-                 VandalismFinder vandalismFinder = new VandalismFinder(room, post);
-                 return vandalismFinder.findReasons();
-             }
-         } catch (Exception e) {
-             e.printStackTrace();
-         }
+        try {
+            VandalismFinder vandalismFinder = new VandalismFinder(room, post);
+            return vandalismFinder.findReasons();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-         return null;
+        return null;
     }
 
     private void reportPost(Room room, VandalisedPost vandalisedPost, Post post, boolean outputMessage) {
@@ -96,7 +94,7 @@ public class Monitor {
         }
     }
 
-    private void sendVandalismFoundMessage(Room room, Post post,VandalisedPost vandalisedPost, int higgsId) throws ApiException {
+    private void sendVandalismFoundMessage(Room room, Post post, VandalisedPost vandalisedPost, int higgsId) throws ApiException {
         Belisarius.buildMessage(room, higgsId, post.getPostType().toLowerCase(), vandalisedPost.getSeverity(),
                                 Belisarius.POTENTIAL_VANDALISM + vandalisedPost.getReasonMessage(), post.getAllRevisionsUrl(),
                                 post.getRevisionNumber(), post.getRevisionUrl());

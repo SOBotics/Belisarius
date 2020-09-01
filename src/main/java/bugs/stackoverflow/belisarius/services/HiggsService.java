@@ -27,7 +27,9 @@ public class HiggsService {
         initHiggs(key);
     }
 
-    public String getUrl() { return url; }
+    public String getUrl() {
+        return url;
+    }
 
     public static void initInstance(String url, String key) throws ApiException {
         instance = new HiggsService(url, key);
@@ -40,7 +42,7 @@ public class HiggsService {
         return instance;
     }
 
-    private void initHiggs(String key) throws  ApiException {
+    private void initHiggs(String key) throws ApiException {
         this.botApi = new BotApi(Configuration.getDefaultApiClient().setBasePath(this.url));
 
         AquireTokenRequest tokenRequest = new AquireTokenRequest();
@@ -94,14 +96,14 @@ public class HiggsService {
 
         postRequest.setDetectionScore(vandalisedPost.getScore());
 
-        Instant detected = Instant.ofEpochSecond(System.currentTimeMillis()/1000);
+        Instant detected = Instant.ofEpochSecond(System.currentTimeMillis() / 1000);
         postRequest.setDetectedDate(OffsetDateTime.ofInstant(detected, ZoneOffset.UTC));
 
         Instant created = Instant.ofEpochSecond(post.getCreationDate());
         postRequest.setContentCreationDate(OffsetDateTime.ofInstant(created, ZoneOffset.UTC));
 
         List<RegisterPostReason> reasons = new ArrayList<>();
-        for(Map.Entry<String, Double> reason : vandalisedPost.getReasonNames().entrySet()){
+        for (Map.Entry<String, Double> reason : vandalisedPost.getReasonNames().entrySet()) {
             RegisterPostReason registerPostReason = new RegisterPostReason();
             registerPostReason.setReasonName(reason.getKey());
             registerPostReason.setTripped(true);
@@ -115,7 +117,7 @@ public class HiggsService {
         return botApi.botRegisterPostPost(postRequest);
     }
 
-    public void sendFeedback(int reportId, int userId, VandalisedPost.Feedback feedback) throws ApiException{
+    public void sendFeedback(int reportId, int userId, VandalisedPost.Feedback feedback) throws ApiException {
         RegisterUserFeedbackRequest registerUserFeedbackRequest = new RegisterUserFeedbackRequest();
         registerUserFeedbackRequest.setReportId(reportId);
         registerUserFeedbackRequest.setFeedback(feedback.toString());

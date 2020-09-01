@@ -8,9 +8,9 @@ import org.sobotics.chatexchange.chat.*;
 
 public class HelpCommand implements Command {
 
-    private Message message;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(HelpCommand.class);
+
+    private Message message;
 
     public HelpCommand(Message message) {
         this.message = message;
@@ -37,7 +37,5 @@ public class HelpCommand implements Command {
     public String getName() {
         return "help";
     }
-
-
 
 }

@@ -41,7 +41,7 @@ public class TextRemovedFilter implements Filter {
 
     @Override
     public String getFormattedReasonMessage() {
-        return "**" + percentage*100 + "% or more text removed with a JW score of " + Math.round(this.score*100.0)/100.0  + "**";
+        return "**" + percentage * 100 + "% or more text removed with a JW score of " + Math.round(this.score * 100.0) / 100.0 + "**";
     }
 
     @Override
