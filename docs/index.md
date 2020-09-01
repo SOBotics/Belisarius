@@ -21,7 +21,7 @@ The point of the bot is to help identify bad edits and/or potential vandalism ma
 
 The bot queries the [Stack Exchange API][1] once every minute to get a list of the latest posts. There is logic to check that the post has been edited and that it has been edited by the author.
 
-The `post_Id` from each post is then taken and the [Stack Exchange API][2] is again queried for the list of revisions. To limit calls we utilise the functionality of pushing multiple ids into the API and then logic is in place to ensure we are using the latest revision.
+The `post_id` from each post is then taken and the [Stack Exchange API][2] is again queried for the list of revisions. To limit calls we utilise the functionality of pushing multiple ids into the API and then logic is in place to ensure we are using the latest revision.
 
 Edits can be made up of a title change, body change of a question, tag changes or changes made to the body of an answer. Currently tags are not checked. Instead the title, question body and answer body depending on what has been edited are run through filters, as is the edit summary.
 
@@ -33,17 +33,17 @@ Edits can be made up of a title change, body change of a question, tag changes o
 
 ### The question/answer body is run through the following filters:
  
- - TextRemoved; 80% or more of the body must have been removed and then it must have a [Jaro Winkler][3] score of less than 0.6
- - BlacklistedWords; certain words are appended to posts. The bot reads a separate file for questions and answers. Both hold a list of keywords to watch for
- - CodeRemoved; the bot watches for all code being removed
- - FewUniqueCharacters; the body must either be 30 plus characters long and have less than 7 unique characters or be 100 plus characters long and have less than 16 unique characters
- - RepeatedWords; this is when an edit is made were all the body is replaced with repeated words. The bot will output if 5 or less unique words are found
- - VeryLongWord; the bot checks the post for a word longer than 50 characters long. Code is removed before the check is done
+ - `TextRemoved`; 80% or more of the body must have been removed and then it must have a [Jaro Winkler][3] score of less than 0.6
+ - `BlacklistedWords`; certain words are appended to posts. The bot reads a separate file for questions and answers. Both hold a list of keywords to watch for
+ - `CodeRemoved`; the bot watches for all code being removed
+ - `FewUniqueCharacters`; the body must either be 30 plus characters long and have less than 7 unique characters or be 100 plus characters long and have less than 16 unique characters
+ - `RepeatedWords`; this is when an edit is made were all the body is replaced with repeated words. The bot will output if 5 or less unique words are found
+ - `VeryLongWord`; the bot checks the post for a word longer than 50 characters long. Code is removed before the check is done
 
 ### Edit summaries are run through the following filters:
 
- - BlacklistedWords; certain words are used within the edit summaries. The bot holds a separate file for question edit summaries and answer edit summaries. Both hold a list of keywords to watch for
- - OffensiveWord; the bot checks for offensive language used within the edit summary. This is done via a separate regex file
+ - `BlacklistedWords`; certain words are used within the edit summaries. The bot holds a separate file for question edit summaries and answer edit summaries. Both hold a list of keywords to watch for
+ - `OffensiveWord`; the bot checks for offensive language used within the edit summary. This is done via a separate regex file
  
 ## Accounts 
 
