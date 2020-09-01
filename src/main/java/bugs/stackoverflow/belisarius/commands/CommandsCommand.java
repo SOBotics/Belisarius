@@ -46,6 +46,4 @@ public class CommandsCommand implements Command {
         return "commands";
     }
 
-
-
 }

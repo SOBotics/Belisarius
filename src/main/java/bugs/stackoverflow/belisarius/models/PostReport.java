@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PostReport {
-    Post post;
+    private Post post;
     private Map<String, Double> reasons = new HashMap<String, Double>();
 
     public PostReport(Post post, Map<String, Double> reasons) {
