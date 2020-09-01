@@ -2,6 +2,7 @@ package bugs.stackoverflow.belisarius.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -58,8 +59,8 @@ public class JsonUtils {
             DateTimeFormatter timeStampPattern = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
             String jsonDumpFilename = "jsondump" + timeStampPattern.format(java.time.LocalDateTime.now()) + ".txt";
             String urlDumpFilename = "url" + timeStampPattern.format(java.time.LocalDateTime.now()) + ".txt";
-            FileUtils.writeStringToFile(new File(jsonDumpFilename), json);
-            FileUtils.writeStringToFile(new File(urlDumpFilename), response.url().getQuery());
+            FileUtils.writeStringToFile(new File(jsonDumpFilename), json, StandardCharsets.UTF_8);
+            FileUtils.writeStringToFile(new File(urlDumpFilename), response.url().getQuery(), StandardCharsets.UTF_8);
         }
 
         if (root.has("quota_remaining")) {

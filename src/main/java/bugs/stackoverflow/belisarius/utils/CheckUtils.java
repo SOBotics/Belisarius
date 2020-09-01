@@ -79,6 +79,7 @@ public class CheckUtils {
         return getCaughtByRegex(offensiveWords, target);
     }
 
+    @SuppressWarnings("unchecked")
     private static Map<Integer, String> getCaughtByRegex(Map<Integer, String> words, String target) {
         Map<Integer, String> caught = new HashMap<Integer, String>();
 
