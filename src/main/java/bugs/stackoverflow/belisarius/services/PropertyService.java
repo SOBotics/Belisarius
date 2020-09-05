@@ -14,8 +14,8 @@ public class PropertyService {
         prop = new Properties();
         try {
             prop.load(new FileInputStream(PathUtils.LOGIN_PROPERTIES_FILE));
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
     }
 
@@ -53,8 +53,8 @@ public class PropertyService {
         int returnRoomId = 0;
         try {
             returnRoomId = Integer.parseInt(roomId);
-        } catch (NumberFormatException e) {
-            System.out.println("Error parsing roomId: " + e.getMessage());
+        } catch (NumberFormatException ex) {
+            System.out.println("Error parsing roomId: " + ex.getMessage());
         }
 
         return returnRoomId;

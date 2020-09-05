@@ -4,12 +4,12 @@ import org.sobotics.chatexchange.chat.Room;
 
 public interface Command {
 
-    public boolean validate();
+    boolean validate();
 
-    public void execute(Room room);
+    void execute(Room room);
 
-    public String getDescription();
+    String getDescription();
 
-    public String getName();
+    String getName();
 
 }

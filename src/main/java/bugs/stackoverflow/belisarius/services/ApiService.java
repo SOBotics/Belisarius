@@ -15,31 +15,31 @@ public class ApiService {
     private String site;
 
     public ApiService(String site) {
-        PropertyService ps = new PropertyService();
+        PropertyService propertyService = new PropertyService();
 
         this.site = site;
-        this.apiKey = ps.getApiKey();
+        this.apiKey = propertyService.getApiKey();
     }
 
     public JsonObject getPostIdsByActivityDesc(int page) throws IOException {
-        JsonObject postsJSON = ApiUtils.getPostIdsByActivityDesc(page, site, apiKey);
-        quota = postsJSON.get("quota_remaining").getAsInt();
-        setBackOffUntil(postsJSON);
-        return postsJSON;
+        JsonObject postsJson = ApiUtils.getPostIdsByActivityDesc(page, site, apiKey);
+        quota = postsJson.get("quota_remaining").getAsInt();
+        setBackOffUntil(postsJson);
+        return postsJson;
     }
 
     public JsonObject getLastestRevisions(String postIdInput) throws IOException {
-        JsonObject revisionJSON = ApiUtils.getLastestRevisions(postIdInput, site, apiKey);
-        quota = revisionJSON.get("quota_remaining").getAsInt();
-        setBackOffUntil(revisionJSON);
-        return revisionJSON;
+        JsonObject revisionJson = ApiUtils.getLastestRevisions(postIdInput, site, apiKey);
+        quota = revisionJson.get("quota_remaining").getAsInt();
+        setBackOffUntil(revisionJson);
+        return revisionJson;
     }
 
     public JsonObject getMorePostInformation(String postId) throws IOException {
-        JsonObject postJSON = ApiUtils.getMorePostInformation(postId, site, apiKey);
-        quota = postJSON.get("quota_remaining").getAsInt();
-        setBackOffUntil(postJSON);
-        return postJSON;
+        JsonObject postJson = ApiUtils.getMorePostInformation(postId, site, apiKey);
+        quota = postJson.get("quota_remaining").getAsInt();
+        setBackOffUntil(postJson);
+        return postJson;
     }
 
     public static int getQuota() {

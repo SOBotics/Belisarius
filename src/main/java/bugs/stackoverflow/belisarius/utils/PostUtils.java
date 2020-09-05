@@ -15,7 +15,7 @@ import bugs.stackoverflow.belisarius.filters.RepeatedWordFilter;
 import bugs.stackoverflow.belisarius.filters.TextRemovedFilter;
 import bugs.stackoverflow.belisarius.filters.VeryLongWordFilter;
 import bugs.stackoverflow.belisarius.models.Post;
-import bugs.stackoverflow.belisarius.models.SOUser;
+import bugs.stackoverflow.belisarius.models.StackOverflowUser;
 import bugs.stackoverflow.belisarius.models.VandalisedPost;
 import bugs.stackoverflow.belisarius.models.VandalisedPost.Feedback;
 import bugs.stackoverflow.belisarius.services.HiggsService;
@@ -45,100 +45,101 @@ public class PostUtils {
             if (!post.getAsJsonObject().has("owner")) {
                 return true;
             } else {
-                JsonObject ownerJSON = post.getAsJsonObject().get("owner").getAsJsonObject();
-                JsonObject editorJSON = post.getAsJsonObject().get("last_editor").getAsJsonObject();
+                JsonObject ownerJson = post.getAsJsonObject().get("owner").getAsJsonObject();
+                JsonObject editorJson = post.getAsJsonObject().get("last_editor").getAsJsonObject();
 
-                long ownerId = ownerJSON.get("user_id").getAsLong();
-                long editorId = editorJSON.get("user_id").getAsLong();
+                long ownerId = ownerJson.get("user_id").getAsLong();
+                long editorId = editorJson.get("user_id").getAsLong();
 
                 if (ownerId == editorId) {
                     return true;
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
         return false;
     }
 
-
     public static Post getPost(JsonObject post, String site, String title, String previousRevisionGuid) {
 
-        Post np = new Post();
+        Post newPost = new Post();
 
-        np.setPostId(post.get("post_id").getAsInt());
+        newPost.setPostId(post.get("post_id").getAsInt());
 
-        np.setRevisionNumber(post.get("revision_number").getAsInt());
-        np.setCreationDate(post.get("creation_date").getAsLong());
+        newPost.setRevisionNumber(post.get("revision_number").getAsInt());
+        newPost.setCreationDate(post.get("creation_date").getAsLong());
 
-        np.setRevisionUrl("https://" + site + ".com/revisions/" + post.get("post_id").getAsString() + "/" + post.get("revision_number").getAsString());
-        np.setAllRevisionsUrl("https://" + site + ".com/posts/" + post.get("post_id").getAsString() + "/revisions");
+        newPost.setRevisionUrl("https://" + site + ".com/revisions/" + post.get("post_id").getAsString()
+                             + "/" + post.get("revision_number").getAsString());
+        newPost.setAllRevisionsUrl("https://" + site + ".com/posts/" + post.get("post_id").getAsString() + "/revisions");
 
-        np.setTitle(title);
+        newPost.setTitle(title);
         if (post.has("last_title")) {
-            np.setLastTitle(post.get("last_title").getAsString());
+            newPost.setLastTitle(post.get("last_title").getAsString());
         }
 
         if (post.has("body")) {
-            np.setBody(post.get("body").getAsString());
+            newPost.setBody(post.get("body").getAsString());
         }
 
         if (post.has("last_body")) {
-            np.setLastBody(post.get("last_body").getAsString());
+            newPost.setLastBody(post.get("last_body").getAsString());
         }
 
-        np.setIsRollback(post.get("is_rollback").getAsBoolean());
-        np.setPostType(post.get("post_type").getAsString());
+        newPost.setIsRollback(post.get("is_rollback").getAsBoolean());
+        newPost.setPostType(post.get("post_type").getAsString());
 
         if (post.has("comment")) {
-            np.setComment(post.get("comment").getAsString());
+            newPost.setComment(post.get("comment").getAsString());
         }
 
-        np.setRevisionGuid(post.get("revision_guid").getAsString());
-        np.setPreviousRevisionGuid(previousRevisionGuid);
+        newPost.setRevisionGuid(post.get("revision_guid").getAsString());
+        newPost.setPreviousRevisionGuid(previousRevisionGuid);
 
-        JsonObject userJSON = post.get("user").getAsJsonObject();
-        SOUser user = new SOUser();
+        JsonObject userJson = post.get("user").getAsJsonObject();
+        StackOverflowUser user = new StackOverflowUser();
 
         try {
-            user.setReputation(userJSON.get("reputation").getAsLong());
-            user.setUsername(JsonUtils.escapeHtmlEncoding(userJSON.get("display_name").getAsString()));
-            user.setUserType(userJSON.get("user_type").getAsString());
-            user.setUserId(userJSON.get("user_id").getAsInt());
-        } catch (Exception e) {
-            e.printStackTrace();
+            user.setReputation(userJson.get("reputation").getAsLong());
+            user.setUsername(JsonUtils.escapeHtmlEncoding(userJson.get("display_name").getAsString()));
+            user.setUserType(userJson.get("user_type").getAsString());
+            user.setUserId(userJson.get("user_id").getAsInt());
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
 
-        np.setUser(user);
+        newPost.setUser(user);
 
-        return np;
+        return newPost;
     }
 
-    static Post getPost(int postId, long creationDate, int revisionId, String title, String lastTitle, String body, String lastBody,
-                        boolean isRollback, String postType, String comment, int ownerId, String site, String revisionGuid, String previousRevisionGuid) {
+    static Post getPost(int postId, long creationDate, int revisionId, String title, String lastTitle,
+                        String body, String lastBody, boolean isRollback, String postType, String comment,
+                        int ownerId, String site, String revisionGuid, String previousRevisionGuid) {
 
-        Post np = new Post();
+        Post newPost = new Post();
 
-        np.setPostId(postId);
-        np.setCreationDate(creationDate);
-        np.setRevisionNumber(revisionId);
-        np.setRevisionUrl("https://" + site + ".com/revisions/" + String.valueOf(postId) + "/" + String.valueOf(revisionId));
-        np.setAllRevisionsUrl("https://" + site + ".com/posts/" + String.valueOf(postId) + "/revisions");
-        np.setTitle(title);
-        np.setLastTitle(lastTitle);
-        np.setBody(body);
-        np.setLastBody(lastBody);
-        np.setIsRollback(isRollback);
-        np.setPostType(postType);
-        np.setComment(comment);
-        np.setRevisionGuid(revisionGuid);
-        np.setPreviousRevisionGuid(previousRevisionGuid);
+        newPost.setPostId(postId);
+        newPost.setCreationDate(creationDate);
+        newPost.setRevisionNumber(revisionId);
+        newPost.setRevisionUrl("https://" + site + ".com/revisions/" + String.valueOf(postId) + "/" + String.valueOf(revisionId));
+        newPost.setAllRevisionsUrl("https://" + site + ".com/posts/" + String.valueOf(postId) + "/revisions");
+        newPost.setTitle(title);
+        newPost.setLastTitle(lastTitle);
+        newPost.setBody(body);
+        newPost.setLastBody(lastBody);
+        newPost.setIsRollback(isRollback);
+        newPost.setPostType(postType);
+        newPost.setComment(comment);
+        newPost.setRevisionGuid(revisionGuid);
+        newPost.setPreviousRevisionGuid(previousRevisionGuid);
 
-        SOUser user = new SOUser();
+        StackOverflowUser user = new StackOverflowUser();
         user.setUserId(ownerId);
-        np.setUser(user);
+        newPost.setUser(user);
 
-        return np;
+        return newPost;
     }
 
     static void storeFeedback(Room room, PingMessageEvent event, Feedback feedback) {
@@ -152,13 +153,13 @@ public class PostUtils {
 
         PropertyService propertyService = new PropertyService();
         try {
-            if (propertyService.getUseHiggs()) { // make sure the user is using Higgs!
+            if (propertyService.getUseHiggs()) {
                 int higgsId = DatabaseUtils.getHiggsId(postId, revisionNumber, event.getRoomId());
                 HiggsService.getInstance().sendFeedback(higgsId, (int) event.getMessage().getUser().getId(), feedback);
             }
         }
-        catch (ApiException e) {
-            e.printStackTrace();
+        catch (ApiException exception) {
+            exception.printStackTrace();
         }
     }
 
@@ -168,9 +169,10 @@ public class PostUtils {
 
     public static void storeVandalisedPost(Room room, VandalisedPost vandalisedPost, int higgsId, String lastBodyMarkdown, String bodyMarkdown) {
         Post post = vandalisedPost.getPost();
-        DatabaseUtils.storeVandalisedPost(post.getPostId(), post.getCreationDate(), post.getRevisionNumber(), room.getRoomId(), post.getUser().getUserId(),
-                                          post.getTitle(), post.getLastTitle(), post.getBody(), post.getLastBody(), post.getIsRollback(), post.getPostType(),
-                                          post.getComment(), post.getSite(), vandalisedPost.getSeverity(), higgsId, post.getRevisionGuid(),
+        DatabaseUtils.storeVandalisedPost(post.getPostId(), post.getCreationDate(), post.getRevisionNumber(), room.getRoomId(),
+                                          post.getUser().getUserId(), post.getTitle(), post.getLastTitle(), post.getBody(),
+                                          post.getLastBody(), post.getIsRollback(), post.getPostType(), post.getComment(),
+                                          post.getSite(), vandalisedPost.getSeverity(), higgsId, post.getRevisionGuid(),
                                           post.getPreviousRevisionGuid(), lastBodyMarkdown, bodyMarkdown);
 
     }

@@ -64,7 +64,6 @@ public class RepeatedWordFilter implements Filter {
         return words.toString();
     }
 
-
     @Override
     public Severity getSeverity() {
         return Severity.HIGH;

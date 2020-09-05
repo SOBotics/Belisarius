@@ -68,8 +68,9 @@ public final class HiggsService {
         String lastBody = lastBodyMarkdown == null ? "The body was not changed in this revision" : lastBodyMarkdown;
 
         String title = Parser.unescapeEntities(post.getTitle(), true);
+        // Make it clear the post is an answer in Higgs by prepending 'Answer to: '
         if (post.getPostType().equals("answer")) {
-            title = "Answer to: " + title; // make it clear it's an answer
+            title = "Answer to: " + title;
         }
 
         RegisterPostRequest postRequest = new RegisterPostRequest();
@@ -92,7 +93,7 @@ public final class HiggsService {
         contentFragmentBody.setOrder(1);
 
         RegisterPostContentFragment contentFragmentComment = new RegisterPostContentFragment();
-        contentFragmentComment.setContent(Parser.unescapeEntities(post.getComment(), true)); // unescape HTML in summary
+        contentFragmentComment.setContent(Parser.unescapeEntities(post.getComment(), true));
         contentFragmentComment.setName("Edit summary");
         contentFragmentComment.setOrder(3);
 

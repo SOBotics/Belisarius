@@ -25,7 +25,8 @@ public class QuotaCommand implements Command {
 
     @Override
     public void execute(Room room) {
-        LOGGER.info(this.message.getUser().getName() + " (" + this.message.getUser().getId() + ") is checking my remaining quota which is " + StatusUtils.remainingQuota);
+        LOGGER.info(this.message.getUser().getName() + " (" + this.message.getUser().getId() + ") "
+                  + "is checking my remaining quota, which is " + StatusUtils.remainingQuota);
         room.replyTo(message.getId(), "The remaining quota is: " + StatusUtils.remainingQuota);
     }
 

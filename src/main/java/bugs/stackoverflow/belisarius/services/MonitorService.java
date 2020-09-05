@@ -46,8 +46,8 @@ public class MonitorService {
             Room room = null;
             try {
                 room = client.joinRoom(chatroom.getHost(), chatroom.getRoomId());
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception exception) {
+                exception.printStackTrace();
             }
 
             if (room != null) {
@@ -92,7 +92,7 @@ public class MonitorService {
 
         for (int i = 0; i < rooms.size(); i++) {
             Room room = rooms.get(i);
-            Chatroom chatroom = chatrooms.stream().filter(r -> r.getRoomId() == room.getRoomId()).findFirst().orElse(null);
+            Chatroom chatroom = chatrooms.stream().filter(chatRoom -> chatRoom.getRoomId() == room.getRoomId()).findFirst().orElse(null);
             if (chatroom != null) {
                 List<Post> posts = postMap.get(chatroom.getSiteName());
                 new Monitor().run(room, posts, chatroom.getOutputMessage());
@@ -107,7 +107,7 @@ public class MonitorService {
             postMap.put(site, bots.get(site).getPost(postId));
         }
 
-        Chatroom chatroom = chatrooms.stream().filter(r -> r.getRoomId() == room.getRoomId()).findFirst().orElse(null);
+        Chatroom chatroom = chatrooms.stream().filter(chatRoom -> chatRoom.getRoomId() == room.getRoomId()).findFirst().orElse(null);
 
         if (chatroom != null) {
             Post post = postMap.get(chatroom.getSiteName());
@@ -128,8 +128,8 @@ public class MonitorService {
             room.send(Belisarius.README + "] rebooted at " + Instant.now());
             try {
                 Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } catch (InterruptedException exception) {
+                exception.printStackTrace();
             }
         }
     }
