@@ -1,5 +1,7 @@
 # Belisarius - Detecting vandalism on Stack Overflow
 
+![Test](https://github.com/SOBotics/Belisarius/workflows/Test/badge.svg)
+
 ## Background
 
 This bot has been developed in an attempt to help capture possible vandalism. This includes:
