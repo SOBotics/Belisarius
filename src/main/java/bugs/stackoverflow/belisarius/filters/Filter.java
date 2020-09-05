@@ -1,20 +1,20 @@
 package bugs.stackoverflow.belisarius.filters;
 
 public interface Filter {
-    public boolean isHit();
+    boolean isHit();
 
-    public double getScore();
+    double getScore();
 
-    public String getFormattedReasonMessage();
+    String getFormattedReasonMessage();
 
-    public String getReasonName();
+    String getReasonName();
 
-    public Severity getSeverity();
+    Severity getSeverity();
 
-    public enum Severity {
+    enum Severity {
         HIGH, MEDIUM, LOW
     }
 
-    public void storeHit();
+    void storeHit();
 }
 
