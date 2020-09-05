@@ -35,8 +35,8 @@ public class Monitor {
                     }
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
 
     }
@@ -46,22 +46,23 @@ public class Monitor {
         try {
             if (post.getRevisionNumber() != 1) {
                 VandalisedPost vandalisedPost = getVandalisedPost(room, post);
-                if (PostUtils.checkVandalisedPost(room, post)) { // the post already exists
+                // Check if the post exists
+                if (PostUtils.checkVandalisedPost(room, post)) {
                     LOGGER.info("The given post has already been reported.");
                     int higgsId = DatabaseUtils.getHiggsId(post.getPostId(), post.getRevisionNumber(), room.getRoomId());
                     sendPostAlreadyReportedMessage(room, post, higgsId, vandalisedPost.getSeverity());
                 } else if (vandalisedPost != null && vandalisedPost.getSeverity() != null) {
                     reportPost(room, vandalisedPost, post, outputMessage);
-                } else { // the revision is unlikely to be bad
+                } else {
                     LOGGER.info("No vandalism was found for given post.");
                     sendNoVandalismFoundMessage(room, post);
                 }
-            } else { // either revision number is one or the post is rollback
+            } else {
                 LOGGER.info("No vandalism found was found for given post.");
                 sendNoVandalismFoundMessage(room, post);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
 
     }
@@ -70,8 +71,8 @@ public class Monitor {
         try {
             VandalismFinder vandalismFinder = new VandalismFinder(room, post);
             return vandalismFinder.findReasons();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
 
         return null;
@@ -81,26 +82,28 @@ public class Monitor {
         try {
             String lastBodyMarkdown = null;
             String bodyMarkdown = null;
+            String previousRevisionSourceUrl = "https://" + post.getSite() + ".com/revisions/" + post.getPreviousRevisionGuid() + "/view-source";
+            String currentRevisionSourceUrl = "https://" + post.getSite() + ".com/revisions/" + post.getRevisionGuid() + "/view-source";
             if (post.getLastBody() != null) {
-                lastBodyMarkdown = JsonUtils.getHtml("https://" + post.getSite() + ".com/revisions/" + post.getPreviousRevisionGuid() + "/view-source");
+                lastBodyMarkdown = JsonUtils.getHtml(previousRevisionSourceUrl);
             }
             if (post.getBody() != null) {
-                bodyMarkdown = JsonUtils.getHtml("https://" + post.getSite() + ".com/revisions/" + post.getRevisionGuid() + "/view-source");
+                bodyMarkdown = JsonUtils.getHtml(currentRevisionSourceUrl);
             }
 
             PropertyService propertyService = new PropertyService();
             int higgsId;
             if (propertyService.getUseHiggs()) {
                 higgsId = HiggsService.getInstance().registerVandalisedPost(vandalisedPost, vandalisedPost.getPost(), lastBodyMarkdown, bodyMarkdown);
-            } else { // do not use Higgs otherwise!
+            } else {
                 higgsId = 0;
             }
             PostUtils.storeVandalisedPost(room, vandalisedPost, higgsId, lastBodyMarkdown, bodyMarkdown);
             if (outputMessage) {
                 sendVandalismFoundMessage(room, post, vandalisedPost, higgsId);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
     }
 

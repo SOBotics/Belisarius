@@ -10,7 +10,6 @@ import java.util.List;
 
 public class FileUtils {
 
-
     public static String readLineFromFileStartswith(String filename, String message) throws IOException {
         List<String> lines = readFile(filename);
         for (String line : lines) {

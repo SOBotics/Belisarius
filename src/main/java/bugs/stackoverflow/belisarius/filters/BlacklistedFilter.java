@@ -34,12 +34,14 @@ public class BlacklistedFilter implements Filter {
     @Override
     public boolean isHit() {
 
-        if (post.getLastTitle() != null && "question".equals(post.getPostType())) {
-            blacklistedWordsTitle = CheckUtils.checkForBlackListedWords(StringUtils.difference(post.getLastTitle(), post.getTitle()), "question_title");
+        if (post.getTitle() != null && "question".equals(post.getPostType())) {
+            String titleDifference = StringUtils.difference(post.getLastTitle(), post.getTitle());
+            blacklistedWordsTitle = CheckUtils.checkForBlackListedWords(titleDifference, "question_title");
         }
 
         if (post.getBody() != null) {
-            blacklistedWordsBody = CheckUtils.checkForBlackListedWords(StringUtils.difference(post.getLastBody(), post.getBody()), post.getPostType());
+            String bodyDifference = StringUtils.difference(post.getLastBody(), post.getBody());
+            blacklistedWordsBody = CheckUtils.checkForBlackListedWords(bodyDifference, post.getPostType());
         }
 
         if (post.getComment() != null) {
@@ -73,8 +75,8 @@ public class BlacklistedFilter implements Filter {
                 message += "**Edit summary contains blacklisted " + (this.blacklistedWordsEditSummary.size() > 1 ? "words" : "word") + ":** ";
                 message += getBlacklistedWordsComment() + " ";
             }
-        } catch (Exception e) {
-            LOGGER.info("Failed to get formatted reason message.", e);
+        } catch (Exception exception) {
+            LOGGER.info("Failed to get formatted reason message.", exception);
         }
 
         return message.trim();

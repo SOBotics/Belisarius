@@ -13,7 +13,7 @@ public class Post {
     private String lastBody;
     private String bodyMarkdown;
     private String lastBodyMarkdown;
-    private SOUser user;
+    private StackOverflowUser user;
     private boolean isRollback;
     private String postType;
     private String comment;
@@ -109,11 +109,11 @@ public class Post {
         this.lastBodyMarkdown = lastBodyMarkdown;
     }
 
-    public SOUser getUser() {
+    public StackOverflowUser getUser() {
         return user;
     }
 
-    public void setUser(SOUser user) {
+    public void setUser(StackOverflowUser user) {
         this.user = user;
     }
 

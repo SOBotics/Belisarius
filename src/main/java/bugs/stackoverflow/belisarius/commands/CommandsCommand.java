@@ -32,8 +32,8 @@ public class CommandsCommand implements Command {
         room.send(commandString.toString());
     }
 
-    public static String padRight(String s, int n) {
-        return String.format("%1$-" + n + "s", s);
+    public static String padRight(String text, int padding) {
+        return String.format("%1$-" + padding + "s", text);
     }
 
     @Override

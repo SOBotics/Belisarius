@@ -55,13 +55,12 @@ public class CheckUtils {
         double score = 1.0;
 
         if (targetBody.length() < originalBody.length() * percentage) {
-            JaroWinkler js = new JaroWinkler();
-            score = js.similarity(targetBody, originalBody);
+            JaroWinkler jaroWinklerScore = new JaroWinkler();
+            score = jaroWinklerScore.similarity(targetBody, originalBody);
         }
 
         return score;
     }
-
 
     public static String checkForFewUniqueCharacters(String target) {
         String body = removeHtml(stripTags(target));
@@ -94,8 +93,8 @@ public class CheckUtils {
                     caught.put(word.getKey(), word.getValue());
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
         return caught;
     }
@@ -115,8 +114,8 @@ public class CheckUtils {
                     repeatedWords.add(word);
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
 
         return repeatedWords;

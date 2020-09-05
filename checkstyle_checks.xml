@@ -43,6 +43,11 @@
   <!-- Regexp -->
   <module name="RegexpMultiline"/>
   <module name="RegexpMultiline">
+    <property name="format" value="\r?\n[\t ]*\r?\n[\t ]*\r?\n"/>
+    <property name="fileExtensions" value="java,xml,properties"/>
+    <property name="message" value="Unnecessary consecutive lines"/>
+  </module>
+  <module name="RegexpMultiline">
     <property name="format" value="/\*\*\W+\* +\p{javaLowerCase}"/>
     <property name="fileExtensions" value="java"/>
     <property name="message"
@@ -135,7 +140,7 @@
   </module>
   <module name="LineLength">
     <property name="fileExtensions" value="java"/>
-    <property name="max" value="200"/>
+    <property name="max" value="160"/>
     <property name="ignorePattern" value="^ *\* *([^ ]+|\{@code .*|&lt;a href=&quot;[^&quot;]+&quot;&gt;)$"/>
   </module>
 
@@ -378,6 +383,7 @@
     </module>
 
     <!-- Imports -->
+    <module name="AvoidStarImport"/>
     <module name="AvoidStaticImport"/>
     <module name="IllegalImport"/>
     <module name="ImportOrder">
@@ -420,6 +426,10 @@
       <property name="format" value="^([^\s\/*])"/>
       <message key="todo.match" value="Comment text should start with space."/>
     </module>
+    <module name="TrailingComment"/>
+    <module name="UncommentedMain">
+      <property name="excludedClasses" value="\.(Application|JavadocPropertiesGenerator)$"/>
+    </module>
     <module name="UpperEll"/>
 
     <!-- Modifiers -->
@@ -432,20 +442,38 @@
       <property name="severity" value="ignore"/>
     </module>
     <module name="ModifierOrder"/>
+    <module name="RedundantModifier"/>
 
     <!-- Naming Conventions -->
     <module name="AbbreviationAsWordInName">
       <property name="ignoreFinal" value="false"/>
-      <property name="allowedAbbreviationLength" value="3"/>
+      <property name="allowedAbbreviationLength" value="2"/>
       <property name="allowedAbbreviations" value="AST"/>
     </module>
     <module name="ClassTypeParameterName"/>
     <module name="ConstantName"/>
     <module name="InterfaceTypeParameterName"/>
     <module name="LocalFinalVariableName"/>
+    <module name="LocalVariableName">
+      <property name="format" value="^(id)|([a-z][a-z0-9][a-zA-Z0-9]+)$"/>
+      <property name="allowOneCharVarInForLoop" value="true"/>
+    </module>
+    <module name="MemberName">
+      <property name="format" value="^(id)|([a-z][a-z0-9][a-zA-Z0-9]+)$"/>
+    </module>
     <module name="MethodName"/>
     <module name="MethodTypeParameterName"/>
     <module name="PackageName"/>
+    <module name="ParameterName">
+      <property name="format" value="^(id)|([a-z][a-z0-9][a-zA-Z0-9]+)$"/>
+      <property name="ignoreOverridden" value="true"/>
+    </module>
+    <module name="LambdaParameterName">
+      <property name="format" value="^(id)|([a-z][a-z0-9][a-zA-Z0-9]+)$"/>
+    </module>
+    <module name="CatchParameterName">
+      <property name="format" value="^(ex|[a-z][a-z][a-zA-Z]+)$"/>
+    </module>
     <module name="StaticVariableName">
       <property name="format" value="^(id)|([a-z][a-z0-9][a-zA-Z0-9]+)$"/>
     </module>
@@ -454,6 +482,10 @@
     <!-- Regexp -->
     <module name="Regexp"/>
     <module name="RegexpSinglelineJava"/>
+    <module name="RegexpSinglelineJava">
+      <property name="format" value="[^\p{ASCII}]"/>
+      <property name="ignoreComments" value="true"/>
+    </module>
 
     <!-- Size Violations -->
     <module name="AnonInnerLength"/>

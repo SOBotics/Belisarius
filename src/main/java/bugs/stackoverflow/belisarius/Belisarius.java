@@ -33,7 +33,8 @@ public class Belisarius {
         this.site = site;
     }
 
-    public static String buildMessage(Room room, int higgsId, String postType, String severity, String status, String allRevs, int revNum, String revUrl) {
+    public static String buildMessage(Room room, int higgsId, String postType, String severity,
+                                      String status, String allRevs, int revNum, String revUrl) {
         String message = README;
         if (higgsId != 0) {
             message += HIGGS_URL + String.valueOf(higgsId) + ") ";
@@ -59,8 +60,8 @@ public class Belisarius {
                     posts.addAll(postsWithLatestRevisions);
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
 
         for (Post post : posts) {
@@ -81,8 +82,8 @@ public class Belisarius {
                     post = postsWithLatestRevisions.get(0);
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
 
         if (post != null) {
@@ -119,8 +120,8 @@ public class Belisarius {
                 page++;
             } while (lastPostTime < lastActivityDate & page < 10);
             this.lastPostTime = maxActivityDate;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
 
         return postIdsAndTitles;
@@ -133,15 +134,15 @@ public class Belisarius {
             for (JsonElement post : postJson.get("items").getAsJsonArray()) {
                 title = post.getAsJsonObject().get("title").getAsString();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
         return title;
     }
 
     private List<Post> getPostsWithLatestRevision(Map<Long, String> idsAndTitles) {
         List<Post> revisions = new ArrayList<>();
-        String[] postIds = idsAndTitles.keySet().stream().map(t -> t.toString()).toArray(String[]::new); // for .join()
+        String[] postIds = idsAndTitles.keySet().stream().map(set -> set.toString()).toArray(String[]::new);
         boolean hasMore = false;
         Iterator<Map.Entry<Long, String>> iter = idsAndTitles.entrySet().iterator();
 
@@ -162,7 +163,9 @@ public class Belisarius {
                             JsonObject postJson = post.getAsJsonObject();
                             if (postJson.get("post_id").getAsInt() == postId.intValue() && postJson.has("revision_number")) {
                                 int currentRevisionNumber = postJson.get("revision_number").getAsInt();
-                                if (revisionNo == 0) { // current revision; get title and guid
+                                // if revisionNo is 0, then it's the post's latest revision
+                                // else it is the second most recent revision
+                                if (revisionNo == 0) {
                                     revisionNo = currentRevisionNumber;
                                     getPostJson = postJson;
                                 } else if (revisionNo == currentRevisionNumber + 1) {
@@ -178,8 +181,8 @@ public class Belisarius {
                         iter.remove();
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception exception) {
+                exception.printStackTrace();
             }
         } while (hasMore && postIds.length > 0);
 

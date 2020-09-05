@@ -32,7 +32,8 @@ public class Application {
         DatabaseUtils.createHiggsTable();
 
         PropertyService propertyService = new PropertyService();
-        Higgs higgs = DatabaseUtils.getHiggs(3); // Hippo
+        // Get Higgs information for Higgs (dashboard id 3)
+        Higgs higgs = DatabaseUtils.getHiggs(3);
         if (higgs != null && propertyService.getUseHiggs()) {
             HiggsService.initInstance(higgs.getUrl(), higgs.getKey());
         }

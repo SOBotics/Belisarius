@@ -34,19 +34,20 @@ public class JsonUtils {
             try {
                 LOGGER.info("BACKOFF received. Timeout for " + String.valueOf(backOffUntil) + " seconds.");
                 Thread.sleep(1000 * backOffUntil);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } catch (InterruptedException exception) {
+                exception.printStackTrace();
             }
             backOffUntil = 0L;
         }
 
         try {
-            Thread.sleep(100); // timeout for 100ms anyway
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.sleep(100);
+        } catch (InterruptedException exception) {
+            exception.printStackTrace();
         }
 
-        Connection.Response response = Jsoup.connect(url).data(data).method(Connection.Method.GET).ignoreContentType(true).ignoreHttpErrors(true).execute();
+        Connection.Response response = Jsoup.connect(url).data(data).method(Connection.Method.GET)
+                                            .ignoreContentType(true).ignoreHttpErrors(true).execute();
         String json = response.body();
         if (response.statusCode() != 200) {
             throw new IOException("HTTP " + response.statusCode() + " fetching URL " + url + ". Body is: " + response.body());
@@ -55,7 +56,7 @@ public class JsonUtils {
 
         try {
             root = new JsonParser().parse(json).getAsJsonObject();
-        } catch (Exception e) {
+        } catch (Exception exception) {
             DateTimeFormatter timeStampPattern = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
             String jsonDumpFilename = "jsondump" + timeStampPattern.format(java.time.LocalDateTime.now()) + ".txt";
             String urlDumpFilename = "url" + timeStampPattern.format(java.time.LocalDateTime.now()) + ".txt";
