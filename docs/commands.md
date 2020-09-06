@@ -1,8 +1,9 @@
 # Commands
 
-The command list is as follows 
+The list of commands is as follows 
 
     alive           - Test to check if the bot is alive or not.
+    check           - Checks a post, through the API, for potential vandalism (must be either a moderator or a room owner).
     help            - Returns the description of the bot.
     quota           - Returns the current quota
     reboot          - Stops and starts the bot (must be either a moderator or a room owner).
