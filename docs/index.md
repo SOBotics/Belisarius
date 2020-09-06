@@ -63,4 +63,5 @@ The source code is available on [GitHub][7] and suggestions are welcome. The pro
 
 Quick Links
 
-- [List of commands](/commands). 
+- [List of commands](/commands).
+- [Run the bot under another account](/run).
