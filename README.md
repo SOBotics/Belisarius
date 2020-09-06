@@ -89,7 +89,7 @@ Schema for `Higgs`:
 
 Now run the bot with the following command:
 
-    java -cp target/Belisarius-1.0-SNAPSHOT.jar:./lib/* bugs.stackoverflow.belisarius.Application
+    java -cp target/belisarius-1.0.jar:./lib/* bugs.stackoverflow.belisarius.Application
 
 -----
 
