@@ -143,15 +143,15 @@ public class DatabaseUtils {
         SQLiteConnection connection = new SQLiteConnection();
 
         String sql = "CREATE TABLE IF NOT EXISTS BlacklistedWordCaught(PostId integer, \n"
-                                                                  + " RevisionId integer, \n"
-                                                                  + " RoomId integer, \n"
-                                                                  + " BlacklistedWordId integer, \n"
-                                                                  + " PRIMARY KEY(PostId, RevisionId, RoomId, BlacklistedWordId), \n "
-                                                                  + " FOREIGN KEY(PostId, RevisionId, RoomId)"
-                                                                  + " REFERENCES VandalisedPost(PostId, RevisionId, RoomId), \n"
-                                                                  + " FOREIGN KEY(BlacklistedWordId)"
-                                                                  + " REFERENCES BlacklistedWord(BlacklistedWordId), \n"
-                                                                  + " FOREIGN KEY(RoomId) REFERENCES Room(RoomId));";
+                                                                   + " RevisionId integer, \n"
+                                                                   + " RoomId integer, \n"
+                                                                   + " BlacklistedWordId integer, \n"
+                                                                   + " PRIMARY KEY(PostId, RevisionId, RoomId, BlacklistedWordId), \n "
+                                                                   + " FOREIGN KEY(PostId, RevisionId, RoomId)"
+                                                                   + " REFERENCES VandalisedPost(PostId, RevisionId, RoomId), \n"
+                                                                   + " FOREIGN KEY(BlacklistedWordId)"
+                                                                   + " REFERENCES BlacklistedWord(BlacklistedWordId), \n"
+                                                                   + " FOREIGN KEY(RoomId) REFERENCES Room(RoomId));";
 
         try (Connection conn = connection.getConnection();
             Statement stmt = conn.createStatement()) {
@@ -516,7 +516,7 @@ public class DatabaseUtils {
                    + "       RevisionId, \n"
                    + "       OwnerId, \n"
                    + "       Title, \n"
-                   + "       LastTitle, \n "
+                   + "       LastTitle, \n"
                    + "       Body, \n"
                    + "       LastBody, \n"
                    + "       IsRollback, \n"

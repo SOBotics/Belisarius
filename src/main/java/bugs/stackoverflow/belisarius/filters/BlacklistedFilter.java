@@ -34,7 +34,7 @@ public class BlacklistedFilter implements Filter {
     @Override
     public boolean isHit() {
 
-        if (post.getTitle() != null && "question".equals(post.getPostType())) {
+        if (post.getLastTitle() != null && "question".equals(post.getPostType())) {
             String titleDifference = StringUtils.difference(post.getLastTitle(), post.getTitle());
             blacklistedWordsTitle = CheckUtils.checkForBlackListedWords(titleDifference, "question_title");
         }
