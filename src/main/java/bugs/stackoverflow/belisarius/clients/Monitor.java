@@ -36,7 +36,7 @@ public class Monitor {
                 }
             }
         } catch (Exception exception) {
-            exception.printStackTrace();
+            LOGGER.info("Error while reporting post in Monitor#run.", exception);
         }
 
     }
@@ -62,7 +62,7 @@ public class Monitor {
                 sendNoVandalismFoundMessage(room, post);
             }
         } catch (Exception exception) {
-            exception.printStackTrace();
+            LOGGER.info("Error while checking a post for vandalism.", exception);
         }
 
     }
@@ -72,7 +72,7 @@ public class Monitor {
             VandalismFinder vandalismFinder = new VandalismFinder(room, post);
             return vandalismFinder.findReasons();
         } catch (Exception exception) {
-            exception.printStackTrace();
+            LOGGER.info("Failed to get vandalised post.", exception);
         }
 
         return null;
@@ -103,7 +103,7 @@ public class Monitor {
                 sendVandalismFoundMessage(room, post, vandalisedPost, higgsId);
             }
         } catch (Exception exception) {
-            exception.printStackTrace();
+            LOGGER.info("Error while trying to reportPost.", exception);
         }
     }
 

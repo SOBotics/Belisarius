@@ -10,6 +10,8 @@ import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.services.ApiService;
 import bugs.stackoverflow.belisarius.utils.PostUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sobotics.chatexchange.chat.Room;
 
 import com.google.gson.JsonElement;
@@ -22,6 +24,7 @@ public class Belisarius {
     public static final String ALREADY_REPORTED = "The post has already been reported.";
     public static final String NO_ISSUES = "No issues have been found.";
     public static final String POTENTIAL_VANDALISM = "Potentially harmful edit found. Reason: ";
+    private static final Logger LOGGER = LoggerFactory.getLogger(Belisarius.class);
 
     private long lastPostTime;
     private ApiService apiService;
@@ -61,7 +64,7 @@ public class Belisarius {
                 }
             }
         } catch (Exception exception) {
-            exception.printStackTrace();
+            LOGGER.info("Error while trying to get posts with latest revisions.", exception);
         }
 
         for (Post post : posts) {
@@ -83,7 +86,7 @@ public class Belisarius {
                 }
             }
         } catch (Exception exception) {
-            exception.printStackTrace();
+            LOGGER.info("Error while trying to get post with id " + postId, exception);
         }
 
         if (post != null) {
@@ -121,7 +124,7 @@ public class Belisarius {
             } while (lastPostTime < lastActivityDate & page < 10);
             this.lastPostTime = maxActivityDate;
         } catch (Exception exception) {
-            exception.printStackTrace();
+            LOGGER.info("Error while trying to fetch posts by activity.", exception);
         }
 
         return postIdsAndTitles;
@@ -135,7 +138,7 @@ public class Belisarius {
                 title = post.getAsJsonObject().get("title").getAsString();
             }
         } catch (Exception exception) {
-            exception.printStackTrace();
+            LOGGER.info("Error occured while trying to get post title for post " + postId, exception);
         }
         return title;
     }
@@ -182,7 +185,7 @@ public class Belisarius {
                     }
                 }
             } catch (Exception exception) {
-                exception.printStackTrace();
+                LOGGER.info("Error while trying to get latest revisions for some posts", exception);
             }
         } while (hasMore && postIds.length > 0);
 

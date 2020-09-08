@@ -11,10 +11,14 @@ import java.util.regex.Pattern;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import info.debatty.java.stringsimilarity.JaroWinkler;
 
 public class CheckUtils {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CheckUtils.class);
 
     public static Map<Integer, String> checkForBlackListedWords(String target, String postType) {
         Map<Integer, String> blacklistedWords = DatabaseUtils.getBlacklistedWords(postType);
@@ -94,7 +98,7 @@ public class CheckUtils {
                 }
             }
         } catch (Exception exception) {
-            exception.printStackTrace();
+            LOGGER.info("Failed to check if body matches regex.", exception);
         }
         return caught;
     }
@@ -115,7 +119,7 @@ public class CheckUtils {
                 }
             }
         } catch (Exception exception) {
-            exception.printStackTrace();
+            LOGGER.info("Failed to check post for repeated words.", exception);
         }
 
         return repeatedWords;

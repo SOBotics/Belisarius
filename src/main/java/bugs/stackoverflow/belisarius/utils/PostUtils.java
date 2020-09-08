@@ -21,6 +21,8 @@ import bugs.stackoverflow.belisarius.models.VandalisedPost.Feedback;
 import bugs.stackoverflow.belisarius.services.HiggsService;
 import bugs.stackoverflow.belisarius.services.PropertyService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sobotics.chatexchange.chat.Message;
 import org.sobotics.chatexchange.chat.Room;
 import org.sobotics.chatexchange.chat.event.PingMessageEvent;
@@ -30,6 +32,8 @@ import com.google.gson.JsonObject;
 import io.swagger.client.ApiException;
 
 public class PostUtils {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PostUtils.class);
 
     public static boolean postBeenEdited(JsonElement post) {
         if (post.getAsJsonObject().has("last_edit_date")) {
@@ -56,7 +60,7 @@ public class PostUtils {
                 }
             }
         } catch (Exception exception) {
-            exception.printStackTrace();
+            LOGGER.info("Error while trying to find if editor is also owner.", exception);
         }
         return false;
     }
@@ -106,7 +110,7 @@ public class PostUtils {
             user.setUserType(userJson.get("user_type").getAsString());
             user.setUserId(userJson.get("user_id").getAsInt());
         } catch (Exception exception) {
-            exception.printStackTrace();
+            LOGGER.info("Error while creating a StackOverflowUser object.", exception);
         }
 
         newPost.setUser(user);
@@ -157,9 +161,9 @@ public class PostUtils {
                 int higgsId = DatabaseUtils.getHiggsId(postId, revisionNumber, event.getRoomId());
                 HiggsService.getInstance().sendFeedback(higgsId, (int) event.getMessage().getUser().getId(), feedback);
             }
-        }
-        catch (ApiException exception) {
-            exception.printStackTrace();
+        } catch (ApiException exception) {
+            LOGGER.info("ApiException was thrown while trying to send feedback " + feedback.toString() + " to Higgs"
+                      + " from " + String.valueOf(event.getMessage().getUser().getId()), exception);
         }
     }
 

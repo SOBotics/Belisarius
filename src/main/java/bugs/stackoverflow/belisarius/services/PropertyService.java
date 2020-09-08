@@ -6,7 +6,12 @@ import java.util.Properties;
 
 import bugs.stackoverflow.belisarius.utils.PathUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class PropertyService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PropertyService.class);
 
     private Properties prop;
 
@@ -15,7 +20,7 @@ public class PropertyService {
         try {
             prop.load(new FileInputStream(PathUtils.LOGIN_PROPERTIES_FILE));
         } catch (IOException exception) {
-            exception.printStackTrace();
+            LOGGER.info("IOException occured while loading properties from " + PathUtils.LOGIN_PROPERTIES_FILE, exception);
         }
     }
 

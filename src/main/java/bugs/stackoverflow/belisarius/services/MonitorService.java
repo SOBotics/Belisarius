@@ -15,11 +15,15 @@ import bugs.stackoverflow.belisarius.clients.Monitor;
 import bugs.stackoverflow.belisarius.models.Chatroom;
 import bugs.stackoverflow.belisarius.models.Post;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sobotics.chatexchange.chat.Room;
 import org.sobotics.chatexchange.chat.StackExchangeClient;
 import org.sobotics.chatexchange.chat.event.EventType;
 
 public class MonitorService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MonitorService.class);
 
     private StackExchangeClient client;
     private List<Chatroom> chatrooms;
@@ -47,7 +51,7 @@ public class MonitorService {
             try {
                 room = client.joinRoom(chatroom.getHost(), chatroom.getRoomId());
             } catch (Exception exception) {
-                exception.printStackTrace();
+                LOGGER.info("Failed to join room " + String.valueOf(chatroom.getRoomId()) + " on " + chatroom.getHost(), exception);
             }
 
             if (room != null) {
