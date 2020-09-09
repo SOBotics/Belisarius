@@ -16,8 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sobotics.chatexchange.chat.Room;
 
-// import io.swagger.client.ApiException;
-
 public class Monitor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Monitor.class);
