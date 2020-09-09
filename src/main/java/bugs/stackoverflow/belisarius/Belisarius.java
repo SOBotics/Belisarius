@@ -52,19 +52,14 @@ public class Belisarius {
     }
 
     public List<Post> getPosts() {
-        List<Post> posts = new ArrayList<>();
-        List<Post> postsWithLatestRevisions = new ArrayList<>();
         Map<Long, String> postIdsAndTitles = getPostIdsAndTitles();
+        List<Post> posts = new ArrayList<>();
 
-        try {
-            if (postIdsAndTitles.size() > 0) {
-                postsWithLatestRevisions = getPostsWithLatestRevision(postIdsAndTitles);
-                if (postsWithLatestRevisions.size() > 0) {
-                    posts.addAll(postsWithLatestRevisions);
-                }
+        if (postIdsAndTitles.size() > 0) {
+            List<Post> postsWithLatestRevisions = getPostsWithLatestRevision(postIdsAndTitles);
+            if (postsWithLatestRevisions.size() > 0) {
+                posts.addAll(postsWithLatestRevisions);
             }
-        } catch (Exception exception) {
-            LOGGER.info("Error while trying to get posts with latest revisions.", exception);
         }
 
         for (Post post : posts) {
