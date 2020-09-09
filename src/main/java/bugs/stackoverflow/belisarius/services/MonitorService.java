@@ -107,8 +107,8 @@ public class MonitorService {
     public void executeOnce(String postId, Room room) {
         Map<String, Post> postMap = new HashMap<>();
 
-        for (String site : bots.keySet()) {
-            postMap.put(site, bots.get(site).getPost(postId));
+        for (Map.Entry<String, Belisarius> bot : bots.entrySet()) {
+            postMap.put(bot.getKey(), bot.getValue().getPost(postId));
         }
 
         Chatroom chatroom = chatrooms.stream().filter(chatRoom -> chatRoom.getRoomId() == room.getRoomId()).findFirst().orElse(null);
