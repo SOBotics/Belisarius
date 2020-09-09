@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sobotics.chatexchange.chat.Room;
 
-import io.swagger.client.ApiException;
+// import io.swagger.client.ApiException;
 
 public class Monitor {
 
@@ -24,45 +24,37 @@ public class Monitor {
 
     public void run(Room room, List<Post> posts, boolean outputMessage) {
 
-        try {
-            for (Post post : posts) {
-                if (post.getRevisionNumber() != 1) {
-                    VandalisedPost vandalisedPost = getVandalisedPost(room, post);
-                    boolean postExists = PostUtils.checkVandalisedPost(room, post);
+        for (Post post : posts) {
+            if (post.getRevisionNumber() != 1) {
+                VandalisedPost vandalisedPost = getVandalisedPost(room, post);
+                boolean postExists = PostUtils.checkVandalisedPost(room, post);
 
-                    if (vandalisedPost != null && vandalisedPost.getSeverity() != null && !postExists) {
-                        reportPost(room, vandalisedPost, post, outputMessage);
-                    }
+                if (vandalisedPost != null && vandalisedPost.getSeverity() != null && !postExists) {
+                    reportPost(room, vandalisedPost, post, outputMessage);
                 }
             }
-        } catch (Exception exception) {
-            LOGGER.info("Error while reporting post in Monitor#run.", exception);
         }
 
     }
 
     public void runOnce(Room room, Post post, boolean outputMessage) {
 
-        try {
-            if (post.getRevisionNumber() != 1) {
-                VandalisedPost vandalisedPost = getVandalisedPost(room, post);
-                // Check if the post exists
-                if (PostUtils.checkVandalisedPost(room, post)) {
-                    LOGGER.info("The given post has already been reported.");
-                    int higgsId = DatabaseUtils.getHiggsId(post.getPostId(), post.getRevisionNumber(), room.getRoomId());
-                    sendPostAlreadyReportedMessage(room, post, higgsId, vandalisedPost.getSeverity());
-                } else if (vandalisedPost != null && vandalisedPost.getSeverity() != null) {
-                    reportPost(room, vandalisedPost, post, outputMessage);
-                } else {
-                    LOGGER.info("No vandalism was found for given post.");
-                    sendNoVandalismFoundMessage(room, post);
-                }
+        if (post.getRevisionNumber() != 1) {
+            VandalisedPost vandalisedPost = getVandalisedPost(room, post);
+            // Check if the post exists
+            if (PostUtils.checkVandalisedPost(room, post)) {
+                LOGGER.info("The given post has already been reported.");
+                int higgsId = DatabaseUtils.getHiggsId(post.getPostId(), post.getRevisionNumber(), room.getRoomId());
+                sendPostAlreadyReportedMessage(room, post, higgsId, vandalisedPost.getSeverity());
+            } else if (vandalisedPost != null && vandalisedPost.getSeverity() != null) {
+                reportPost(room, vandalisedPost, post, outputMessage);
             } else {
-                LOGGER.info("No vandalism found was found for given post.");
+                LOGGER.info("No vandalism was found for given post.");
                 sendNoVandalismFoundMessage(room, post);
             }
-        } catch (Exception exception) {
-            LOGGER.info("Error while checking a post for vandalism.", exception);
+        } else {
+            LOGGER.info("No vandalism found was found for given post.");
+            sendNoVandalismFoundMessage(room, post);
         }
 
     }
@@ -107,7 +99,7 @@ public class Monitor {
         }
     }
 
-    private void sendVandalismFoundMessage(Room room, Post post, VandalisedPost vandalisedPost, int higgsId) throws ApiException {
+    private void sendVandalismFoundMessage(Room room, Post post, VandalisedPost vandalisedPost, int higgsId) {
         Belisarius.buildMessage(room, higgsId, post.getPostType().toLowerCase(), vandalisedPost.getSeverity(),
                                 Belisarius.POTENTIAL_VANDALISM + vandalisedPost.getReasonMessage(), post.getAllRevisionsUrl(),
                                 post.getRevisionNumber(), post.getRevisionUrl());
