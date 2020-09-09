@@ -4,7 +4,6 @@ package bugs.stackoverflow.belisarius.utils;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -82,24 +81,17 @@ public class CheckUtils {
         return getCaughtByRegex(offensiveWords, target);
     }
 
-    @SuppressWarnings("unchecked")
     private static Map<Integer, String> getCaughtByRegex(Map<Integer, String> words, String target) {
         Map<Integer, String> caught = new HashMap<Integer, String>();
 
-        try {
-            Iterator iterator = words.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<Integer, String> word = (Map.Entry<Integer, String>) iterator.next();
+        for (Map.Entry<Integer, String> word : words.entrySet()) {
+            Pattern pattern = Pattern.compile(word.getValue());
 
-                Pattern pattern = Pattern.compile(word.getValue());
-
-                if (checkIfBodyContainsWord(pattern, target)) {
-                    caught.put(word.getKey(), word.getValue());
-                }
+            if (checkIfBodyContainsWord(pattern, target)) {
+                caught.put(word.getKey(), word.getValue());
             }
-        } catch (Exception exception) {
-            LOGGER.info("Failed to check if body matches regex.", exception);
         }
+
         return caught;
     }
 
