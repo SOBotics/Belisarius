@@ -151,38 +151,36 @@ public class Belisarius {
 
         do {
             try {
-                if (postIds.length > 0) {
-                    JsonObject postsJson = apiService.getLastestRevisions(String.join(";", postIds));
-                    hasMore = postsJson.get("has_more").getAsBoolean();
+                JsonObject postsJson = apiService.getLastestRevisions(String.join(";", postIds));
+                hasMore = postsJson.get("has_more").getAsBoolean();
 
-                    while (iter.hasNext()) {
-                        Map.Entry<Long, String> entry = iter.next();
-                        Long postId = entry.getKey();
-                        String title = entry.getValue();
-                        int revisionNo = 0;
-                        Post revision = null;
-                        JsonObject getPostJson = null;
-                        for (JsonElement post : postsJson.get("items").getAsJsonArray()) {
-                            JsonObject postJson = post.getAsJsonObject();
-                            if (postJson.get("post_id").getAsInt() == postId.intValue() && postJson.has("revision_number")) {
-                                int currentRevisionNumber = postJson.get("revision_number").getAsInt();
-                                // if revisionNo is 0, then it's the post's latest revision
-                                // else it is the second most recent revision
-                                if (revisionNo == 0) {
-                                    revisionNo = currentRevisionNumber;
-                                    getPostJson = postJson;
-                                } else if (revisionNo == currentRevisionNumber + 1) {
-                                    String prevRevisionGuid = postJson.get("revision_guid").getAsString();
-                                    revision = PostUtils.getPost(getPostJson, site, title, prevRevisionGuid);
-                                    break;
-                                }
+                while (iter.hasNext()) {
+                    Map.Entry<Long, String> entry = iter.next();
+                    Long postId = entry.getKey();
+                    String title = entry.getValue();
+                    int revisionNo = 0;
+                    Post revision = null;
+                    JsonObject getPostJson = null;
+                    for (JsonElement post : postsJson.get("items").getAsJsonArray()) {
+                        JsonObject postJson = post.getAsJsonObject();
+                        if (postJson.get("post_id").getAsInt() == postId.intValue() && postJson.has("revision_number")) {
+                            int currentRevisionNumber = postJson.get("revision_number").getAsInt();
+                            // if revisionNo is 0, then it's the post's latest revision
+                            // else it is the second most recent revision
+                            if (revisionNo == 0) {
+                                revisionNo = currentRevisionNumber;
+                                getPostJson = postJson;
+                            } else if (revisionNo == currentRevisionNumber + 1) {
+                                String prevRevisionGuid = postJson.get("revision_guid").getAsString();
+                                revision = PostUtils.getPost(getPostJson, site, title, prevRevisionGuid);
+                                break;
                             }
                         }
-                        if (revision != null) {
-                            revisions.add(revision);
-                        }
-                        iter.remove();
                     }
+                    if (revision != null) {
+                        revisions.add(revision);
+                    }
+                    iter.remove();
                 }
             } catch (Exception exception) {
                 LOGGER.info("Error while trying to get latest revisions for some posts", exception);
