@@ -27,7 +27,7 @@ public class SQLiteConnection {
         try {
             conn = DriverManager.getConnection(PathUtils.DATABASE_FILE);
         } catch (SQLException exception) {
-            LOGGER.info("Error occured while trying to connect to the SQLite database.", exception);
+            LOGGER.info("Error occurred while trying to connect to the SQLite database.", exception);
         }
         return conn;
     }

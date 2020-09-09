@@ -133,7 +133,7 @@ public class Belisarius {
                 title = post.getAsJsonObject().get("title").getAsString();
             }
         } catch (Exception exception) {
-            LOGGER.info("Error occured while trying to get post title for post " + postId, exception);
+            LOGGER.info("Error occurred while trying to get post title for post " + postId, exception);
         }
         return title;
     }
@@ -146,7 +146,7 @@ public class Belisarius {
 
         do {
             try {
-                JsonObject postsJson = apiService.getLastestRevisions(String.join(";", postIds));
+                JsonObject postsJson = apiService.getLatestRevisions(String.join(";", postIds));
                 hasMore = postsJson.get("has_more").getAsBoolean();
 
                 while (iter.hasNext()) {

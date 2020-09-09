@@ -56,7 +56,7 @@ public class JsonUtils {
         try {
             root = new JsonParser().parse(json).getAsJsonObject();
         } catch (Exception exception) {
-            LOGGER.info("Exception occured while parsing the JSON API returned.", exception);
+            LOGGER.info("Exception occurred while parsing the JSON API returned.", exception);
             DateTimeFormatter timeStampPattern = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
             String jsonDumpFilename = "jsondump" + timeStampPattern.format(java.time.LocalDateTime.now()) + ".txt";
             String urlDumpFilename = "url" + timeStampPattern.format(java.time.LocalDateTime.now()) + ".txt";

@@ -28,7 +28,7 @@ public class ApiService {
         return postsJson;
     }
 
-    public JsonObject getLastestRevisions(String postIdInput) throws IOException {
+    public JsonObject getLatestRevisions(String postIdInput) throws IOException {
         JsonObject revisionJson = ApiUtils.getLastestRevisions(postIdInput, site, apiKey);
         quota = revisionJson.get("quota_remaining").getAsInt();
         setBackOffUntil(revisionJson);

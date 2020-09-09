@@ -52,7 +52,7 @@ public class CheckUtils {
         return !target.contains("<code>");
     }
 
-    public static double getJaroWiklerScore(String original, String target, double percentage) {
+    public static double getJaroWinklerScore(String original, String target, double percentage) {
         String originalBody = stripTags(original);
         String targetBody = stripTags(target);
         double score = 1.0;

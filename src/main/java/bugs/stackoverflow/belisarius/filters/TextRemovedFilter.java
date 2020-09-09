@@ -30,7 +30,7 @@ public class TextRemovedFilter implements Filter {
             target = this.post.getBody();
         }
 
-        this.score = CheckUtils.getJaroWiklerScore(original, target, percentage);
+        this.score = CheckUtils.getJaroWinklerScore(original, target, percentage);
 
         return this.score < 0.6;
     }
