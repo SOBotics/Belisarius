@@ -49,10 +49,8 @@ public class CommandList {
         int codePoint = Character.codePointAt(message, 0);
         if (message.toLowerCase().startsWith("@bots alive")) {
             room.send("Yeah, I'm alive.");
-        } else {
-            if (codePoint == 128642 || (codePoint >= 128644 && codePoint <= 128650)) {
-                room.send("[\uD83D\uDE83](https://www.youtube.com/watch?v=oKk-2Pu2N8g)");
-            }
+        } else if (codePoint == 128642 || (codePoint >= 128644 && codePoint <= 128650)) {
+            room.send("[\uD83D\uDE83](https://www.youtube.com/watch?v=oKk-2Pu2N8g)");
         }
     }
 
