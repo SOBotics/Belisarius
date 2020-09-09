@@ -11,7 +11,6 @@ import bugs.stackoverflow.belisarius.services.ApiService;
 import org.apache.commons.io.FileUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,9 +82,14 @@ public class JsonUtils {
     }
 
     public static String getHtml(String url) throws IOException {
-        Document document = Jsoup.connect(url).get();
-        String bodyMarkdown = document.body().getElementsByTag("pre").text();
-        return bodyMarkdown;
+        Connection.Response response = Jsoup.connect(url).method(Connection.Method.GET)
+                                            .ignoreContentType(true).ignoreHttpErrors(true).execute();
+        String body = response.body();
+        if (response.statusCode() != 200) {
+            throw new IOException("HTTP " + response.statusCode() + " error fetching " + url + ". Body is: " + body);
+        }
+        String markdown = Jsoup.parse(body).getElementsByTag("pre").text();
+        return markdown;
     }
 
 }
