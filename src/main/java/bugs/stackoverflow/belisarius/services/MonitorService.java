@@ -90,8 +90,8 @@ public class MonitorService {
     private void execute() {
         Map<String, List<Post>> postMap = new HashMap<>();
 
-        for (String site : bots.keySet()) {
-            postMap.put(site, bots.get(site).getPosts());
+        for (Map.Entry<String, Belisarius> bot : bots.entrySet()) {
+            postMap.put(bot.getKey(), bot.getValue().getPosts());
         }
 
         for (int i = 0; i < rooms.size(); i++) {
