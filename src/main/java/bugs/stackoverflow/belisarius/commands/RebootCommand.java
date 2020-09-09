@@ -33,7 +33,6 @@ public class RebootCommand implements Command {
             service.reboot();
         } else {
             room.replyTo(this.message.getId(), "You must be either a moderator or a room owner to execute the reboot command.");
-            return;
         }
     }
 

@@ -32,7 +32,6 @@ public class StopCommand implements Command {
             service.stop();
         } else {
             room.replyTo(this.message.getId(), "You must be either a moderator or a room owner to execute the stop command.");
-            return;
         }
     }
 
