@@ -60,23 +60,19 @@ public class BlacklistedFilter implements Filter {
     public String getFormattedReasonMessage() {
         String message = "";
 
-        try {
-            if (this.blacklistedWordsTitle.size() > 0) {
-                message += "**Title contains blacklisted " + (this.blacklistedWordsTitle.size() > 1 ? "words" : "word") + ":** ";
-                message += getBlacklistedWordsTitle() + " ";
-            }
+        if (this.blacklistedWordsTitle.size() > 0) {
+            message += "**Title contains blacklisted " + (this.blacklistedWordsTitle.size() > 1 ? "words" : "word") + ":** ";
+            message += getBlacklistedWordsTitle() + " ";
+        }
 
-            if (this.blacklistedWordsBody.size() > 0) {
-                message += "**Body contains blacklisted " + (this.blacklistedWordsBody.size() > 1 ? "words" : "word") + ":** ";
-                message += getBlacklistedWordsBody() + " ";
-            }
+        if (this.blacklistedWordsBody.size() > 0) {
+            message += "**Body contains blacklisted " + (this.blacklistedWordsBody.size() > 1 ? "words" : "word") + ":** ";
+            message += getBlacklistedWordsBody() + " ";
+        }
 
-            if (this.blacklistedWordsEditSummary.size() > 0) {
-                message += "**Edit summary contains blacklisted " + (this.blacklistedWordsEditSummary.size() > 1 ? "words" : "word") + ":** ";
-                message += getBlacklistedWordsComment() + " ";
-            }
-        } catch (Exception exception) {
-            LOGGER.info("Failed to get formatted reason message.", exception);
+        if (this.blacklistedWordsEditSummary.size() > 0) {
+            message += "**Edit summary contains blacklisted " + (this.blacklistedWordsEditSummary.size() > 1 ? "words" : "word") + ":** ";
+            message += getBlacklistedWordsComment() + " ";
         }
 
         return message.trim();

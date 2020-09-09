@@ -58,14 +58,8 @@ public class Monitor {
     }
 
     private VandalisedPost getVandalisedPost(Room room, Post post) {
-        try {
-            VandalismFinder vandalismFinder = new VandalismFinder(room, post);
-            return vandalismFinder.findReasons();
-        } catch (Exception exception) {
-            LOGGER.info("Failed to get vandalised post.", exception);
-        }
-
-        return null;
+        VandalismFinder vandalismFinder = new VandalismFinder(room, post);
+        return vandalismFinder.findReasons();
     }
 
     private void reportPost(Room room, VandalisedPost vandalisedPost, Post post, boolean outputMessage) {

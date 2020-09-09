@@ -103,15 +103,11 @@ public class CheckUtils {
     public static Set<String> checkRepeatedWords(String target) {
         Set<String> repeatedWords = new HashSet<String>();
 
-        try {
-            String[] words = target.split("\\W");
-            for (String word : words) {
-                if (!repeatedWords.contains(word)) {
-                    repeatedWords.add(word);
-                }
+        String[] words = target.split("\\W");
+        for (String word : words) {
+            if (!repeatedWords.contains(word)) {
+                repeatedWords.add(word);
             }
-        } catch (Exception exception) {
-            LOGGER.info("Failed to check post for repeated words.", exception);
         }
 
         return repeatedWords;

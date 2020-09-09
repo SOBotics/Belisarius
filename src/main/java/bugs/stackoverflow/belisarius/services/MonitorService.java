@@ -47,12 +47,7 @@ public class MonitorService {
 
         for (Chatroom chatroom : chatrooms) {
 
-            Room room = null;
-            try {
-                room = client.joinRoom(chatroom.getHost(), chatroom.getRoomId());
-            } catch (Exception exception) {
-                LOGGER.info("Failed to join room " + String.valueOf(chatroom.getRoomId()) + " on " + chatroom.getHost(), exception);
-            }
+            Room room = client.joinRoom(chatroom.getHost(), chatroom.getRoomId());
 
             if (room != null) {
                 if (chatroom.getUserMentioned(room, this) != null) {
