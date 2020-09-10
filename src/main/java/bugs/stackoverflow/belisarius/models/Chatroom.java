@@ -2,7 +2,6 @@ package bugs.stackoverflow.belisarius.models;
 
 import java.util.function.Consumer;
 
-import bugs.stackoverflow.belisarius.commandlists.CommandList;
 import bugs.stackoverflow.belisarius.services.MonitorService;
 import bugs.stackoverflow.belisarius.utils.ChatUtils;
 
@@ -43,7 +42,7 @@ public class Chatroom {
     }
 
     public Consumer<UserMentionedEvent> getUserMentioned(Room room, MonitorService service) {
-        return event -> new CommandList().mention(room, event, service);
+        return event -> ChatUtils.mention(room, event, service);
     }
 
     public Consumer<MessageReplyEvent> getPostedReply(Room room) {
@@ -51,7 +50,7 @@ public class Chatroom {
     }
 
     public Consumer<MessagePostedEvent> getPostedMessage(Room room) {
-        return event -> new CommandList().posted(room, event);
+        return event -> ChatUtils.posted(room, event);
     }
 
 }

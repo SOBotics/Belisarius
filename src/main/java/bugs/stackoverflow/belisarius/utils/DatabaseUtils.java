@@ -574,8 +574,8 @@ public class DatabaseUtils {
 
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                Chatroom chatroom = new Chatroom(resultSet.getInt("RoomId"), RoomUtils.getChatHost(resultSet.getString("Site")), resultSet.getString("Site"),
-                                                 resultSet.getBoolean("OutputMessage"));
+                Chatroom chatroom = new Chatroom(resultSet.getInt("RoomId"), ChatUtils.getChatHost(resultSet.getString("Site")),
+                                                 resultSet.getString("Site"), resultSet.getBoolean("OutputMessage"));
                 chatrooms.add(chatroom);
             }
         } catch (SQLException exception) {

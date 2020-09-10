@@ -3,7 +3,6 @@ package bugs.stackoverflow.belisarius.clients;
 import java.util.List;
 
 import bugs.stackoverflow.belisarius.Belisarius;
-import bugs.stackoverflow.belisarius.finders.VandalismFinder;
 import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.models.VandalisedPost;
 import bugs.stackoverflow.belisarius.services.HiggsService;
@@ -58,8 +57,7 @@ public class Monitor {
     }
 
     private VandalisedPost getVandalisedPost(Room room, Post post) {
-        VandalismFinder vandalismFinder = new VandalismFinder(room, post);
-        return vandalismFinder.findReasons();
+        return PostUtils.getVandalisedPost(room, post);
     }
 
     private void reportPost(Room room, VandalisedPost vandalisedPost, Post post, boolean outputMessage) {
