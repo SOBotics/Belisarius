@@ -8,7 +8,6 @@ import bugs.stackoverflow.belisarius.services.HiggsService;
 import bugs.stackoverflow.belisarius.services.MonitorService;
 import bugs.stackoverflow.belisarius.services.PropertyService;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
-import bugs.stackoverflow.belisarius.utils.LoginUtils;
 
 import org.sobotics.chatexchange.chat.StackExchangeClient;
 
@@ -18,7 +17,8 @@ public class Application {
 
     public static void main(String[] args) throws ApiException {
 
-        StackExchangeClient client = LoginUtils.getClient();
+        PropertyService propertyService = new PropertyService();
+        StackExchangeClient client = new StackExchangeClient(propertyService.getEmail(), propertyService.getPassword());
 
         DatabaseUtils.createRoomTable();
         DatabaseUtils.createVandalisedPostTable();
@@ -31,7 +31,6 @@ public class Application {
         DatabaseUtils.createFeedbackTable();
         DatabaseUtils.createHiggsTable();
 
-        PropertyService propertyService = new PropertyService();
         // Get Higgs information for Higgs (dashboard id 3)
         Higgs higgs = DatabaseUtils.getHiggs(3);
         if (higgs != null && propertyService.getUseHiggs()) {
