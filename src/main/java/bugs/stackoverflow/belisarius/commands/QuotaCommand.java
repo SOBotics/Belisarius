@@ -1,7 +1,7 @@
 package bugs.stackoverflow.belisarius.commands;
 
+import bugs.stackoverflow.belisarius.services.ApiService;
 import bugs.stackoverflow.belisarius.utils.CommandUtils;
-import bugs.stackoverflow.belisarius.utils.StatusUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +26,8 @@ public class QuotaCommand implements Command {
     @Override
     public void execute(Room room) {
         LOGGER.info(this.message.getUser().getName() + " (" + this.message.getUser().getId() + ") "
-                  + "is checking my remaining quota, which is " + StatusUtils.remainingQuota);
-        room.replyTo(message.getId(), "The remaining quota is: " + StatusUtils.remainingQuota);
+                  + "is checking my remaining quota, which is " + ApiService.getQuota());
+        room.replyTo(message.getId(), "The remaining quota is: " + ApiService.getQuota());
     }
 
     @Override

@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import bugs.stackoverflow.belisarius.services.ApiService;
 
@@ -62,10 +61,6 @@ public class JsonUtils {
             String urlDumpFilename = "url" + timeStampPattern.format(java.time.LocalDateTime.now()) + ".txt";
             FileUtils.writeStringToFile(new File(jsonDumpFilename), json, StandardCharsets.UTF_8);
             FileUtils.writeStringToFile(new File(urlDumpFilename), response.url().getQuery(), StandardCharsets.UTF_8);
-        }
-
-        if (root.has("quota_remaining")) {
-            StatusUtils.remainingQuota = new AtomicInteger(root.get("quota_remaining").getAsInt());
         }
 
         LOGGER.info("Received an API response.");
