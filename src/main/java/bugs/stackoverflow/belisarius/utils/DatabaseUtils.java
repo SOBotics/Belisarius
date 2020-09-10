@@ -47,8 +47,8 @@ public class DatabaseUtils {
                                                             + " PRIMARY KEY(PostId, RevisionId, RoomId));";
 
         try (Connection conn = connection.getConnection();
-            Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
+            Statement statement = conn.createStatement()) {
+            statement.execute(sql);
         } catch (SQLException exception) {
             LOGGER.info("Failed to create VandalisedPost table.", exception);
         }
@@ -63,8 +63,8 @@ public class DatabaseUtils {
                                                    + " PRIMARY KEY(BotId));";
 
         try (Connection conn = connection.getConnection();
-            Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
+            Statement statement = conn.createStatement()) {
+            statement.execute(sql);
         } catch (SQLException exception) {
             LOGGER.info("Failed to create Higgs table.", exception);
         }
@@ -79,8 +79,8 @@ public class DatabaseUtils {
                                                   + " PRIMARY KEY(RoomId))";
 
         try (Connection conn = connection.getConnection();
-             Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
+             Statement statement = conn.createStatement()) {
+            statement.execute(sql);
         } catch (SQLException exception) {
             LOGGER.info("Failed to create Room table.", exception);
         }
@@ -94,8 +94,8 @@ public class DatabaseUtils {
                                                     + " PRIMARY KEY(ReasonId));";
 
         try (Connection conn = connection.getConnection();
-            Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
+            Statement statement = conn.createStatement()) {
+            statement.execute(sql);
         } catch (SQLException exception) {
             LOGGER.info("Failed to create Reason table.", exception);
         }
@@ -116,8 +116,8 @@ public class DatabaseUtils {
                                                           + " FOREIGN KEY(RoomId) REFERENCES Room(RoomId));";
 
         try (Connection conn = connection.getConnection();
-            Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
+            Statement statement = conn.createStatement()) {
+            statement.execute(sql);
         } catch (SQLException exception) {
             LOGGER.info("Failed to create ReasonCaught table.", exception);
         }
@@ -132,8 +132,8 @@ public class DatabaseUtils {
                                                              + " PRIMARY KEY(BlacklistedWordId));";
 
         try (Connection conn = connection.getConnection();
-            Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
+            Statement statement = conn.createStatement()) {
+            statement.execute(sql);
         } catch (SQLException exception) {
             LOGGER.info("Failed to create BlacklistWord table.", exception);
         }
@@ -154,8 +154,8 @@ public class DatabaseUtils {
                                                                    + " FOREIGN KEY(RoomId) REFERENCES Room(RoomId));";
 
         try (Connection conn = connection.getConnection();
-            Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
+            Statement statement = conn.createStatement()) {
+            statement.execute(sql);
         } catch (SQLException exception) {
             LOGGER.info("Failed to create BlacklistedWordCaught table.", exception);
         }
@@ -169,8 +169,8 @@ public class DatabaseUtils {
                                                            + " PRIMARY KEY(OffensiveWordId));";
 
         try (Connection conn = connection.getConnection();
-            Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
+            Statement statement = conn.createStatement()) {
+            statement.execute(sql);
         } catch (SQLException exception) {
             LOGGER.info("Failed to create OffensiveWord table.", exception);
         }
@@ -190,8 +190,8 @@ public class DatabaseUtils {
                                                                  + " FOREIGN KEY(RoomId) REFERENCES Room(RoomId));";
 
         try (Connection conn = connection.getConnection();
-            Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
+            Statement statement = conn.createStatement()) {
+            statement.execute(sql);
         } catch (SQLException exception) {
             LOGGER.info("Failed to create OffensiveWordCaught table.", exception);
         }
@@ -211,8 +211,8 @@ public class DatabaseUtils {
                                                       + " FOREIGN KEY(RoomId) REFERENCES VandalisedPost(RoomId));";
 
         try (Connection conn = connection.getConnection();
-            Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
+            Statement statement = conn.createStatement()) {
+            statement.execute(sql);
         } catch (SQLException exception) {
             LOGGER.info("Failed to create Feedback table.", exception);
         }
@@ -224,12 +224,12 @@ public class DatabaseUtils {
         String sql = "SELECT (COUNT(*) > 0) As Found FROM VandalisedPost WHERE PostId = ? AND RevisionId = ? AND RoomId = ?;";
 
         try (Connection conn = connection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setLong(1, postId);
-            pstmt.setInt(2, revisionId);
-            pstmt.setInt(3, roomId);
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+            preparedStatement.setLong(1, postId);
+            preparedStatement.setInt(2, revisionId);
+            preparedStatement.setInt(3, roomId);
 
-            ResultSet resultSet = pstmt.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getBoolean("Found");
             }
@@ -246,13 +246,13 @@ public class DatabaseUtils {
         String sql = "SELECT (COUNT(*) > 0) As Found FROM ReasonCaught WHERE PostId = ? AND RevisionId = ? AND RoomId = ? AND ReasonId = ?;";
 
         try (Connection conn = connection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setLong(1, postId);
-            pstmt.setInt(2, revisionId);
-            pstmt.setInt(3, roomId);
-            pstmt.setInt(4, reasonId);
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+            preparedStatement.setLong(1, postId);
+            preparedStatement.setInt(2, revisionId);
+            preparedStatement.setInt(3, roomId);
+            preparedStatement.setInt(4, reasonId);
 
-            ResultSet resultSet = pstmt.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getBoolean("Found");
             }
@@ -269,13 +269,13 @@ public class DatabaseUtils {
                    + "AND BlacklistedWordId = ?;";
 
         try (Connection conn = connection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setLong(1, postId);
-            pstmt.setInt(2, revisionId);
-            pstmt.setInt(3, roomId);
-            pstmt.setInt(4, blacklistedWordId);
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+            preparedStatement.setLong(1, postId);
+            preparedStatement.setInt(2, revisionId);
+            preparedStatement.setInt(3, roomId);
+            preparedStatement.setInt(4, blacklistedWordId);
 
-            ResultSet resultSet = pstmt.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getBoolean("Found");
             }
@@ -296,28 +296,28 @@ public class DatabaseUtils {
         String sql = "INSERT INTO VandalisedPost VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
         try (Connection conn = connection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setLong(1, postId);
-            pstmt.setLong(2, creationDate);
-            pstmt.setInt(3, revisionId);
-            pstmt.setInt(4, roomId);
-            pstmt.setLong(5, ownerId);
-            pstmt.setString(6, title);
-            pstmt.setString(7, lastTitle);
-            pstmt.setString(8, body);
-            pstmt.setString(9, lastBody);
-            pstmt.setInt(10, isRollback ? 1 : 0);
-            pstmt.setString(11, postType);
-            pstmt.setString(12, comment);
-            pstmt.setString(13, site);
-            pstmt.setString(14, severity);
-            pstmt.setInt(15, higgsId);
-            pstmt.setString(16, revisionGuid);
-            pstmt.setString(17, previousRevisionGuid);
-            pstmt.setString(18, lastBodyMarkdown);
-            pstmt.setString(19, bodyMarkdown);
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+            preparedStatement.setLong(1, postId);
+            preparedStatement.setLong(2, creationDate);
+            preparedStatement.setInt(3, revisionId);
+            preparedStatement.setInt(4, roomId);
+            preparedStatement.setLong(5, ownerId);
+            preparedStatement.setString(6, title);
+            preparedStatement.setString(7, lastTitle);
+            preparedStatement.setString(8, body);
+            preparedStatement.setString(9, lastBody);
+            preparedStatement.setInt(10, isRollback ? 1 : 0);
+            preparedStatement.setString(11, postType);
+            preparedStatement.setString(12, comment);
+            preparedStatement.setString(13, site);
+            preparedStatement.setString(14, severity);
+            preparedStatement.setInt(15, higgsId);
+            preparedStatement.setString(16, revisionGuid);
+            preparedStatement.setString(17, previousRevisionGuid);
+            preparedStatement.setString(18, lastBodyMarkdown);
+            preparedStatement.setString(19, bodyMarkdown);
 
-            pstmt.executeUpdate();
+            preparedStatement.executeUpdate();
         } catch (SQLException exception) {
             LOGGER.info("Failed to store vandalised post. PostId: " + String.valueOf(postId) + "; RevisionId: " + String.valueOf(revisionId) + ".", exception);
         }
@@ -329,15 +329,15 @@ public class DatabaseUtils {
         String sql = "INSERT INTO ReasonCaught VALUES (?, ?, ?, ?, ?);";
 
         try (Connection conn = connection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
 
-            pstmt.setLong(1, postId);
-            pstmt.setInt(2, revisionId);
-            pstmt.setInt(3, roomId);
-            pstmt.setInt(4, reasonId);
-            pstmt.setDouble(5, score);
+            preparedStatement.setLong(1, postId);
+            preparedStatement.setInt(2, revisionId);
+            preparedStatement.setInt(3, roomId);
+            preparedStatement.setInt(4, reasonId);
+            preparedStatement.setDouble(5, score);
 
-            pstmt.executeUpdate();
+            preparedStatement.executeUpdate();
         } catch (SQLException exception) {
             LOGGER.info("Failed to store reason caught. Post id: " + String.valueOf(postId) + "; Reason id: " + String.valueOf(reasonId), exception);
         }
@@ -350,15 +350,15 @@ public class DatabaseUtils {
         String sql = "INSERT OR REPLACE INTO Feedback VALUES (?, ?, ?, ?, ?);";
 
         try (Connection conn = connection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
 
-            pstmt.setLong(1, postId);
-            pstmt.setInt(2, revisionId);
-            pstmt.setInt(3, roomId);
-            pstmt.setLong(4, userId);
-            pstmt.setString(5, feedback);
+            preparedStatement.setLong(1, postId);
+            preparedStatement.setInt(2, revisionId);
+            preparedStatement.setInt(3, roomId);
+            preparedStatement.setLong(4, userId);
+            preparedStatement.setString(5, feedback);
 
-            pstmt.executeUpdate();
+            preparedStatement.executeUpdate();
         } catch (SQLException exception) {
             LOGGER.info("Failed to store feedback for vandalised post. PostId: " + String.valueOf(postId) + "; "
                       + "RevisionId: " + String.valueOf(revisionId) + "; Feedback: " + feedback + ".", exception);
@@ -372,10 +372,10 @@ public class DatabaseUtils {
 
         Higgs higgs = new Higgs();
         try (Connection conn = connection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, botId);
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+            preparedStatement.setInt(1, botId);
 
-            ResultSet resultSet = pstmt.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 higgs.setUrl(resultSet.getString("Url"));
                 higgs.setKey(resultSet.getString("SecretKey"));
@@ -392,12 +392,12 @@ public class DatabaseUtils {
         String sql = "SELECT HiggsId FROM VandalisedPost WHERE PostId = ? AND RevisionId = ? AND RoomId = ?;";
 
         try (Connection conn = connection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setLong(1, postId);
-            pstmt.setInt(2, revisionId);
-            pstmt.setInt(3, roomId);
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+            preparedStatement.setLong(1, postId);
+            preparedStatement.setInt(2, revisionId);
+            preparedStatement.setInt(3, roomId);
 
-            ResultSet resultSet = pstmt.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getInt("HiggsId");
             }
@@ -416,10 +416,10 @@ public class DatabaseUtils {
 
         Map<Integer, String> blacklistedWords = new HashMap<>();
         try (Connection conn = connection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, postType);
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+            preparedStatement.setString(1, postType);
 
-            ResultSet resultSet = pstmt.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 blacklistedWords.put(resultSet.getInt("BlacklistedWordId"), resultSet.getString("BlacklistedWord"));
             }
@@ -436,9 +436,9 @@ public class DatabaseUtils {
 
         Map<Integer, String> offensiveWords = new HashMap<>();
         try (Connection conn = connection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
 
-            ResultSet resultSet = pstmt.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 offensiveWords.put(resultSet.getInt("OffensiveWordId"), resultSet.getString("OffensiveWord"));
             }
@@ -454,10 +454,10 @@ public class DatabaseUtils {
         String sql = "SELECT ReasonId FROM Reason WHERE Reason = ?;";
 
         try (Connection conn = connection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, reason);
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+            preparedStatement.setString(1, reason);
 
-            ResultSet resultSet = pstmt.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getInt("ReasonId");
             }
@@ -474,14 +474,14 @@ public class DatabaseUtils {
         String sql = "INSERT INTO BlacklistedWordCaught VALUES (?, ?, ?, ?);";
 
         try (Connection conn = connection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
 
-            pstmt.setLong(1, postId);
-            pstmt.setInt(2, revisionId);
-            pstmt.setInt(3, roomId);
-            pstmt.setInt(4, blacklistedWordId);
+            preparedStatement.setLong(1, postId);
+            preparedStatement.setInt(2, revisionId);
+            preparedStatement.setInt(3, roomId);
+            preparedStatement.setInt(4, blacklistedWordId);
 
-            pstmt.executeUpdate();
+            preparedStatement.executeUpdate();
         } catch (SQLException exception) {
             LOGGER.info("Failed to store caught blacklisted word. Post: " + String.valueOf(postId) + "; Word: " + String.valueOf(blacklistedWordId), exception);
         }
@@ -494,14 +494,14 @@ public class DatabaseUtils {
         String sql = "INSERT INTO OffensiveWordCaught VALUES (?, ?, ?, ?);";
 
         try (Connection conn = connection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
 
-            pstmt.setLong(1, postId);
-            pstmt.setInt(2, revisionId);
-            pstmt.setInt(3, roomId);
-            pstmt.setInt(4, offensiveWordId);
+            preparedStatement.setLong(1, postId);
+            preparedStatement.setInt(2, revisionId);
+            preparedStatement.setInt(3, roomId);
+            preparedStatement.setInt(4, offensiveWordId);
 
-            pstmt.executeUpdate();
+            preparedStatement.executeUpdate();
         } catch (SQLException exception) {
             LOGGER.info("Failed to store caught offensive word. PostId: " + String.valueOf(postId) + "; WordId: " + String.valueOf(offensiveWordId), exception);
         }
@@ -533,13 +533,13 @@ public class DatabaseUtils {
 
         Post post = null;
         try (Connection conn = connection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
 
-            pstmt.setLong(1, postId);
-            pstmt.setInt(2, revisionId);
-            pstmt.setInt(3, roomId);
+            preparedStatement.setLong(1, postId);
+            preparedStatement.setInt(2, revisionId);
+            preparedStatement.setInt(3, roomId);
 
-            ResultSet resultSet = pstmt.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 post = PostUtils.getPost(resultSet.getInt("PostId"), resultSet.getLong("CreationDate"),
                                          resultSet.getInt("RevisionId"), resultSet.getString("Title"),
@@ -570,9 +570,9 @@ public class DatabaseUtils {
 
         Post post = null;
         try (Connection conn = connection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
 
-            ResultSet resultSet = pstmt.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Chatroom chatroom = new Chatroom(resultSet.getInt("RoomId"), RoomUtils.getChatHost(resultSet.getString("Site")), resultSet.getString("Site"),
                                                  resultSet.getBoolean("OutputMessage"));
