@@ -88,8 +88,7 @@ public class JsonUtils {
         if (response.statusCode() != 200) {
             throw new IOException("HTTP " + response.statusCode() + " error fetching " + url + ". Body is: " + body);
         }
-        String markdown = Jsoup.parse(body).getElementsByTag("pre").text();
-        return markdown;
+        return Jsoup.parse(body).getElementsByTag("pre").text();
     }
 
 }

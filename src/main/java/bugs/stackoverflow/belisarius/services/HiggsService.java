@@ -35,10 +35,6 @@ public final class HiggsService {
         initHiggs(key);
     }
 
-    public String getUrl() {
-        return url;
-    }
-
     public static void initInstance(String url, String key) throws ApiException {
         instance = new HiggsService(url, key);
     }

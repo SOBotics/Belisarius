@@ -36,7 +36,7 @@ public class Belisarius {
         this.site = site;
     }
 
-    public static String buildMessage(Room room, int higgsId, String postType, String severity,
+    public static void buildMessage(Room room, int higgsId, String postType, String severity,
                                       String status, String allRevs, int revNum, String revUrl) {
         String message = README;
         if (higgsId != 0) {
@@ -48,7 +48,6 @@ public class Belisarius {
         }
         message += " " + status + " [All revisions](" + allRevs + "). Revision: [" + String.valueOf(revNum) + "](" + revUrl + ")";
         room.send(message);
-        return message;
     }
 
     public List<Post> getPosts() {
