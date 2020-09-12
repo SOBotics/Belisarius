@@ -518,7 +518,6 @@ public class DatabaseUtils {
                    + "       OutputMessage \n"
                    + "  FROM Room;";
 
-        Post post = null;
         try (Connection conn = connection.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
 
