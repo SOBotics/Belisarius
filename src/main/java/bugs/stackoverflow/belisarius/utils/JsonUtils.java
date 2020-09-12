@@ -30,7 +30,7 @@ public class JsonUtils {
 
         if (backOffUntil > 0) {
             try {
-                LOGGER.info("BACKOFF received. Timeout for " + String.valueOf(backOffUntil + 2) + " seconds.");
+                LOGGER.info("BACKOFF received. Timeout for " + (backOffUntil + 2) + " seconds.");
                 Thread.sleep(1000 * backOffUntil + 2000);
             } catch (InterruptedException exception) {
                 exception.printStackTrace();

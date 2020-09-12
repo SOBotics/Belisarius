@@ -117,7 +117,7 @@ public class PostUtils {
             }
         } catch (ApiException exception) {
             LOGGER.info("ApiException was thrown while trying to send feedback " + feedback.toString() + " to Higgs"
-                      + " from " + String.valueOf(event.getMessage().getUser().getId()), exception);
+                      + " from " + event.getMessage().getUser().getId(), exception);
         }
     }
 

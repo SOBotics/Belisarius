@@ -50,7 +50,7 @@ public class VandalisedPost {
         }
 
         if (!reasonNames.isEmpty() && score > 0) {
-            reasons = String.join(", ", reasonNames) + "; **Score:** " + String.valueOf(score);
+            reasons = String.join(", ", reasonNames) + "; **Score:** " + score;
         }
 
         return reasons;

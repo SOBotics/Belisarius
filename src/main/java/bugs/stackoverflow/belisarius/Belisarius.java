@@ -41,13 +41,13 @@ public class Belisarius {
                                       String status, String allRevs, int revNum, String revUrl) {
         String message = README;
         if (higgsId != 0) {
-            message += HIGGS_URL + String.valueOf(higgsId) + ") ";
+            message += HIGGS_URL + higgsId + ") ";
         }
         message += "] [tag:" + postType + "]";
         if (severity != null) {
             message += " [tag:severity-" + severity + "]";
         }
-        message += " " + status + " [All revisions](" + allRevs + "). Revision: [" + String.valueOf(revNum) + "](" + revUrl + ")";
+        message += " " + status + " [All revisions](" + allRevs + "). Revision: [" + revNum + "](" + revUrl + ")";
         room.send(message);
     }
 

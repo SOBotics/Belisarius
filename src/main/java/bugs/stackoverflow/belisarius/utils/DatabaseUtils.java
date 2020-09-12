@@ -18,6 +18,7 @@ import bugs.stackoverflow.belisarius.models.Post;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings("unused")
 public class DatabaseUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseUtils.class);
@@ -234,8 +235,8 @@ public class DatabaseUtils {
                 return resultSet.getBoolean("Found");
             }
         } catch (SQLException exception) {
-            LOGGER.info("Failed to check for vandalised post. PostId: " + String.valueOf(postId) + "; "
-                      + "RevisionId: " + String.valueOf(revisionId) + ".", exception);
+            LOGGER.info("Failed to check for vandalised post. PostId: " + postId + "; "
+                      + "RevisionId: " + revisionId + ".", exception);
         }
         return false;
     }
@@ -257,7 +258,7 @@ public class DatabaseUtils {
                 return resultSet.getBoolean("Found");
             }
         } catch (SQLException exception) {
-            LOGGER.info("Failed to check for ReasonCaught. PostId: " + String.valueOf(postId) + "; ReasonId: " + String.valueOf(reasonId) + ".", exception);
+            LOGGER.info("Failed to check for ReasonCaught. PostId: " + postId + "; ReasonId: " + reasonId + ".", exception);
         }
         return false;
     }
@@ -280,8 +281,8 @@ public class DatabaseUtils {
                 return resultSet.getBoolean("Found");
             }
         } catch (SQLException exception) {
-            LOGGER.info("Failed to check for blacklisted word. PostId: " + String.valueOf(postId) + "; "
-                      + "Word id: " + String.valueOf(blacklistedWordId), exception);
+            LOGGER.info("Failed to check for blacklisted word. PostId: " + postId + "; "
+                      + "Word id: " + blacklistedWordId, exception);
         }
         return false;
     }
@@ -319,7 +320,7 @@ public class DatabaseUtils {
 
             preparedStatement.executeUpdate();
         } catch (SQLException exception) {
-            LOGGER.info("Failed to store vandalised post. PostId: " + String.valueOf(postId) + "; RevisionId: " + String.valueOf(revisionId) + ".", exception);
+            LOGGER.info("Failed to store vandalised post. PostId: " + postId + "; RevisionId: " + revisionId + ".", exception);
         }
     }
 
@@ -339,7 +340,7 @@ public class DatabaseUtils {
 
             preparedStatement.executeUpdate();
         } catch (SQLException exception) {
-            LOGGER.info("Failed to store reason caught. Post id: " + String.valueOf(postId) + "; Reason id: " + String.valueOf(reasonId), exception);
+            LOGGER.info("Failed to store reason caught. Post id: " + postId + "; Reason id: " + reasonId, exception);
         }
     }
 
@@ -360,8 +361,8 @@ public class DatabaseUtils {
 
             preparedStatement.executeUpdate();
         } catch (SQLException exception) {
-            LOGGER.info("Failed to store feedback for vandalised post. PostId: " + String.valueOf(postId) + "; "
-                      + "RevisionId: " + String.valueOf(revisionId) + "; Feedback: " + feedback + ".", exception);
+            LOGGER.info("Failed to store feedback for vandalised post. PostId: " + postId + "; "
+                      + "RevisionId: " + revisionId + "; Feedback: " + feedback + ".", exception);
         }
     }
 
@@ -402,8 +403,8 @@ public class DatabaseUtils {
                 return resultSet.getInt("HiggsId");
             }
         } catch (SQLException exception) {
-            LOGGER.info("Failed to get HiggsId. PostId: " + String.valueOf(postId) + "; "
-                      + "RevisionId: " + String.valueOf(revisionId) + "; RoomId: " + String.valueOf(roomId), exception);
+            LOGGER.info("Failed to get HiggsId. PostId: " + postId + "; "
+                      + "RevisionId: " + revisionId + "; RoomId: " + roomId, exception);
         }
 
         return 0;
@@ -483,7 +484,7 @@ public class DatabaseUtils {
 
             preparedStatement.executeUpdate();
         } catch (SQLException exception) {
-            LOGGER.info("Failed to store caught blacklisted word. Post: " + String.valueOf(postId) + "; Word: " + String.valueOf(blacklistedWordId), exception);
+            LOGGER.info("Failed to store caught blacklisted word. Post: " + postId + "; Word: " + blacklistedWordId, exception);
         }
     }
 
@@ -503,7 +504,7 @@ public class DatabaseUtils {
 
             preparedStatement.executeUpdate();
         } catch (SQLException exception) {
-            LOGGER.info("Failed to store caught offensive word. PostId: " + String.valueOf(postId) + "; WordId: " + String.valueOf(offensiveWordId), exception);
+            LOGGER.info("Failed to store caught offensive word. PostId: " + postId + "; WordId: " + offensiveWordId, exception);
         }
     }
 
