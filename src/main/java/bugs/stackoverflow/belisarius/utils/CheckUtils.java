@@ -78,7 +78,7 @@ public class CheckUtils {
     }
 
     private static Map<Integer, String> getCaughtByRegex(Map<Integer, String> words, String target) {
-        Map<Integer, String> caught = new HashMap<Integer, String>();
+        Map<Integer, String> caught = new HashMap<>();
 
         for (Map.Entry<Integer, String> word : words.entrySet()) {
             Pattern pattern = Pattern.compile(word.getValue());
@@ -97,7 +97,7 @@ public class CheckUtils {
     }
 
     public static Set<String> checkRepeatedWords(String target) {
-        Set<String> repeatedWords = new HashSet<String>();
+        Set<String> repeatedWords = new HashSet<>();
 
         String[] words = target.split("\\W");
         for (String word : words) {

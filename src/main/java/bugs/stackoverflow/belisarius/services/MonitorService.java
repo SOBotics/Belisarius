@@ -71,7 +71,7 @@ public class MonitorService {
 
     public void runMonitor() {
         // Check posts from the API every 60 seconds
-        executorService.scheduleAtFixedRate(() -> execute(), 0, 60, TimeUnit.SECONDS);
+        executorService.scheduleAtFixedRate(this::execute, 0, 60, TimeUnit.SECONDS);
     }
 
     private void execute() {

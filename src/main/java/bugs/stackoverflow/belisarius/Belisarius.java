@@ -75,11 +75,9 @@ public class Belisarius {
         Map<Long, String> postIdAndTitle = new HashMap<>();
         postIdAndTitle.put(Long.valueOf(postId), getPostTitle(postId));
         try {
-            if (postId != null) {
-                List<Post> postsWithLatestRevisions = getPostsWithLatestRevision(postIdAndTitle);
-                if (postsWithLatestRevisions.size() == 1) {
-                    post = postsWithLatestRevisions.get(0);
-                }
+            List<Post> postsWithLatestRevisions = getPostsWithLatestRevision(postIdAndTitle);
+            if (postsWithLatestRevisions.size() == 1) {
+                post = postsWithLatestRevisions.get(0);
             }
         } catch (Exception exception) {
             LOGGER.info("Error while trying to get post with id " + postId, exception);
