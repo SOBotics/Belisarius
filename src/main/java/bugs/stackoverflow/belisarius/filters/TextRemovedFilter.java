@@ -52,7 +52,7 @@ public class TextRemovedFilter implements Filter {
 
     @Override
     public Severity getSeverity() {
-        return Severity.MEDIUM;
+        return Severity.LOW;
     }
 
     @Override
