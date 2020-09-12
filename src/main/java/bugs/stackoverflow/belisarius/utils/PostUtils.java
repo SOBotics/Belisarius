@@ -27,7 +27,6 @@ import org.sobotics.chatexchange.chat.Message;
 import org.sobotics.chatexchange.chat.Room;
 import org.sobotics.chatexchange.chat.event.PingMessageEvent;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.swagger.client.ApiException;
 
@@ -35,34 +34,18 @@ public class PostUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostUtils.class);
 
-    public static boolean postBeenEdited(JsonElement post) {
-        if (post.getAsJsonObject().has("last_edit_date")) {
-            long lastActivityDate = post.getAsJsonObject().get("last_activity_date").getAsLong();
-            long lastEditDate = post.getAsJsonObject().get("last_edit_date").getAsLong();
-            return lastActivityDate == lastEditDate;
-        }
-        return false;
+    public static boolean postBeenEdited(JsonObject post) {
+        return post.has("last_edit_date");
     }
 
-    public static boolean editorAlsoOwner(JsonElement post) {
-        try {
-            if (!post.getAsJsonObject().has("owner")) {
-                return true;
-            } else {
-                JsonObject ownerJson = post.getAsJsonObject().get("owner").getAsJsonObject();
-                JsonObject editorJson = post.getAsJsonObject().get("last_editor").getAsJsonObject();
-
-                long ownerId = ownerJson.get("user_id").getAsLong();
-                long editorId = editorJson.get("user_id").getAsLong();
-
-                if (ownerId == editorId) {
-                    return true;
-                }
-            }
-        } catch (Exception exception) {
-            LOGGER.info("Error while trying to find if editor is also owner.", exception);
+    public static boolean editorAlsoOwner(JsonObject post) {
+        if (!post.has("last_editor")) {
+            return false;
         }
-        return false;
+        long ownerId = post.get("owner").getAsJsonObject().get("user_id").getAsLong();
+        long editorId = post.get("last_editor").getAsJsonObject().get("user_id").getAsLong();
+
+        return ownerId == editorId;
     }
 
     public static Post getPost(JsonObject post, String site, String title, String previousRevisionGuid) {

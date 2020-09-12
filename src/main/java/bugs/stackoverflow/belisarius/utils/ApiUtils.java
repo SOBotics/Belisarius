@@ -12,10 +12,11 @@ public class ApiUtils {
 
     private static JsonUtils jsonUtils = new JsonUtils();
 
-    public static JsonObject getPostIdsByActivityDesc(int page, String site, String apiKey) throws IOException {
+    public static JsonObject getPostIdsByActivityDesc(int page, String site, String apiKey, long min) throws IOException {
         String postsUrl = "https://api.stackexchange.com/2.2/posts";
         return jsonUtils.get(postsUrl, "page", String.valueOf(page), "pagesize", "100", "order", "desc",
-                             "sort", "activity", "site", site, "filter", POSTS_FILTER, "key", apiKey);
+                             "sort", "activity", "site", site, "filter", POSTS_FILTER, "key", apiKey,
+                             "min", String.valueOf(min));
     }
 
     public static JsonObject getLastestRevisions(String postIdInput, String site, String apiKey) throws IOException {

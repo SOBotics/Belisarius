@@ -23,8 +23,8 @@ public class ApiService {
         this.apiKey = propertyService.getApiKey();
     }
 
-    public JsonObject getPostIdsByActivityDesc(int page) throws IOException {
-        JsonObject postsJson = ApiUtils.getPostIdsByActivityDesc(page, site, apiKey);
+    public JsonObject getPostIdsByActivityDesc(int page, long minActivityDate) throws IOException {
+        JsonObject postsJson = ApiUtils.getPostIdsByActivityDesc(page, site, apiKey, minActivityDate);
         setQuota(postsJson.get("quota_remaining").getAsInt());
         setBackOffUntil(postsJson);
         return postsJson;

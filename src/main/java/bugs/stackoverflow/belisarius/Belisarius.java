@@ -1,5 +1,6 @@
 package bugs.stackoverflow.belisarius;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sobotics.chatexchange.chat.Room;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -91,34 +93,29 @@ public class Belisarius {
 
     private Map<Long, String> getPostIdsAndTitles() {
         Map<Long, String> postIdsAndTitles = new HashMap<>();
+        int page = 1;
+        boolean hasMore = false;
 
-        JsonObject postsJson;
         try {
-            long lastActivityDate = 0;
-            long maxActivityDate = this.lastPostTime;
-            int page = 1;
             do {
-                postsJson = apiService.getPostIdsByActivityDesc(page);
-                for (JsonElement post : postsJson.get("items").getAsJsonArray()) {
-                    lastActivityDate = post.getAsJsonObject().get("last_activity_date").getAsLong();
+                JsonObject postsJson = apiService.getPostIdsByActivityDesc(page, this.lastPostTime);
+                JsonArray posts = postsJson.get("items").getAsJsonArray();
+                for (JsonElement post : posts) {
+                    JsonObject postJson = post.getAsJsonObject();
+                    long postId = postJson.get("post_id").getAsLong();
+                    String title = postJson.get("title").getAsString();
 
-                    if (PostUtils.postBeenEdited(post) && PostUtils.editorAlsoOwner(post) && lastPostTime < lastActivityDate) {
-                        long postId = post.getAsJsonObject().get("post_id").getAsLong();
-                        String title = post.getAsJsonObject().get("title").getAsString();
-                        if (!postIdsAndTitles.containsKey(postId) && !postIdsAndTitles.containsValue(title)) {
-                            postIdsAndTitles.put(postId, title);
-                        }
-                    }
-
-                    if (maxActivityDate < lastActivityDate) {
-                        maxActivityDate = lastActivityDate;
+                    if (PostUtils.postBeenEdited(postJson) && PostUtils.editorAlsoOwner(postJson)
+                        && !postIdsAndTitles.containsKey(postId) && !postIdsAndTitles.containsValue(title)) {
+                        postIdsAndTitles.put(postId, title);
                     }
                 }
+                this.lastPostTime = posts.get(0).getAsJsonObject().get("last_activity_date").getAsLong();
+                hasMore = postsJson.get("has_more").getAsBoolean();
                 page++;
-            } while (lastPostTime < lastActivityDate & page < 10);
-            this.lastPostTime = maxActivityDate;
-        } catch (Exception exception) {
-            LOGGER.info("Error while trying to fetch posts by activity.", exception);
+            } while (hasMore);
+        } catch (IOException exception) {
+            LOGGER.info("Failed to fetch post ids by activity.", exception);
         }
 
         return postIdsAndTitles;
