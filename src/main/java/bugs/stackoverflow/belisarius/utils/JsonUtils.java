@@ -43,8 +43,8 @@ public class JsonUtils {
         if (response.statusCode() != 200) {
             throw new IOException("HTTP " + response.statusCode() + " fetching URL " + url + ". Body is: " + response.body());
         }
-        JsonObject root;
 
+        JsonObject root = null;
         try {
             root = new JsonParser().parse(json).getAsJsonObject();
         } catch (Exception exception) {
