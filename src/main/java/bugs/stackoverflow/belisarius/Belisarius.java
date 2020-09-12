@@ -2,6 +2,7 @@ package bugs.stackoverflow.belisarius;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -154,7 +155,7 @@ public class Belisarius {
                     List<JsonObject> revisionList = postIdsAndJsons.get(postId);
                     if (revisionJson.has("revision_number")) {
                         if (revisionList == null) {
-                            postIdsAndJsons.put(postId, new ArrayList<>(List.of(revisionJson)));
+                            postIdsAndJsons.put(postId, new ArrayList<>(Arrays.asList(revisionJson)));
                         } else if (revisionList.size() < 2) {
                             revisionList.add(revisionJson);
                         }
