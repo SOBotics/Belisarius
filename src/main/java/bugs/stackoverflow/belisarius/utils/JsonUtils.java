@@ -30,18 +30,12 @@ public class JsonUtils {
 
         if (backOffUntil > 0) {
             try {
-                LOGGER.info("BACKOFF received. Timeout for " + String.valueOf(backOffUntil) + " seconds.");
-                Thread.sleep(1000 * backOffUntil);
+                LOGGER.info("BACKOFF received. Timeout for " + String.valueOf(backOffUntil + 2) + " seconds.");
+                Thread.sleep(1000 * backOffUntil + 2000);
             } catch (InterruptedException exception) {
                 exception.printStackTrace();
             }
             backOffUntil = 0L;
-        }
-
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException exception) {
-            exception.printStackTrace();
         }
 
         Connection.Response response = Jsoup.connect(url).data(data).method(Connection.Method.GET)
