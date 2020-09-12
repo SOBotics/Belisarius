@@ -70,7 +70,7 @@ public final class HiggsService {
         }
 
         RegisterPostRequest postRequest = new RegisterPostRequest();
-        postRequest.setContentId(Long.valueOf(post.getPostId()));
+        postRequest.setContentId((long) post.getPostId());
         postRequest.setContentSite(post.getSite());
         postRequest.setContentType(post.getPostType());
         postRequest.setContentUrl(post.getRevisionUrl());
