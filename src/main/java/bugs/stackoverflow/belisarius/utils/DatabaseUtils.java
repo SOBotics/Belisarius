@@ -18,7 +18,6 @@ import bugs.stackoverflow.belisarius.models.Post;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings("unused")
 public class DatabaseUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseUtils.class);

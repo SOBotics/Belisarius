@@ -160,21 +160,22 @@ public class Belisarius {
                         }
                     }
                 }
-
-                for (Map.Entry<Long, String> idAndTitle : idsAndTitles.entrySet()) {
-                    long postId = idAndTitle.getKey();
-                    String title = idAndTitle.getValue();
-                    List<JsonObject> revisionsList = postIdsAndJsons.get(postId);
-                    String previousRevisionGuid = revisionsList.get(1).get("revision_guid").getAsString();
-
-                    Post revision = PostUtils.getPost(revisionsList.get(0), this.site, title, previousRevisionGuid);
-                    if (revision != null) {
-                        revisions.add(revision);
-                    }
-                }
+                hasMore = revisionsJson.get("has_more").getAsBoolean();
             } while (hasMore);
         } catch (Exception exception) {
             LOGGER.info("Error while trying to get latest revisions for some posts", exception);
+        }
+
+        for (Map.Entry<Long, String> idAndTitle : idsAndTitles.entrySet()) {
+            long postId = idAndTitle.getKey();
+            String title = idAndTitle.getValue();
+            List<JsonObject> revisionsList = postIdsAndJsons.get(postId);
+            String previousRevisionGuid = revisionsList.get(1).get("revision_guid").getAsString();
+
+            Post revision = PostUtils.getPost(revisionsList.get(0), this.site, title, previousRevisionGuid);
+            if (revision != null) {
+                revisions.add(revision);
+            }
         }
 
         return revisions;
