@@ -3,7 +3,6 @@ package bugs.stackoverflow.belisarius;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -136,47 +135,47 @@ public class Belisarius {
 
     private List<Post> getPostsWithLatestRevision(Map<Long, String> idsAndTitles) {
         List<Post> revisions = new ArrayList<>();
+        Map<Long, List<JsonObject>> postIdsAndJsons = new HashMap<>();
         String[] postIds = idsAndTitles.keySet().stream().map(set -> set.toString()).toArray(String[]::new);
+        String semicolonSeparatedIds = String.join(";", postIds);
+
         boolean hasMore = false;
-        Iterator<Map.Entry<Long, String>> iter = idsAndTitles.entrySet().iterator();
+        int page = 1;
 
-        do {
-            try {
-                JsonObject postsJson = apiService.getLatestRevisions(String.join(";", postIds));
-                hasMore = postsJson.get("has_more").getAsBoolean();
+        try {
+            do {
+                JsonObject revisionsJson = apiService.getLatestRevisions(semicolonSeparatedIds, page);
+                JsonArray revisionsJsonArray = revisionsJson.get("items").getAsJsonArray();
 
-                while (iter.hasNext()) {
-                    Map.Entry<Long, String> entry = iter.next();
-                    Long postId = entry.getKey();
-                    String title = entry.getValue();
-                    int revisionNo = 0;
-                    Post revision = null;
-                    JsonObject getPostJson = null;
-                    for (JsonElement post : postsJson.get("items").getAsJsonArray()) {
-                        JsonObject postJson = post.getAsJsonObject();
-                        if (postJson.get("post_id").getAsInt() == postId.intValue() && postJson.has("revision_number")) {
-                            int currentRevisionNumber = postJson.get("revision_number").getAsInt();
-                            // if revisionNo is 0, then it's the post's latest revision
-                            // else it is the second most recent revision
-                            if (revisionNo == 0) {
-                                revisionNo = currentRevisionNumber;
-                                getPostJson = postJson;
-                            } else if (revisionNo == currentRevisionNumber + 1) {
-                                String prevRevisionGuid = postJson.get("revision_guid").getAsString();
-                                revision = PostUtils.getPost(getPostJson, site, title, prevRevisionGuid);
-                                break;
-                            }
+                for (JsonElement revision : revisionsJsonArray) {
+                    JsonObject revisionJson = revision.getAsJsonObject();
+                    long postId = revisionJson.get("post_id").getAsLong();
+
+                    List<JsonObject> revisionList = postIdsAndJsons.get(postId);
+                    if (revisionJson.has("revision_number")) {
+                        if (revisionList == null) {
+                            postIdsAndJsons.put(postId, new ArrayList<>(List.of(revisionJson)));
+                        } else if (revisionList.size() < 2) {
+                            revisionList.add(revisionJson);
                         }
                     }
+                }
+
+                for (Map.Entry<Long, String> idAndTitle : idsAndTitles.entrySet()) {
+                    long postId = idAndTitle.getKey();
+                    String title = idAndTitle.getValue();
+                    List<JsonObject> revisionsList = postIdsAndJsons.get(postId);
+                    String previousRevisionGuid = revisionsList.get(1).get("revision_guid").getAsString();
+
+                    Post revision = PostUtils.getPost(revisionsList.get(0), this.site, title, previousRevisionGuid);
                     if (revision != null) {
                         revisions.add(revision);
                     }
-                    iter.remove();
                 }
-            } catch (Exception exception) {
-                LOGGER.info("Error while trying to get latest revisions for some posts", exception);
-            }
-        } while (hasMore && postIds.length > 0);
+            } while (hasMore);
+        } catch (Exception exception) {
+            LOGGER.info("Error while trying to get latest revisions for some posts", exception);
+        }
 
         return revisions;
     }

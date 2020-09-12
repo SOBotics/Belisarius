@@ -19,9 +19,10 @@ public class ApiUtils {
                              "min", String.valueOf(min));
     }
 
-    public static JsonObject getLastestRevisions(String postIdInput, String site, String apiKey) throws IOException {
-        String postsUrl = "https://api.stackexchange.com/2.2/posts/" + postIdInput + "/revisions";
-        return jsonUtils.get(postsUrl, "page", "1", "pagesize", "100", "site", site, "filter", REVISIONS_FILTER, "key", apiKey);
+    public static JsonObject getLastestRevisions(String postIds, String site, String apiKey, int page) throws IOException {
+        String postsUrl = "https://api.stackexchange.com/2.2/posts/" + postIds + "/revisions";
+        return jsonUtils.get(postsUrl, "page", String.valueOf(page), "pagesize", "100",
+                             "site", site, "filter", REVISIONS_FILTER, "key", apiKey);
     }
 
     public static JsonObject getMorePostInformation(String postId, String site, String apiKey) throws IOException {
