@@ -49,7 +49,7 @@ public class PropertyService {
         return password;
     }
 
-    public int getRoomId() {
+    /* public int getRoomId() {
         String roomId = prop.getProperty("roomid");
         if (roomId == null) {
             roomId = System.getenv("roomId");
@@ -71,7 +71,7 @@ public class PropertyService {
             site = System.getenv("site");
         }
         return site;
-    }
+    } */
 
     public boolean getUseHiggs() {
         String useHiggs = prop.getProperty("useHiggs");

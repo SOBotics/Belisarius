@@ -56,10 +56,6 @@ public class VandalisedPost {
         return reasons;
     }
 
-    public Map<String, Double> getReasons() {
-        return this.reasons;
-    }
-
     public Map<String, Double> getReasonNames() {
         return this.reasonNames;
     }

@@ -11,8 +11,6 @@ public class Post {
     private String lastTitle;
     private String body;
     private String lastBody;
-    private String bodyMarkdown;
-    private String lastBodyMarkdown;
     private StackOverflowUser user;
     private boolean isRollback;
     private String postType;
@@ -91,22 +89,6 @@ public class Post {
 
     public void setLastBody(String lastBody) {
         this.lastBody = lastBody;
-    }
-
-    public String getBodyMarkdown() {
-        return bodyMarkdown;
-    }
-
-    public void setBodyMarkdown(String bodyMarkdown) {
-        this.bodyMarkdown = bodyMarkdown;
-    }
-
-    public String getLastBodyMarkdown() {
-        return lastBodyMarkdown;
-    }
-
-    public void setLastBodyMarkdown(String lastBodyMarkdown) {
-        this.lastBodyMarkdown = lastBodyMarkdown;
     }
 
     public StackOverflowUser getUser() {

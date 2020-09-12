@@ -507,56 +507,6 @@ public class DatabaseUtils {
         }
     }
 
-    public static Post getPost(long postId, int revisionId, int roomId) {
-
-        SQLiteConnection connection = new SQLiteConnection();
-
-        String sql = "SELECT PostId, \n"
-                   + "       CreationDate, \n"
-                   + "       RevisionId, \n"
-                   + "       OwnerId, \n"
-                   + "       Title, \n"
-                   + "       LastTitle, \n"
-                   + "       Body, \n"
-                   + "       LastBody, \n"
-                   + "       IsRollback, \n"
-                   + "       PostType, \n"
-                   + "       Comment, \n"
-                   + "       Site \n"
-                   + "       HiggsId \n"
-                   + "       RevisionGuid \n"
-                   + "       PreviousRevisionGuid \n"
-                   + "  FROM VandalisedPost \n"
-                   + " WHERE PostId = ? \n"
-                   + "   AND RevisionId = ? \n"
-                   + "   AND RoomId = ?;";
-
-        Post post = null;
-        try (Connection conn = connection.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-
-            preparedStatement.setLong(1, postId);
-            preparedStatement.setInt(2, revisionId);
-            preparedStatement.setInt(3, roomId);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                post = PostUtils.getPost(resultSet.getInt("PostId"), resultSet.getLong("CreationDate"),
-                                         resultSet.getInt("RevisionId"), resultSet.getString("Title"),
-                                         resultSet.getString("LastTitle"), resultSet.getString("Body"),
-                                         resultSet.getString("LastBody"), resultSet.getBoolean("IsRollback"),
-                                         resultSet.getString("PostType"), resultSet.getString("Comment"),
-                                         resultSet.getInt("OwnerId"), resultSet.getString("Site"),
-                                         resultSet.getString("RevisionGuid"), resultSet.getString("PreviousRevisionGuid"));
-            }
-        } catch (SQLException exception) {
-            LOGGER.info("Failed to find vandalised post. PostId: " + String.valueOf(postId) + "; "
-                      + "RevisionId: " + String.valueOf(revisionId) + "; RoomId: " + String.valueOf(roomId) + ".", exception);
-        }
-
-        return post;
-    }
-
     public static List<Chatroom> getRooms() {
 
         List<Chatroom> chatrooms = new ArrayList<>();

@@ -9,7 +9,6 @@ public class StackOverflowUser {
     private String username;
     private int userId;
     private long reputation;
-    private String userType;
 
     public String getUsername() {
         return username;
@@ -35,14 +34,6 @@ public class StackOverflowUser {
         this.reputation = reputation;
     }
 
-    public String getUserType() {
-        return userType;
-    }
-
-    public void setUserType(String userType) {
-        this.userType = userType;
-    }
-
     @Override
     public String toString() {
         return getJson().toString();
@@ -53,7 +44,6 @@ public class StackOverflowUser {
         json.addProperty("username", username);
         json.addProperty("userId", userId);
         json.addProperty("reputation", reputation);
-        json.addProperty("userType", userType);
         return json;
     }
 }

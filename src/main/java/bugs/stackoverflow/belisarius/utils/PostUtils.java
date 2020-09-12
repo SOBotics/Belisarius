@@ -90,40 +90,11 @@ public class PostUtils {
         try {
             user.setReputation(userJson.get("reputation").getAsLong());
             user.setUsername(JsonUtils.escapeHtmlEncoding(userJson.get("display_name").getAsString()));
-            user.setUserType(userJson.get("user_type").getAsString());
             user.setUserId(userJson.get("user_id").getAsInt());
         } catch (Exception exception) {
             LOGGER.info("Error while creating a StackOverflowUser object.", exception);
         }
 
-        newPost.setUser(user);
-
-        return newPost;
-    }
-
-    static Post getPost(int postId, long creationDate, int revisionId, String title, String lastTitle,
-                        String body, String lastBody, boolean isRollback, String postType, String comment,
-                        int ownerId, String site, String revisionGuid, String previousRevisionGuid) {
-
-        Post newPost = new Post();
-
-        newPost.setPostId(postId);
-        newPost.setCreationDate(creationDate);
-        newPost.setRevisionNumber(revisionId);
-        newPost.setRevisionUrl("https://" + site + ".com/revisions/" + String.valueOf(postId) + "/" + String.valueOf(revisionId));
-        newPost.setAllRevisionsUrl("https://" + site + ".com/posts/" + String.valueOf(postId) + "/revisions");
-        newPost.setTitle(title);
-        newPost.setLastTitle(lastTitle);
-        newPost.setBody(body);
-        newPost.setLastBody(lastBody);
-        newPost.setIsRollback(isRollback);
-        newPost.setPostType(postType);
-        newPost.setComment(comment);
-        newPost.setRevisionGuid(revisionGuid);
-        newPost.setPreviousRevisionGuid(previousRevisionGuid);
-
-        StackOverflowUser user = new StackOverflowUser();
-        user.setUserId(ownerId);
         newPost.setUser(user);
 
         return newPost;

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import bugs.stackoverflow.belisarius.Belisarius;
@@ -15,32 +14,26 @@ import bugs.stackoverflow.belisarius.clients.Monitor;
 import bugs.stackoverflow.belisarius.models.Chatroom;
 import bugs.stackoverflow.belisarius.models.Post;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sobotics.chatexchange.chat.Room;
 import org.sobotics.chatexchange.chat.StackExchangeClient;
 import org.sobotics.chatexchange.chat.event.EventType;
 
 public class MonitorService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MonitorService.class);
-
     private StackExchangeClient client;
     private List<Chatroom> chatrooms;
     private List<Room> rooms;
     private Map<String, Belisarius> bots;
 
-    private int presentInterval;
+    private final int presentInterval = 60;
 
     private ScheduledExecutorService executorService;
-    private ScheduledFuture<?> handle;
 
     public MonitorService(StackExchangeClient client, List<Chatroom> chatrooms) {
         this.client = client;
         this.chatrooms = chatrooms;
         this.rooms = new ArrayList<>();
         this.bots = new HashMap<>();
-        this.presentInterval = 60;
     }
 
     public void startMonitor() {
@@ -79,7 +72,7 @@ public class MonitorService {
     }
 
     public void runMonitor() {
-        handle = executorService.scheduleAtFixedRate(() -> execute(), 0, presentInterval, TimeUnit.SECONDS);
+        executorService.scheduleAtFixedRate(() -> execute(), 0, presentInterval, TimeUnit.SECONDS);
     }
 
     private void execute() {
@@ -89,8 +82,7 @@ public class MonitorService {
             postMap.put(bot.getKey(), bot.getValue().getPosts());
         }
 
-        for (int i = 0; i < rooms.size(); i++) {
-            Room room = rooms.get(i);
+        for (Room room : rooms) {
             Chatroom chatroom = chatrooms.stream().filter(chatRoom -> chatRoom.getRoomId() == room.getRoomId()).findFirst().orElse(null);
             if (chatroom != null) {
                 List<Post> posts = postMap.get(chatroom.getSiteName());
@@ -122,8 +114,7 @@ public class MonitorService {
         this.stop();
         executorService = Executors.newSingleThreadScheduledExecutor();
         this.runMonitor();
-        for (int i = 0; i < rooms.size(); i++) {
-            Room room = rooms.get(i);
+        for (Room room : rooms) {
             room.send(Belisarius.README + "] rebooted at " + Instant.now());
             try {
                 Thread.sleep(1000);

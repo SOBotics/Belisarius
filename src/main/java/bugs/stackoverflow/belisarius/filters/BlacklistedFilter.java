@@ -10,13 +10,9 @@ import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sobotics.chatexchange.chat.Room;
 
 public class BlacklistedFilter implements Filter {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BlacklistedFilter.class);
 
     private Room room;
     private Post post;
