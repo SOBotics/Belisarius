@@ -55,6 +55,9 @@ public class ApiService {
     public void setBackOffUntil(JsonObject jsonObject) {
         if (jsonObject.has("backoff")) {
             backOffUntil.set(jsonObject.get("backoff").getAsLong());
+        } else {
+            // Remember to reset to 0 if backoff doesn't exist!
+            backOffUntil.set(0L);
         }
     }
 

@@ -94,7 +94,7 @@ public class Belisarius {
     private Map<Long, String> getPostIdsAndTitles() {
         Map<Long, String> postIdsAndTitles = new HashMap<>();
         int page = 1;
-        boolean hasMore = false;
+        boolean hasMore;
 
         try {
             do {
@@ -140,7 +140,7 @@ public class Belisarius {
         String[] postIds = idsAndTitles.keySet().stream().map(set -> set.toString()).toArray(String[]::new);
         String semicolonSeparatedIds = String.join(";", postIds);
 
-        boolean hasMore = false;
+        boolean hasMore;
         int page = 1;
 
         try {
@@ -173,10 +173,7 @@ public class Belisarius {
             List<JsonObject> revisionsList = postIdsAndJsons.get(postId);
             String previousRevisionGuid = revisionsList.get(1).get("revision_guid").getAsString();
 
-            Post revision = PostUtils.getPost(revisionsList.get(0), this.site, title, previousRevisionGuid);
-            if (revision != null) {
-                revisions.add(revision);
-            }
+            revisions.add(PostUtils.getPost(revisionsList.get(0), this.site, title, previousRevisionGuid));
         }
 
         return revisions;

@@ -13,7 +13,6 @@ import java.util.Map;
 import bugs.stackoverflow.belisarius.database.SQLiteConnection;
 import bugs.stackoverflow.belisarius.models.Chatroom;
 import bugs.stackoverflow.belisarius.models.Higgs;
-import bugs.stackoverflow.belisarius.models.Post;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

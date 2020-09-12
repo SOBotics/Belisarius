@@ -25,8 +25,6 @@ public class MonitorService {
     private List<Room> rooms;
     private Map<String, Belisarius> bots;
 
-    private final int presentInterval = 60;
-
     private ScheduledExecutorService executorService;
 
     public MonitorService(StackExchangeClient client, List<Chatroom> chatrooms) {
@@ -72,7 +70,8 @@ public class MonitorService {
     }
 
     public void runMonitor() {
-        executorService.scheduleAtFixedRate(() -> execute(), 0, presentInterval, TimeUnit.SECONDS);
+        // Check posts from the API every 60 seconds
+        executorService.scheduleAtFixedRate(() -> execute(), 0, 60, TimeUnit.SECONDS);
     }
 
     private void execute() {

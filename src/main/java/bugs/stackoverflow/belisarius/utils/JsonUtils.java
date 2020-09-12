@@ -35,7 +35,6 @@ public class JsonUtils {
             } catch (InterruptedException exception) {
                 exception.printStackTrace();
             }
-            backOffUntil = 0L;
         }
 
         Connection.Response response = Jsoup.connect(url).data(data).method(Connection.Method.GET)
@@ -44,7 +43,7 @@ public class JsonUtils {
         if (response.statusCode() != 200) {
             throw new IOException("HTTP " + response.statusCode() + " fetching URL " + url + ". Body is: " + response.body());
         }
-        JsonObject root = null;
+        JsonObject root;
 
         try {
             root = new JsonParser().parse(json).getAsJsonObject();

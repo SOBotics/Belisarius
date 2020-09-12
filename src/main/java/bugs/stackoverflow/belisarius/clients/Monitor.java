@@ -26,7 +26,7 @@ public class Monitor {
                 VandalisedPost vandalisedPost = getVandalisedPost(room, post);
                 boolean postExists = PostUtils.checkVandalisedPost(room, post);
 
-                if (vandalisedPost != null && vandalisedPost.getSeverity() != null && !postExists) {
+                if (vandalisedPost.getSeverity() != null && !postExists) {
                     reportPost(room, vandalisedPost, post, outputMessage);
                 }
             }
@@ -43,7 +43,7 @@ public class Monitor {
                 LOGGER.info("The given post has already been reported.");
                 int higgsId = DatabaseUtils.getHiggsId(post.getPostId(), post.getRevisionNumber(), room.getRoomId());
                 sendPostAlreadyReportedMessage(room, post, higgsId, vandalisedPost.getSeverity());
-            } else if (vandalisedPost != null && vandalisedPost.getSeverity() != null) {
+            } else if (vandalisedPost.getSeverity() != null) {
                 reportPost(room, vandalisedPost, post, outputMessage);
             } else {
                 LOGGER.info("No vandalism was found for given post.");
