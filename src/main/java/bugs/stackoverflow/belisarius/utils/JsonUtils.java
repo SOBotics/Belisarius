@@ -1,13 +1,9 @@
 package bugs.stackoverflow.belisarius.utils;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.time.format.DateTimeFormatter;
 
 import bugs.stackoverflow.belisarius.services.ApiService;
 
-import org.apache.commons.io.FileUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.parser.Parser;
@@ -49,11 +45,6 @@ public class JsonUtils {
             root = new JsonParser().parse(json).getAsJsonObject();
         } catch (Exception exception) {
             LOGGER.info("Exception occurred while parsing the JSON API returned.", exception);
-            DateTimeFormatter timeStampPattern = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-            String jsonDumpFilename = "jsondump" + timeStampPattern.format(java.time.LocalDateTime.now()) + ".txt";
-            String urlDumpFilename = "url" + timeStampPattern.format(java.time.LocalDateTime.now()) + ".txt";
-            FileUtils.writeStringToFile(new File(jsonDumpFilename), json, StandardCharsets.UTF_8);
-            FileUtils.writeStringToFile(new File(urlDumpFilename), response.url().getQuery(), StandardCharsets.UTF_8);
         }
 
         LOGGER.info("Received an API response.");
