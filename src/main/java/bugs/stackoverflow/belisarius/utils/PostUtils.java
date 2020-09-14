@@ -39,7 +39,7 @@ public class PostUtils {
     }
 
     public static boolean editorAlsoOwner(JsonObject post) {
-        if (!post.has("last_editor")) {
+        if (!post.has("last_editor") || !post.has("owner")) {
             return false;
         }
         long ownerId = post.get("owner").getAsJsonObject().get("user_id").getAsLong();
