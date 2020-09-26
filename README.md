@@ -55,7 +55,7 @@ Currently feedback is taken by replying to the chat message with either `tp` (Tr
 
 A sample image of a report is: 
   
-  ![Sample Image][7]
+  [![Sample Image][7]][7]
 
 ## How to run a local instance of Belisarius
 
@@ -104,5 +104,5 @@ The source code is available on [GitHub][8] and suggestions are welcome.
  [4]: https://stackoverflow.com/users/13903854/belisarius
  [5]: http://chat.stackoverflow.com/rooms/111347/sobotics
  [6]: http://belisarius.sobotics.org/commands
- [7]: https://i.stack.imgur.com/521ML.png
+ [7]: https://user-images.githubusercontent.com/38133098/94342659-2af8d680-001b-11eb-9842-e6d0f5f4a70b.png
  [8]: https://github.com/SOBotics/Belisarius
