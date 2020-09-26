@@ -55,11 +55,15 @@ public class Belisarius {
         Map<Long, String> postIdsAndTitles = getPostIdsAndTitles();
         List<Post> posts = new ArrayList<>();
 
-        if (postIdsAndTitles.size() > 0) {
-            List<Post> postsWithLatestRevisions = getPostsWithLatestRevision(postIdsAndTitles);
-            if (postsWithLatestRevisions.size() > 0) {
-                posts.addAll(postsWithLatestRevisions);
+        try {
+            if (postIdsAndTitles.size() > 0) {
+                List<Post> postsWithLatestRevisions = getPostsWithLatestRevision(postIdsAndTitles);
+                if (postsWithLatestRevisions.size() > 0) {
+                    posts.addAll(postsWithLatestRevisions);
+                }
             }
+        } catch (Exception exception) {
+            LOGGER.info("Failed to get posts", exception);
         }
 
         for (Post post : posts) {
@@ -107,7 +111,10 @@ public class Belisarius {
                         postIdsAndTitles.put(postId, title);
                     }
                 }
-                this.lastPostTime = posts.get(0).getAsJsonObject().get("last_activity_date").getAsLong();
+                // Check if posts is null to avoid NPE
+                if (posts.size() > 0) {
+                    this.lastPostTime = posts.get(0).getAsJsonObject().get("last_activity_date").getAsLong();
+                }
                 hasMore = postsJson.get("has_more").getAsBoolean();
                 page++;
             } while (hasMore);
@@ -162,17 +169,20 @@ public class Belisarius {
                 }
                 hasMore = revisionsJson.get("has_more").getAsBoolean();
             } while (hasMore);
+
+            for (Map.Entry<Long, String> idAndTitle : idsAndTitles.entrySet()) {
+                long postId = idAndTitle.getKey();
+                String title = idAndTitle.getValue();
+                List<JsonObject> revisionsList = postIdsAndJsons.get(postId);
+
+                if (revisionsList.size() > 1) {
+                    String previousRevisionGuid = revisionsList.get(1).get("revision_guid").getAsString();
+                    revisions.add(PostUtils.getPost(revisionsList.get(0), this.site, title, previousRevisionGuid));
+                }
+            }
+
         } catch (Exception exception) {
             LOGGER.info("Error while trying to get latest revisions for some posts", exception);
-        }
-
-        for (Map.Entry<Long, String> idAndTitle : idsAndTitles.entrySet()) {
-            long postId = idAndTitle.getKey();
-            String title = idAndTitle.getValue();
-            List<JsonObject> revisionsList = postIdsAndJsons.get(postId);
-            String previousRevisionGuid = revisionsList.get(1).get("revision_guid").getAsString();
-
-            revisions.add(PostUtils.getPost(revisionsList.get(0), this.site, title, previousRevisionGuid));
         }
 
         return revisions;
