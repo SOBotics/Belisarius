@@ -43,7 +43,7 @@ public class JsonUtils {
 
         JsonObject root = null;
         try {
-            root = new JsonParser().parse(json).getAsJsonObject();
+            root = JsonParser.parseString(json).getAsJsonObject();
         } catch (Exception exception) {
             LOGGER.info("Exception occurred while parsing the JSON API returned.", exception);
         }
