@@ -40,6 +40,7 @@ public class MonitorService {
     public void startMonitor() {
 
         for (Chatroom chatroom : chatrooms) {
+            // for every room: join, add event listeners and post a "started" message
 
             Room room = client.joinRoom(chatroom.getHost(), chatroom.getRoomId());
 
@@ -78,6 +79,7 @@ public class MonitorService {
     }
 
     private void execute() {
+        // using a try-catch here because of https://stackoverflow.com/a/24902026
         try {
             Map<String, List<Post>> postMap = new HashMap<>();
 

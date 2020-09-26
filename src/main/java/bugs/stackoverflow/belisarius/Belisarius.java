@@ -38,7 +38,11 @@ public class Belisarius {
     }
 
     public static void buildMessage(Room room, int higgsId, String postType, String severity,
-                                      String status, String allRevs, int revNum, String revUrl) {
+                                    String status, String allRevs, int revNum, String revUrl) {
+        // Builds the message that is sent to chat. There are three formats:
+        // Example 1: potential vandalism - https://chat.stackoverflow.com/transcript/message/50551213
+        // Example 2: post already reported - https://chat.stackoverflow.com/transcript/167908?m=50000163
+        // Example 3: no issues with the revision - https://chat.stackoverflow.com/transcript/111347?m=50384193
         String message = README;
         if (higgsId != 0) {
             message += HIGGS_URL + higgsId + ") ";
@@ -93,6 +97,7 @@ public class Belisarius {
     }
 
     private Map<Long, String> getPostIdsAndTitles() {
+        // Fetch the most active posts in the last minute
         Map<Long, String> postIdsAndTitles = new HashMap<>();
         int page = 1;
         boolean hasMore;
@@ -102,6 +107,7 @@ public class Belisarius {
                 JsonObject postsJson = apiService.getPostIdsByActivityDesc(page, this.lastPostTime);
                 JsonArray posts = postsJson.get("items").getAsJsonArray();
                 for (JsonElement post : posts) {
+                    // for each of the returned items, find the title and the post id and store them in a map
                     JsonObject postJson = post.getAsJsonObject();
                     long postId = postJson.get("post_id").getAsLong();
                     String title = postJson.get("title").getAsString();
@@ -115,6 +121,7 @@ public class Belisarius {
                 if (posts.size() > 0) {
                     this.lastPostTime = posts.get(0).getAsJsonObject().get("last_activity_date").getAsLong();
                 }
+                // loop again if there are more results (has_more is true)
                 hasMore = postsJson.get("has_more").getAsBoolean();
                 page++;
             } while (hasMore);
@@ -156,18 +163,25 @@ public class Belisarius {
                     JsonObject revisionJson = revision.getAsJsonObject();
                     long postId = revisionJson.get("post_id").getAsLong();
 
+                    // revisionList should contain the current and the previous revisions at the end of the loop
                     List<JsonObject> revisionList = postIdsAndJsons.get(postId);
+                    // only edits have a revision number, avoid NPEs
                     if (revisionJson.has("revision_number")) {
                         if (revisionList == null) {
+                            // if revisionList is null, then insert the most recent revision
                             List<JsonObject> firstRevision = new ArrayList<>();
                             firstRevision.add(revisionJson);
                             postIdsAndJsons.put(postId, firstRevision);
                         } else if (revisionList.size() < 2) {
+                            // else insert the previous revision
                             revisionList.add(revisionJson);
                         }
                     }
                 }
+
+                // loop again if there are more results (has_more is true)
                 hasMore = revisionsJson.get("has_more").getAsBoolean();
+                page++;
             } while (hasMore);
 
             for (Map.Entry<Long, String> idAndTitle : idsAndTitles.entrySet()) {
@@ -176,6 +190,7 @@ public class Belisarius {
                 List<JsonObject> revisionsList = postIdsAndJsons.get(postId);
 
                 if (revisionsList.size() > 1) {
+                    // fetch the previous revision guid from the second revisionList item (previous revision)
                     String previousRevisionGuid = revisionsList.get(1).get("revision_guid").getAsString();
                     revisions.add(PostUtils.getPost(revisionsList.get(0), this.site, title, previousRevisionGuid));
                 }

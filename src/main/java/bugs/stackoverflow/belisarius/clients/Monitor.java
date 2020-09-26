@@ -22,6 +22,7 @@ public class Monitor {
     public void run(Room room, List<Post> posts, boolean outputMessage) {
 
         for (Post post : posts) {
+            // do not check the initial revision!
             if (post.getRevisionNumber() != 1) {
                 VandalisedPost vandalisedPost = getVandalisedPost(room, post);
                 boolean postExists = PostUtils.checkVandalisedPost(room, post);
@@ -44,12 +45,15 @@ public class Monitor {
                 int higgsId = DatabaseUtils.getHiggsId(post.getPostId(), post.getRevisionNumber(), room.getRoomId());
                 sendPostAlreadyReportedMessage(room, post, higgsId, vandalisedPost.getSeverity());
             } else if (vandalisedPost.getSeverity() != null) {
+                // if the post hasn't been caught and it has been potentially vandalised report it
                 reportPost(room, vandalisedPost, post, outputMessage);
             } else {
+                // if none of the above are true, then the latest edit is probably not harmful
                 LOGGER.info("No vandalism was found for given post.");
                 sendNoVandalismFoundMessage(room, post);
             }
         } else {
+            // revision 1; unlikely to be bad
             LOGGER.info("No vandalism found was found for given post.");
             sendNoVandalismFoundMessage(room, post);
         }
@@ -64,8 +68,12 @@ public class Monitor {
         try {
             String lastBodyMarkdown = null;
             String bodyMarkdown = null;
+
+            // The URLs to fetch the revision's markdown. Format: https://stackoverflow.com/revisions/guid/view-source
             String previousRevisionSourceUrl = "https://" + post.getSite() + ".com/revisions/" + post.getPreviousRevisionGuid() + "/view-source";
             String currentRevisionSourceUrl = "https://" + post.getSite() + ".com/revisions/" + post.getRevisionGuid() + "/view-source";
+
+            // Only fetch the markdown if last body and body exist!
             if (post.getLastBody() != null) {
                 lastBodyMarkdown = JsonUtils.getHtml(previousRevisionSourceUrl);
             }
@@ -80,6 +88,7 @@ public class Monitor {
             } else {
                 higgsId = 0;
             }
+
             PostUtils.storeVandalisedPost(room, vandalisedPost, higgsId, lastBodyMarkdown, bodyMarkdown);
             if (outputMessage) {
                 sendVandalismFoundMessage(room, post, vandalisedPost, higgsId);

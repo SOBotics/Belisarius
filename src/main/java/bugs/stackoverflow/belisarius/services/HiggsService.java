@@ -60,9 +60,11 @@ public final class HiggsService {
 
     public int registerVandalisedPost(VandalisedPost vandalisedPost, Post post, String lastBodyMarkdown, String bodyMarkdown) throws ApiException {
 
+        // Avoid having null markdown bodies!
         String body = bodyMarkdown == null ? "The body was not changed in this revision" : bodyMarkdown;
         String lastBody = lastBodyMarkdown == null ? "The body was not changed in this revision" : lastBodyMarkdown;
 
+        // The titles the API returns contain unescaped HTML entities
         String title = Parser.unescapeEntities(post.getTitle(), true);
         // Make it clear the post is an answer in Higgs by prepending 'Answer to: '
         if (post.getPostType().equals("answer")) {
@@ -78,21 +80,26 @@ public final class HiggsService {
         postRequest.setAuthorName(post.getUser().getUsername());
         postRequest.setAuthorReputation((int) post.getUser().getReputation());
 
+        // LastBody fragment - contains the previous revision's content. Should be second
         RegisterPostContentFragment contentFragmentLastBody = new RegisterPostContentFragment();
         contentFragmentLastBody.setContent(lastBody);
         contentFragmentLastBody.setName("Last body");
         contentFragmentLastBody.setOrder(2);
 
+        // CurrentBody fragment - contains the current revision's content. Should be first
         RegisterPostContentFragment contentFragmentBody = new RegisterPostContentFragment();
         contentFragmentBody.setContent(body);
         contentFragmentBody.setName("Current body");
         contentFragmentBody.setOrder(1);
 
+        // Comment fragment - contains the text of the edit summary. Should be last (third)
         RegisterPostContentFragment contentFragmentComment = new RegisterPostContentFragment();
+        // The edit summary's text contains, too, unescaped HTML entities
         contentFragmentComment.setContent(Parser.unescapeEntities(post.getComment(), true));
         contentFragmentComment.setName("Edit summary");
         contentFragmentComment.setOrder(3);
 
+        // Add content fragments to list, then add list to postRequest
         List<RegisterPostContentFragment> contentFragments = new ArrayList<>();
         contentFragments.add(contentFragmentLastBody);
         contentFragments.add(contentFragmentBody);
@@ -119,6 +126,7 @@ public final class HiggsService {
 
         postRequest.setAllowedFeedback(Arrays.asList(VandalisedPost.Feedback.TP.toString(), VandalisedPost.Feedback.FP.toString()));
 
+        // Registers the bot. Returns the hippo id.
         return botApi.botRegisterPostPost(postRequest);
     }
 

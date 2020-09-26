@@ -21,6 +21,7 @@ public class CheckUtils {
     }
 
     private static String stripTags(String target) {
+        // strips links, code, images and blockquotes, as we don't want to catch the text inside those
         Document doc = Jsoup.parse("<body>" + target + "</body>");
         doc.getElementsByTag("a").remove();
         doc.getElementsByTag("code").remove();
@@ -37,6 +38,7 @@ public class CheckUtils {
     public static String checkForLongWords(String target) {
         String[] bodyParts = removeHtml(stripTags(target)).replaceAll("[^a-zA-Z ]", " ").split(" ");
         for (String part : bodyParts) {
+            // check for words which are longer than 50 characters
             if (part.length() > 50) {
                 return part;
             }
@@ -65,6 +67,8 @@ public class CheckUtils {
         String body = removeHtml(stripTags(target));
 
         long uniquesCount = body.chars().distinct().count();
+        // There are two cases: body's length is 30+ and unique chars are at least 5
+        //                      body's length is 100+ and unique characters are at least 15
         if ((body.length() >= 30 && uniquesCount <= 6) || body.length() >= 100 && uniquesCount <= 15) {
             return body.chars().distinct().collect(StringWriter::new, StringWriter::write, (swl, swr) -> swl.write(swr.toString())).toString();
         }

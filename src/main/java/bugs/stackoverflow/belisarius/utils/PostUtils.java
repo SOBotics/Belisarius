@@ -35,10 +35,12 @@ public class PostUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(PostUtils.class);
 
     public static boolean postBeenEdited(JsonObject post) {
+        // the post hasn't been edited if JSON doesn't contain last_edit_date property
         return post.has("last_edit_date");
     }
 
     public static boolean editorAlsoOwner(JsonObject post) {
+        // avoid NPEs by checking if last_editor and owner properties exist
         if (!post.has("last_editor") || !post.has("owner")) {
             return false;
         }
@@ -145,6 +147,7 @@ public class PostUtils {
     }
 
     public static VandalisedPost getVandalisedPost(Room room, Post post) {
+        // create a list with all the filters
         List<Filter> filters = new ArrayList<>();
         filters.add(new BlacklistedFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(BlacklistedFilter.class.getName()))));
         filters.add(new VeryLongWordFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(VeryLongWordFilter.class.getName()))));
@@ -159,6 +162,8 @@ public class PostUtils {
         Map<String, Double> formattedReasonMessages = new HashMap<>();
         Map<String, Double> reasonNames = new HashMap<>();
         for (Filter filter: filters) {
+            // loop through the list and check if a filter catches the post
+            // also create formattedReasonMessages for Higgs
             if (filter.isHit()) {
                 filter.storeHit();
                 formattedReasonMessages.put(filter.getFormattedReasonMessage(), filter.getScore());

@@ -26,6 +26,7 @@ public class JsonUtils {
 
         if (backOffUntil > 0) {
             try {
+                // sleep for 2 more seconds to avoid more BACKOFFs in the future
                 LOGGER.info("BACKOFF received. Timeout for " + (backOffUntil + 2) + " seconds.");
                 Thread.sleep(1000 * backOffUntil + 2000);
             } catch (InterruptedException exception) {
