@@ -33,7 +33,7 @@ public class JsonUtils {
             }
         }
 
-        Connection.Response response = Jsoup.connect(url).data(data).method(Connection.Method.GET)
+        Connection.Response response = Jsoup.connect(url).data(data).method(Connection.Method.GET).maxBodySize(20971520)
                                             .ignoreContentType(true).ignoreHttpErrors(true).execute();
         String json = response.body();
         if (response.statusCode() != 200) {
@@ -65,7 +65,7 @@ public class JsonUtils {
                                             .ignoreContentType(true).ignoreHttpErrors(true).execute();
         String body = response.body();
         if (response.statusCode() != 200) {
-            throw new IOException("HTTP " + response.statusCode() + " error fetching " + url + ". Body is: " + body);
+            throw new IOException("HTTP " + response.statusCode() + " error fetching " + url + ".");
         }
         return Jsoup.parse(body).getElementsByTag("pre").text();
     }
