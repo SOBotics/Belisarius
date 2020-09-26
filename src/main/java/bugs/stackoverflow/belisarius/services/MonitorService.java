@@ -14,17 +14,20 @@ import bugs.stackoverflow.belisarius.clients.Monitor;
 import bugs.stackoverflow.belisarius.models.Chatroom;
 import bugs.stackoverflow.belisarius.models.Post;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sobotics.chatexchange.chat.Room;
 import org.sobotics.chatexchange.chat.StackExchangeClient;
 import org.sobotics.chatexchange.chat.event.EventType;
 
 public class MonitorService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MonitorService.class);
+
     private StackExchangeClient client;
     private List<Chatroom> chatrooms;
     private List<Room> rooms;
     private Map<String, Belisarius> bots;
-
     private ScheduledExecutorService executorService;
 
     public MonitorService(StackExchangeClient client, List<Chatroom> chatrooms) {
@@ -75,18 +78,22 @@ public class MonitorService {
     }
 
     private void execute() {
-        Map<String, List<Post>> postMap = new HashMap<>();
+        try {
+            Map<String, List<Post>> postMap = new HashMap<>();
 
-        for (Map.Entry<String, Belisarius> bot : bots.entrySet()) {
-            postMap.put(bot.getKey(), bot.getValue().getPosts());
-        }
-
-        for (Room room : rooms) {
-            Chatroom chatroom = chatrooms.stream().filter(chatRoom -> chatRoom.getRoomId() == room.getRoomId()).findFirst().orElse(null);
-            if (chatroom != null) {
-                List<Post> posts = postMap.get(chatroom.getSiteName());
-                new Monitor().run(room, posts, chatroom.getOutputMessage());
+            for (Map.Entry<String, Belisarius> bot : bots.entrySet()) {
+                postMap.put(bot.getKey(), bot.getValue().getPosts());
             }
+
+            for (Room room : rooms) {
+                Chatroom chatroom = chatrooms.stream().filter(chatRoom -> chatRoom.getRoomId() == room.getRoomId()).findFirst().orElse(null);
+                if (chatroom != null) {
+                    List<Post> posts = postMap.get(chatroom.getSiteName());
+                    new Monitor().run(room, posts, chatroom.getOutputMessage());
+                }
+            }
+        } catch (Exception exception) {
+            LOGGER.info("Exception occurred while executing a new monitor.", exception);
         }
     }
 
