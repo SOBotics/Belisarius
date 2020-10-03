@@ -7,8 +7,7 @@
 This bot has been developed in an attempt to help capture possible vandalism. This includes:
 
  - Removing all code
- - Replacing all content with nonsense
- - Replacing all content with repeated words
+ - Replacing all content with nonsense/repeated words
  - Adding solutions to their questions instead of posting an answer
  - Removing large amounts of text from their post
  - Using certain keywords or offensive language within the edit summary
@@ -48,3 +47,4 @@ Quick Links
 - [Providing feedback](/feedback).
 - [Higgs](/hippo).
 - [Filtering](/filters).
+- [Auto comments](/comments).
