@@ -1,6 +1,4 @@
-# Belisarius - Detecting vandalism on Stack Overflow
-
-![Belisarius Image](https://i.stack.imgur.com/g7HUp.png)
+# Belisarius
 
 ## Background
 
