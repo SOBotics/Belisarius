@@ -8,7 +8,7 @@ In order to find if a post has been wrongly edited, titles, bodies and edit summ
 
 ### The question/answer body is run through the following filters:
  
- - `TextRemoved`; 80% or more of the body must have been removed with a [Jaro Winkler][3] score of less than 0.6
+ - `TextRemoved`; 80% or more of the body must have been removed with a [Jaro Winkler](https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance) score of less than 0.6
  - `BlacklistedWords`; the post matches a blacklisted regex.
  - `CodeRemoved`; the code has been removed with the latest edit (for questions only).
  - `FewUniqueCharacters`; the body is either 30+ characters long and has less than 7 unique characters or 100+ characters long and has less than 15 unique characters.
