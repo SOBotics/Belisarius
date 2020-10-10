@@ -15,7 +15,7 @@ import bugs.stackoverflow.belisarius.filters.RepeatedWordFilter;
 import bugs.stackoverflow.belisarius.filters.TextRemovedFilter;
 import bugs.stackoverflow.belisarius.filters.VeryLongWordFilter;
 import bugs.stackoverflow.belisarius.models.Post;
-import bugs.stackoverflow.belisarius.models.StackOverflowUser;
+import bugs.stackoverflow.belisarius.models.User;
 import bugs.stackoverflow.belisarius.models.VandalisedPost;
 import bugs.stackoverflow.belisarius.models.VandalisedPost.Feedback;
 import bugs.stackoverflow.belisarius.services.HiggsService;
@@ -88,7 +88,7 @@ public class PostUtils {
         newPost.setPreviousRevisionGuid(previousRevisionGuid);
 
         JsonObject userJson = post.get("user").getAsJsonObject();
-        StackOverflowUser user = new StackOverflowUser();
+        User user = new User();
 
         try {
             user.setReputation(userJson.get("reputation").getAsLong());

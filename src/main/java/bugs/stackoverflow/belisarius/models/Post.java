@@ -11,7 +11,7 @@ public class Post {
     private String lastTitle;
     private String body;
     private String lastBody;
-    private StackOverflowUser user;
+    private User user;
     private boolean isRollback;
     private String postType;
     private String comment;
@@ -91,11 +91,11 @@ public class Post {
         this.lastBody = lastBody;
     }
 
-    public StackOverflowUser getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(StackOverflowUser user) {
+    public void setUser(User user) {
         this.user = user;
     }
 

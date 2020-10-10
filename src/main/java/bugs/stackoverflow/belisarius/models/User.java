@@ -3,7 +3,7 @@ package bugs.stackoverflow.belisarius.models;
 /**
  * Created by bhargav.h on 01-Oct-16.
  */
-public class StackOverflowUser {
+public class User {
     private String username;
     private int userId;
     private long reputation;
