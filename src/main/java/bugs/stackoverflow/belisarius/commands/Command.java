@@ -1,12 +1,12 @@
 package bugs.stackoverflow.belisarius.commands;
 
-import org.sobotics.chatexchange.chat.Room;
+import bugs.stackoverflow.belisarius.services.MonitorService;
 
 public interface Command {
 
     boolean validate();
 
-    void execute(Room room);
+    void execute(MonitorService service);
 
     String getDescription();
 

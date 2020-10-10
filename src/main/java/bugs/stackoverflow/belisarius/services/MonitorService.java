@@ -1,18 +1,15 @@
 package bugs.stackoverflow.belisarius.services;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import bugs.stackoverflow.belisarius.Belisarius;
 import bugs.stackoverflow.belisarius.clients.Monitor;
-import bugs.stackoverflow.belisarius.models.Chatroom;
 import bugs.stackoverflow.belisarius.models.Post;
+import bugs.stackoverflow.belisarius.utils.ChatUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,56 +21,29 @@ public class MonitorService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MonitorService.class);
 
+    private final boolean shouldOutput = new PropertyService().getShouldOutputMessage();
     private StackExchangeClient client;
-    private List<Chatroom> chatrooms;
-    private List<Room> rooms;
-    private Map<String, Belisarius> bots;
+    private int roomId;
+    private Belisarius belisarius;
+    private Room room;
     private ScheduledExecutorService executorService;
 
-    public MonitorService(StackExchangeClient client, List<Chatroom> chatrooms) {
+    public MonitorService(StackExchangeClient client, int chatroom, String sitename) {
         this.client = client;
-        this.chatrooms = chatrooms;
-        this.rooms = new ArrayList<>();
-        this.bots = new HashMap<>();
-    }
-
-    public void startMonitor() {
-
-        for (Chatroom chatroom : chatrooms) {
-            // for every room: join, add event listeners and post a "started" message
-
-            Room room = client.joinRoom(chatroom.getHost(), chatroom.getRoomId());
-
-            if (room != null) {
-                if (chatroom.getUserMentioned(room, this) != null) {
-                    room.addEventListener(EventType.USER_MENTIONED, chatroom.getUserMentioned(room, this));
-                }
-
-                if (chatroom.getPostedReply(room) != null) {
-                    room.addEventListener(EventType.MESSAGE_REPLY, chatroom.getPostedReply(room));
-                }
-
-                if (chatroom.getPostedMessage(room) != null) {
-                    room.addEventListener(EventType.MESSAGE_POSTED, chatroom.getPostedMessage(room));
-                }
-
-                String site = chatroom.getSiteName();
-
-                if (!bots.containsKey(site)) {
-                    bots.put(site, new Belisarius(site));
-                }
-
-                room.send(Belisarius.README + "] started.");
-
-                rooms.add(room);
-            }
+        this.roomId = chatroom;
+        this.belisarius = new Belisarius(sitename);
+        if (this.roomId != 0) {
+            this.room = this.client.joinRoom(ChatUtils.getChatHost(sitename), this.roomId);
+            // Add event listeners
+            room.addEventListener(EventType.USER_MENTIONED, event -> ChatUtils.handleMentionedEvent(event, this));
+            room.addEventListener(EventType.MESSAGE_REPLY, event -> ChatUtils.handleReplies(room, event));
+            room.addEventListener(EventType.MESSAGE_POSTED, event -> ChatUtils.handleMessagePostedEvent(event, this));
         }
-
-        executorService = Executors.newSingleThreadScheduledExecutor();
-
     }
 
     public void runMonitor() {
+        this.sendMessageToChat(Belisarius.README + "] started.");
+        executorService = Executors.newSingleThreadScheduledExecutor();
         // Check posts from the API every 60 seconds
         executorService.scheduleAtFixedRate(this::execute, 0, 60, TimeUnit.SECONDS);
     }
@@ -81,37 +51,16 @@ public class MonitorService {
     private void execute() {
         // using a try-catch here because of https://stackoverflow.com/a/24902026
         try {
-            Map<String, List<Post>> postMap = new HashMap<>();
-
-            for (Map.Entry<String, Belisarius> bot : bots.entrySet()) {
-                postMap.put(bot.getKey(), bot.getValue().getPosts());
-            }
-
-            for (Room room : rooms) {
-                Chatroom chatroom = chatrooms.stream().filter(chatRoom -> chatRoom.getRoomId() == room.getRoomId()).findFirst().orElse(null);
-                if (chatroom != null) {
-                    List<Post> posts = postMap.get(chatroom.getSiteName());
-                    new Monitor().run(room, posts, chatroom.getOutputMessage());
-                }
-            }
+            List<Post> posts = belisarius.getPosts();
+            new Monitor().run(posts, this);
         } catch (Exception exception) {
             LOGGER.info("Exception occurred while executing a new monitor.", exception);
         }
     }
 
-    public void executeOnce(String postId, Room room) {
-        Map<String, Post> postMap = new HashMap<>();
-
-        for (Map.Entry<String, Belisarius> bot : bots.entrySet()) {
-            postMap.put(bot.getKey(), bot.getValue().getPost(postId));
-        }
-
-        Chatroom chatroom = chatrooms.stream().filter(chatRoom -> chatRoom.getRoomId() == room.getRoomId()).findFirst().orElse(null);
-
-        if (chatroom != null) {
-            Post post = postMap.get(chatroom.getSiteName());
-            new Monitor().runOnce(room, post, chatroom.getOutputMessage());
-        }
+    public void executeOnce(String postId) {
+        Post post = belisarius.getPost(postId);
+        new Monitor().runOnce(post, this);
     }
 
     public void stop() {
@@ -122,14 +71,27 @@ public class MonitorService {
         this.stop();
         executorService = Executors.newSingleThreadScheduledExecutor();
         this.runMonitor();
-        for (Room room : rooms) {
-            room.send(Belisarius.README + "] rebooted at " + Instant.now());
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException exception) {
-                exception.printStackTrace();
-            }
+        sendMessageToChat(Belisarius.README + "] rebooted at " + Instant.now());
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException exception) {
+            exception.printStackTrace();
         }
     }
 
+    public void sendMessageToChat(String message) {
+        if (shouldOutput) {
+            room.send(message);
+        } else {
+            LOGGER.info(message);
+        }
+    }
+
+    public void replyToMessage(long toReplyId, String message) {
+        if (shouldOutput) {
+            room.replyTo(toReplyId, message);
+        } else {
+            LOGGER.info(":" + String.valueOf(toReplyId) + " " + message);
+        }
+    }
 }

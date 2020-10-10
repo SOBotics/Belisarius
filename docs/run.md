@@ -14,23 +14,10 @@ Clone the repository and build it with Maven:
     cd Belisarius
     mvn clean install
 
-Edit the `properties/login.properties` file with the information you like.  
-Run `sqlite3 database/belisarius.db` and edit the room and Higgs information.  
-Schema for `Room`:
+- Edit the `properties/login.properties` file with the information you like.  
+- Run the bot with the following command:
 
-- `RoomId`, integer: the room id the bot should run.
-- `Site`, text: the chat server (`stackoverflow` or `stackexchange`)
-- `OutputMessage`, integer: `1` (true) if the bot should send chat messages, `0` if it shouldn't.
-
-Schema for `Higgs`:
-
-- `BotId`, integer: Higgs dashboard id.
-- `SecretKey`, text: the secret of the Higgs dashboard. You can get/set it from https://higgs.sobotics.org/admin/bot/<bot_id>
-- `Url`, text: Higgs API URL, set it to `https://api.higgs.sobotics.org`.
-
-Now run the bot with the following command:
-
-    java -cp target/belisarius-1.0.jar:./lib/* bugs.stackoverflow.belisarius.Application
+      java -cp target/belisarius-*.jar:./lib/* bugs.stackoverflow.belisarius.Application
 
 -----
 

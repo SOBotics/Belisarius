@@ -5,14 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import bugs.stackoverflow.belisarius.database.SQLiteConnection;
-import bugs.stackoverflow.belisarius.models.Chatroom;
-import bugs.stackoverflow.belisarius.models.Higgs;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,38 +46,6 @@ public class DatabaseUtils {
             statement.execute(sql);
         } catch (SQLException exception) {
             LOGGER.info("Failed to create VandalisedPost table.", exception);
-        }
-    }
-
-    public static void createHiggsTable() {
-        SQLiteConnection connection = new SQLiteConnection();
-
-        String sql = "CREATE TABLE IF NOT EXISTS Higgs(BotId integer, \n"
-                                                   + " SecretKey text, \n"
-                                                   + " Url text, \n"
-                                                   + " PRIMARY KEY(BotId));";
-
-        try (Connection conn = connection.getConnection();
-            Statement statement = conn.createStatement()) {
-            statement.execute(sql);
-        } catch (SQLException exception) {
-            LOGGER.info("Failed to create Higgs table.", exception);
-        }
-    }
-
-    public static void createRoomTable() {
-        SQLiteConnection connection = new SQLiteConnection();
-
-        String sql = "CREATE TABLE IF NOT EXISTS Room(RoomId integer, \n"
-                                                  + " Site text, \n"
-                                                  + " OutputMessage integer, \n"
-                                                  + " PRIMARY KEY(RoomId))";
-
-        try (Connection conn = connection.getConnection();
-             Statement statement = conn.createStatement()) {
-            statement.execute(sql);
-        } catch (SQLException exception) {
-            LOGGER.info("Failed to create Room table.", exception);
         }
     }
 
@@ -217,7 +181,7 @@ public class DatabaseUtils {
         }
     }
 
-    static boolean checkVandalisedPostExists(long postId, int revisionId, int roomId) {
+    public static boolean checkVandalisedPostExists(long postId, int revisionId, int roomId) {
         SQLiteConnection connection = new SQLiteConnection();
 
         String sql = "SELECT (COUNT(*) > 0) As Found FROM VandalisedPost WHERE PostId = ? AND RevisionId = ? AND RoomId = ?;";
@@ -285,10 +249,10 @@ public class DatabaseUtils {
         return false;
     }
 
-    static void storeVandalisedPost(long postId, long creationDate, int revisionId, int roomId, long ownerId, String title,
-                                    String lastTitle, String body, String lastBody, boolean isRollback, String postType,
-                                    String comment, String site, String severity, int higgsId, String revisionGuid,
-                                    String previousRevisionGuid, String lastBodyMarkdown, String bodyMarkdown) {
+    public static void storeVandalisedPost(long postId, long creationDate, int revisionId, int roomId, long ownerId, String title,
+                                           String lastTitle, String body, String lastBody, boolean isRollback, String postType,
+                                           String comment, String site, String severity, int higgsId, String revisionGuid,
+                                           String previousRevisionGuid, String lastBodyMarkdown, String bodyMarkdown) {
 
         SQLiteConnection connection = new SQLiteConnection();
 
@@ -342,7 +306,7 @@ public class DatabaseUtils {
         }
     }
 
-    static void storeFeedback(long postId, int revisionId, int roomId, String feedback, long userId) {
+    public static void storeFeedback(long postId, int revisionId, int roomId, String feedback, long userId) {
 
         SQLiteConnection connection = new SQLiteConnection();
 
@@ -362,27 +326,6 @@ public class DatabaseUtils {
             LOGGER.info("Failed to store feedback for vandalised post. PostId: " + postId + "; "
                       + "RevisionId: " + revisionId + "; Feedback: " + feedback + ".", exception);
         }
-    }
-
-    public static Higgs getHiggs(int botId) {
-        SQLiteConnection connection = new SQLiteConnection();
-
-        String sql = "SELECT Url, SecretKey FROM Higgs WHERE BotId = ?;";
-
-        Higgs higgs = new Higgs();
-        try (Connection conn = connection.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-            preparedStatement.setInt(1, botId);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                higgs.setUrl(resultSet.getString("Url"));
-                higgs.setKey(resultSet.getString("SecretKey"));
-            }
-        } catch (SQLException exception) {
-            LOGGER.info("Failed to get Higgs.", exception);
-        }
-        return higgs;
     }
 
     public static int getHiggsId(long postId, int revisionId, int roomId) {
@@ -408,7 +351,7 @@ public class DatabaseUtils {
         return 0;
     }
 
-    static Map<Integer, String> getBlacklistedWords(String postType) {
+    public static Map<Integer, String> getBlacklistedWords(String postType) {
         SQLiteConnection connection = new SQLiteConnection();
 
         String sql = "SELECT BlacklistedWordId, BlacklistedWord FROM BlacklistedWord WHERE PostType = ?;";
@@ -428,7 +371,7 @@ public class DatabaseUtils {
         return blacklistedWords;
     }
 
-    static Map<Integer, String> getOffensiveWords() {
+    public static Map<Integer, String> getOffensiveWords() {
         SQLiteConnection connection = new SQLiteConnection();
 
         String sql = "SELECT OffensiveWordId, OffensiveWord FROM OffensiveWord;";
@@ -447,7 +390,7 @@ public class DatabaseUtils {
         return offensiveWords;
     }
 
-    static int getReasonId(String reason) {
+    public static int getReasonId(String reason) {
         SQLiteConnection connection = new SQLiteConnection();
 
         String sql = "SELECT ReasonId FROM Reason WHERE Reason = ?;";
@@ -506,30 +449,4 @@ public class DatabaseUtils {
         }
     }
 
-    public static List<Chatroom> getRooms() {
-
-        List<Chatroom> chatrooms = new ArrayList<>();
-
-        SQLiteConnection connection = new SQLiteConnection();
-
-        String sql = "SELECT RoomId, \n"
-                   + "       Site, \n"
-                   + "       OutputMessage \n"
-                   + "  FROM Room;";
-
-        try (Connection conn = connection.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                Chatroom chatroom = new Chatroom(resultSet.getInt("RoomId"), ChatUtils.getChatHost(resultSet.getString("Site")),
-                                                 resultSet.getString("Site"), resultSet.getBoolean("OutputMessage"));
-                chatrooms.add(chatroom);
-            }
-        } catch (SQLException exception) {
-            LOGGER.info("Failed to find rooms.", exception);
-        }
-
-        return chatrooms;
-    }
 }

@@ -10,19 +10,18 @@ import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.sobotics.chatexchange.chat.Room;
 
 public class BlacklistedFilter implements Filter {
 
-    private Room room;
+    private int roomId;
     private Post post;
     private int reasonId;
     private Map<Integer, String> blacklistedWordsTitle = new HashMap<>();
     private Map<Integer, String> blacklistedWordsBody = new HashMap<>();
     private Map<Integer, String> blacklistedWordsEditSummary = new HashMap<>();
 
-    public BlacklistedFilter(Room room, Post post, int reasonId) {
-        this.room = room;
+    public BlacklistedFilter(int chatroomId, Post post, int reasonId) {
+        this.roomId = chatroomId;
         this.post = post;
         this.reasonId = reasonId;
     }
@@ -138,14 +137,13 @@ public class BlacklistedFilter implements Filter {
     public void storeHit() {
         long postId = this.post.getPostId();
         int revisionNumber = this.post.getRevisionNumber();
-        int roomId = this.room.getRoomId();
-        if (!DatabaseUtils.checkReasonCaughtExists(postId, revisionNumber, roomId, this.reasonId)) {
-            DatabaseUtils.storeReasonCaught(postId, revisionNumber, roomId, this.reasonId, this.getScore());
+        if (!DatabaseUtils.checkReasonCaughtExists(postId, revisionNumber, this.roomId, this.reasonId)) {
+            DatabaseUtils.storeReasonCaught(postId, revisionNumber, this.roomId, this.reasonId, this.getScore());
         }
 
         this.getCaughtBlacklistedWordIds().forEach(id -> {
-            if (!DatabaseUtils.checkBlacklistedWordCaughtExists(postId, revisionNumber, roomId, id)) {
-                DatabaseUtils.storeCaughtBlacklistedWord(postId, revisionNumber, roomId, id);
+            if (!DatabaseUtils.checkBlacklistedWordCaughtExists(postId, revisionNumber, this.roomId, id)) {
+                DatabaseUtils.storeCaughtBlacklistedWord(postId, revisionNumber, this.roomId, id);
             }
         });
     }

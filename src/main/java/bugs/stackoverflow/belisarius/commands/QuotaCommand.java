@@ -1,12 +1,12 @@
 package bugs.stackoverflow.belisarius.commands;
 
 import bugs.stackoverflow.belisarius.services.ApiService;
+import bugs.stackoverflow.belisarius.services.MonitorService;
 import bugs.stackoverflow.belisarius.utils.CommandUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sobotics.chatexchange.chat.Message;
-import org.sobotics.chatexchange.chat.Room;
 
 public class QuotaCommand implements Command {
 
@@ -24,10 +24,10 @@ public class QuotaCommand implements Command {
     }
 
     @Override
-    public void execute(Room room) {
+    public void execute(MonitorService service) {
         LOGGER.info(this.message.getUser().getName() + " (" + this.message.getUser().getId() + ") "
                   + "is checking my remaining quota, which is " + ApiService.getQuota());
-        room.replyTo(message.getId(), "The remaining quota is: " + ApiService.getQuota());
+        service.replyToMessage(message.getId(), "The remaining quota is: " + ApiService.getQuota());
     }
 
     @Override

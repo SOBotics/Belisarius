@@ -33,6 +33,7 @@ import io.swagger.client.ApiException;
 public class PostUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostUtils.class);
+    private static final int ROOM_ID = new PropertyService().getRoomId();
 
     public static boolean postBeenEdited(JsonObject post) {
         // the post hasn't been edited if JSON doesn't contain last_edit_date property
@@ -102,19 +103,19 @@ public class PostUtils {
         return newPost;
     }
 
-    static void storeFeedback(Room room, PingMessageEvent event, Feedback feedback) {
+    public static void storeFeedback(Room room, PingMessageEvent event, Feedback feedback) {
         long repliedTo = event.getParentMessageId();
         Message repliedToMessage = room.getMessage(repliedTo);
 
         long postId = getPostIdFromMessage(repliedToMessage.getPlainContent().trim());
         int revisionNumber = getRevisionNumberFromMessage(repliedToMessage.getPlainContent().trim());
 
-        DatabaseUtils.storeFeedback(postId, revisionNumber, room.getRoomId(), feedback.toString(), event.getMessage().getUser().getId());
+        DatabaseUtils.storeFeedback(postId, revisionNumber, ROOM_ID, feedback.toString(), event.getMessage().getUser().getId());
 
         PropertyService propertyService = new PropertyService();
         try {
             if (propertyService.getUseHiggs()) {
-                int higgsId = DatabaseUtils.getHiggsId(postId, revisionNumber, event.getRoomId());
+                int higgsId = DatabaseUtils.getHiggsId(postId, revisionNumber, ROOM_ID);
                 HiggsService.getInstance().sendFeedback(higgsId, (int) event.getMessage().getUser().getId(), feedback);
             }
         } catch (ApiException exception) {
@@ -123,13 +124,13 @@ public class PostUtils {
         }
     }
 
-    public static boolean checkVandalisedPost(Room room, Post post) {
-        return DatabaseUtils.checkVandalisedPostExists(post.getPostId(), post.getRevisionNumber(), room.getRoomId());
+    public static boolean checkVandalisedPost(Post post) {
+        return DatabaseUtils.checkVandalisedPostExists(post.getPostId(), post.getRevisionNumber(), ROOM_ID);
     }
 
-    public static void storeVandalisedPost(Room room, VandalisedPost vandalisedPost, int higgsId, String lastBodyMarkdown, String bodyMarkdown) {
+    public static void storeVandalisedPost(VandalisedPost vandalisedPost, int higgsId, String lastBodyMarkdown, String bodyMarkdown) {
         Post post = vandalisedPost.getPost();
-        DatabaseUtils.storeVandalisedPost(post.getPostId(), post.getCreationDate(), post.getRevisionNumber(), room.getRoomId(),
+        DatabaseUtils.storeVandalisedPost(post.getPostId(), post.getCreationDate(), post.getRevisionNumber(), ROOM_ID,
                                           post.getUser().getUserId(), post.getTitle(), post.getLastTitle(), post.getBody(),
                                           post.getLastBody(), post.getIsRollback(), post.getPostType(), post.getComment(),
                                           post.getSite(), vandalisedPost.getSeverity(), higgsId, post.getRevisionGuid(),
@@ -146,16 +147,17 @@ public class PostUtils {
         return Integer.parseInt(message.substring(message.length() - 2, message.length() - 1));
     }
 
-    public static VandalisedPost getVandalisedPost(Room room, Post post) {
+    public static VandalisedPost getVandalisedPost(Post post) {
         // create a list with all the filters
         List<Filter> filters = new ArrayList<>();
-        filters.add(new BlacklistedFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(BlacklistedFilter.class.getName()))));
-        filters.add(new VeryLongWordFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(VeryLongWordFilter.class.getName()))));
-        filters.add(new CodeRemovedFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(CodeRemovedFilter.class.getName()))));
-        filters.add(new TextRemovedFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(TextRemovedFilter.class.getName()))));
-        filters.add(new FewUniqueCharactersFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(FewUniqueCharactersFilter.class.getName()))));
-        filters.add(new OffensiveWordFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(OffensiveWordFilter.class.getName()))));
-        filters.add(new RepeatedWordFilter(room, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(RepeatedWordFilter.class.getName()))));
+        filters.add(new BlacklistedFilter(ROOM_ID, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(BlacklistedFilter.class.getName()))));
+        filters.add(new VeryLongWordFilter(ROOM_ID, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(VeryLongWordFilter.class.getName()))));
+        filters.add(new CodeRemovedFilter(ROOM_ID, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(CodeRemovedFilter.class.getName()))));
+        filters.add(new TextRemovedFilter(ROOM_ID, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(TextRemovedFilter.class.getName()))));
+        filters.add(new FewUniqueCharactersFilter(ROOM_ID, post,
+                                                  DatabaseUtils.getReasonId(ClassUtils.getClassName(FewUniqueCharactersFilter.class.getName()))));
+        filters.add(new OffensiveWordFilter(ROOM_ID, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(OffensiveWordFilter.class.getName()))));
+        filters.add(new RepeatedWordFilter(ROOM_ID, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(RepeatedWordFilter.class.getName()))));
 
         Severity severity = null;
 

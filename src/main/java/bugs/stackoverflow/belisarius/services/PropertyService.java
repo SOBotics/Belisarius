@@ -49,17 +49,17 @@ public class PropertyService {
         return password;
     }
 
-    /* public int getRoomId() {
+    public int getRoomId() {
         String roomId = prop.getProperty("roomid");
         if (roomId == null) {
-            roomId = System.getenv("roomId");
+            roomId = System.getenv("roomid");
         }
 
         int returnRoomId = 0;
         try {
             returnRoomId = Integer.parseInt(roomId);
         } catch (NumberFormatException ex) {
-            System.out.println("Error parsing roomId: " + ex.getMessage());
+            LOGGER.error("Error parsing room id.", ex);
         }
 
         return returnRoomId;
@@ -71,7 +71,7 @@ public class PropertyService {
             site = System.getenv("site");
         }
         return site;
-    } */
+    }
 
     public boolean getUseHiggs() {
         String useHiggs = prop.getProperty("useHiggs");
@@ -79,5 +79,45 @@ public class PropertyService {
             useHiggs = System.getenv("useHiggs");
         }
         return "true".equals(useHiggs);
+    }
+
+    public String getHiggsUrl() {
+        String url = prop.getProperty("higgsurl");
+        if (url == null) {
+            url = System.getenv("higgsurl");
+        }
+        return url;
+    }
+
+    public int getHiggsBotId() {
+        String botId = prop.getProperty("higgsBotId");
+        if (botId == null) {
+            botId = System.getenv("higgsBotId");
+        }
+
+        int returnBotId = 0;
+        try {
+            returnBotId = Integer.parseInt(botId);
+        } catch (NumberFormatException ex) {
+            LOGGER.error("Error parsing Higgs bot id.", ex);
+        }
+
+        return returnBotId;
+    }
+
+    public String getHiggsSecret() {
+        String secretKey = prop.getProperty("higgskey");
+        if (secretKey == null) {
+            secretKey = System.getenv("higgskey");
+        }
+        return secretKey;
+    }
+
+    public boolean getShouldOutputMessage() {
+        String outputMessage = prop.getProperty("outputMessage");
+        if (outputMessage == null) {
+            outputMessage = System.getenv("outputMessage");
+        }
+        return "true".equals(outputMessage);
     }
 }

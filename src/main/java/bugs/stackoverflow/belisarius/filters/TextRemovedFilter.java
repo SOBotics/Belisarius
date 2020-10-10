@@ -4,18 +4,16 @@ import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 
-import org.sobotics.chatexchange.chat.Room;
-
 public class TextRemovedFilter implements Filter {
 
-    private Room room;
+    private int roomId;
     private Post post;
     private int reasonId;
     private final double percentage = 0.8;
     private double score;
 
-    public TextRemovedFilter(Room room, Post post, int reasonId) {
-        this.room = room;
+    public TextRemovedFilter(int chatroomId, Post post, int reasonId) {
+        this.roomId = chatroomId;
         this.post = post;
         this.reasonId = reasonId;
     }
@@ -59,9 +57,8 @@ public class TextRemovedFilter implements Filter {
     public void storeHit() {
         long postId = this.post.getPostId();
         int revisionNumber = this.post.getRevisionNumber();
-        int roomId = this.room.getRoomId();
-        if (!DatabaseUtils.checkReasonCaughtExists(postId, revisionNumber, roomId, this.reasonId)) {
-            DatabaseUtils.storeReasonCaught(postId, revisionNumber, roomId, this.reasonId, this.getScore());
+        if (!DatabaseUtils.checkReasonCaughtExists(postId, revisionNumber, this.roomId, this.reasonId)) {
+            DatabaseUtils.storeReasonCaught(postId, revisionNumber, this.roomId, this.reasonId, this.getScore());
         }
     }
 }

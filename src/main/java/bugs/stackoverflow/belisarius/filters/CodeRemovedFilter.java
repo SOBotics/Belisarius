@@ -4,16 +4,14 @@ import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 
-import org.sobotics.chatexchange.chat.Room;
-
 public class CodeRemovedFilter implements Filter {
 
-    private Room room;
+    private int roomId;
     private Post post;
     private int reasonId;
 
-    public CodeRemovedFilter(Room room, Post post, int reasonId) {
-        this.room = room;
+    public CodeRemovedFilter(int chatroomId, Post post, int reasonId) {
+        this.roomId = chatroomId;
         this.post = post;
         this.reasonId = reasonId;
     }
@@ -51,9 +49,8 @@ public class CodeRemovedFilter implements Filter {
     public void storeHit() {
         long postId = this.post.getPostId();
         int revisionNumber = this.post.getRevisionNumber();
-        int roomId = this.room.getRoomId();
-        if (!DatabaseUtils.checkReasonCaughtExists(postId, revisionNumber, roomId, this.reasonId)) {
-            DatabaseUtils.storeReasonCaught(postId, revisionNumber, roomId, this.reasonId, this.getScore());
+        if (!DatabaseUtils.checkReasonCaughtExists(postId, revisionNumber, this.roomId, this.reasonId)) {
+            DatabaseUtils.storeReasonCaught(postId, revisionNumber, this.roomId, this.reasonId, this.getScore());
         }
     }
 }

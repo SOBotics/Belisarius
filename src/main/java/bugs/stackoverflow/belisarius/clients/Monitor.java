@@ -6,6 +6,7 @@ import bugs.stackoverflow.belisarius.Belisarius;
 import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.models.VandalisedPost;
 import bugs.stackoverflow.belisarius.services.HiggsService;
+import bugs.stackoverflow.belisarius.services.MonitorService;
 import bugs.stackoverflow.belisarius.services.PropertyService;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 import bugs.stackoverflow.belisarius.utils.JsonUtils;
@@ -13,58 +14,60 @@ import bugs.stackoverflow.belisarius.utils.PostUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sobotics.chatexchange.chat.Room;
 
 public class Monitor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Monitor.class);
 
-    public void run(Room room, List<Post> posts, boolean outputMessage) {
+    private MonitorService monitorService;
 
+    public void run(List<Post> posts, MonitorService service) {
+        monitorService = service;
         for (Post post : posts) {
             // do not check the initial revision!
             if (post.getRevisionNumber() != 1) {
-                VandalisedPost vandalisedPost = getVandalisedPost(room, post);
-                boolean postExists = PostUtils.checkVandalisedPost(room, post);
+                VandalisedPost vandalisedPost = getVandalisedPost(post);
+                boolean postExists = PostUtils.checkVandalisedPost(post);
 
                 if (vandalisedPost.getSeverity() != null && !postExists) {
-                    reportPost(room, vandalisedPost, post, outputMessage);
+                    reportPost(vandalisedPost, post);
                 }
             }
         }
 
     }
 
-    public void runOnce(Room room, Post post, boolean outputMessage) {
+    public void runOnce(Post post, MonitorService service) {
+        monitorService = service;
 
         if (post.getRevisionNumber() != 1) {
-            VandalisedPost vandalisedPost = getVandalisedPost(room, post);
+            VandalisedPost vandalisedPost = getVandalisedPost(post);
             // Check if the post exists
-            if (PostUtils.checkVandalisedPost(room, post)) {
+            if (PostUtils.checkVandalisedPost(post)) {
                 LOGGER.info("The given post has already been reported.");
-                int higgsId = DatabaseUtils.getHiggsId(post.getPostId(), post.getRevisionNumber(), room.getRoomId());
-                sendPostAlreadyReportedMessage(room, post, higgsId, vandalisedPost.getSeverity());
+                int higgsId = DatabaseUtils.getHiggsId(post.getPostId(), post.getRevisionNumber(), new PropertyService().getRoomId());
+                sendPostAlreadyReportedMessage(post, higgsId, vandalisedPost.getSeverity());
             } else if (vandalisedPost.getSeverity() != null) {
                 // if the post hasn't been caught and it has been potentially vandalised report it
-                reportPost(room, vandalisedPost, post, outputMessage);
+                reportPost(vandalisedPost, post);
             } else {
                 // if none of the above are true, then the latest edit is probably not harmful
                 LOGGER.info("No vandalism was found for given post.");
-                sendNoVandalismFoundMessage(room, post);
+                sendNoVandalismFoundMessage(post);
             }
         } else {
             // revision 1; unlikely to be bad
             LOGGER.info("No vandalism found was found for given post.");
-            sendNoVandalismFoundMessage(room, post);
+            sendNoVandalismFoundMessage(post);
         }
 
     }
 
-    private VandalisedPost getVandalisedPost(Room room, Post post) {
-        return PostUtils.getVandalisedPost(room, post);
+    private VandalisedPost getVandalisedPost(Post post) {
+        return PostUtils.getVandalisedPost(post);
     }
 
-    private void reportPost(Room room, VandalisedPost vandalisedPost, Post post, boolean outputMessage) {
+    private void reportPost(VandalisedPost vandalisedPost, Post post) {
         try {
             String lastBodyMarkdown = null;
             String bodyMarkdown = null;
@@ -89,29 +92,27 @@ public class Monitor {
                 higgsId = 0;
             }
 
-            PostUtils.storeVandalisedPost(room, vandalisedPost, higgsId, lastBodyMarkdown, bodyMarkdown);
-            if (outputMessage) {
-                sendVandalismFoundMessage(room, post, vandalisedPost, higgsId);
-            }
+            PostUtils.storeVandalisedPost(vandalisedPost, higgsId, lastBodyMarkdown, bodyMarkdown);
+            sendVandalismFoundMessage(post, vandalisedPost, higgsId);
         } catch (Exception exception) {
             LOGGER.info("Error while trying to reportPost.", exception);
         }
     }
 
-    private void sendVandalismFoundMessage(Room room, Post post, VandalisedPost vandalisedPost, int higgsId) {
-        Belisarius.buildMessage(room, higgsId, post.getPostType().toLowerCase(), vandalisedPost.getSeverity(),
+    private void sendVandalismFoundMessage(Post post, VandalisedPost vandalisedPost, int higgsId) {
+        Belisarius.buildMessage(higgsId, post.getPostType().toLowerCase(), vandalisedPost.getSeverity(),
                                 Belisarius.POTENTIAL_VANDALISM + vandalisedPost.getReasonMessage(), post.getAllRevisionsUrl(),
-                                post.getRevisionNumber(), post.getRevisionUrl());
+                                post.getRevisionNumber(), post.getRevisionUrl(), monitorService);
     }
 
-    private void sendNoVandalismFoundMessage(Room room, Post post) {
-        Belisarius.buildMessage(room, 0, post.getPostType().toLowerCase(), null, Belisarius.NO_ISSUES, post.getAllRevisionsUrl(),
-                                post.getRevisionNumber(), post.getRevisionUrl());
+    private void sendNoVandalismFoundMessage(Post post) {
+        Belisarius.buildMessage(0, post.getPostType().toLowerCase(), null, Belisarius.NO_ISSUES, post.getAllRevisionsUrl(),
+                                post.getRevisionNumber(), post.getRevisionUrl(), monitorService);
     }
 
-    private void sendPostAlreadyReportedMessage(Room room, Post post, int higgsId, String severity) {
-        Belisarius.buildMessage(room, higgsId, post.getPostType().toLowerCase(), severity, Belisarius.ALREADY_REPORTED, post.getAllRevisionsUrl(),
-                                post.getRevisionNumber(), post.getRevisionUrl());
+    private void sendPostAlreadyReportedMessage(Post post, int higgsId, String severity) {
+        Belisarius.buildMessage(higgsId, post.getPostType().toLowerCase(), severity, Belisarius.ALREADY_REPORTED, post.getAllRevisionsUrl(),
+                                post.getRevisionNumber(), post.getRevisionUrl(), monitorService);
     }
 
 }

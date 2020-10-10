@@ -2,10 +2,10 @@ package bugs.stackoverflow.belisarius.commands;
 
 import java.util.List;
 
+import bugs.stackoverflow.belisarius.services.MonitorService;
 import bugs.stackoverflow.belisarius.utils.CommandUtils;
 
 import org.sobotics.chatexchange.chat.Message;
-import org.sobotics.chatexchange.chat.Room;
 
 public class CommandsCommand implements Command {
 
@@ -23,13 +23,13 @@ public class CommandsCommand implements Command {
     }
 
     @Override
-    public void execute(Room room) {
+    public void execute(MonitorService service) {
         StringBuilder commandString = new StringBuilder();
         for (Command c : this.commands) {
             commandString.append("    ").append(padRight(c.getName(), 15)).append(" - ").append(c.getDescription()).append("\n");
         }
-        room.replyTo(this.message.getId(), "The list of commands are as follows:");
-        room.send(commandString.toString());
+        service.replyToMessage(this.message.getId(), "The list of commands are as follows:");
+        service.sendMessageToChat(commandString.toString());
     }
 
     public static String padRight(String text, int padding) {

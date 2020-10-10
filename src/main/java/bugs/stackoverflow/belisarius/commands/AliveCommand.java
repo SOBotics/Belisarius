@@ -1,11 +1,11 @@
 package bugs.stackoverflow.belisarius.commands;
 
+import bugs.stackoverflow.belisarius.services.MonitorService;
 import bugs.stackoverflow.belisarius.utils.CommandUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sobotics.chatexchange.chat.Message;
-import org.sobotics.chatexchange.chat.Room;
 
 public class AliveCommand implements Command {
 
@@ -23,9 +23,9 @@ public class AliveCommand implements Command {
     }
 
     @Override
-    public void execute(Room room) {
+    public void execute(MonitorService service) {
         LOGGER.info(this.message.getUser().getName() + " (" + this.message.getUser().getId() + ") wants to know if I'm alive.");
-        room.replyTo(this.message.getId(), "Yeah, I'm alive.");
+        service.replyToMessage(this.message.getId(), "Yeah, I'm alive.");
 
     }
 
