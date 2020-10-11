@@ -45,7 +45,8 @@ public class Monitor {
             // Check if the post exists
             if (PostUtils.checkVandalisedPost(post)) {
                 LOGGER.info("The given post has already been reported.");
-                int higgsId = DatabaseUtils.getHiggsId(post.getPostId(), post.getRevisionNumber(), new PropertyService().getRoomId());
+                int roomId = Integer.parseInt(new PropertyService().getProperty("roomid"));
+                int higgsId = DatabaseUtils.getHiggsId(post.getPostId(), post.getRevisionNumber(), roomId);
                 sendPostAlreadyReportedMessage(post, higgsId, vandalisedPost.getSeverity());
             } else if (vandalisedPost.getSeverity() != null) {
                 // if the post hasn't been caught and it has been potentially vandalised report it
@@ -86,7 +87,7 @@ public class Monitor {
 
             PropertyService propertyService = new PropertyService();
             int higgsId;
-            if (propertyService.getUseHiggs()) {
+            if (propertyService.getProperty("useHiggs").equals("true")) {
                 higgsId = HiggsService.getInstance().registerVandalisedPost(vandalisedPost, vandalisedPost.getPost(), lastBodyMarkdown, bodyMarkdown);
             } else {
                 higgsId = 0;

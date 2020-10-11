@@ -13,14 +13,11 @@ public class ApiService {
     private static AtomicInteger remainingQuota = new AtomicInteger(-1);
     private static AtomicLong backOffUntil = new AtomicLong(0);
 
-    private String apiKey;
+    private String apiKey = new PropertyService().getProperty("apikey");
     private String site;
 
     public ApiService(String site) {
-        PropertyService propertyService = new PropertyService();
-
         this.site = site;
-        this.apiKey = propertyService.getApiKey();
     }
 
     public JsonObject getPostIdsByActivityDesc(int page, long minActivityDate) throws IOException {

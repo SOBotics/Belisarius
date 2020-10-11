@@ -33,7 +33,7 @@ import io.swagger.client.ApiException;
 public class PostUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostUtils.class);
-    private static final int ROOM_ID = new PropertyService().getRoomId();
+    private static final int ROOM_ID = Integer.parseInt(new PropertyService().getProperty("roomid"));
 
     public static boolean postBeenEdited(JsonObject post) {
         // the post hasn't been edited if JSON doesn't contain last_edit_date property
@@ -114,7 +114,7 @@ public class PostUtils {
 
         PropertyService propertyService = new PropertyService();
         try {
-            if (propertyService.getUseHiggs()) {
+            if (propertyService.getProperty("useHiggs").equals("true")) {
                 int higgsId = DatabaseUtils.getHiggsId(postId, revisionNumber, ROOM_ID);
                 HiggsService.getInstance().sendFeedback(higgsId, (int) event.getMessage().getUser().getId(), feedback);
             }

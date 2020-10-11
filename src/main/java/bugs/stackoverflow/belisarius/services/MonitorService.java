@@ -21,7 +21,7 @@ public class MonitorService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MonitorService.class);
 
-    private final boolean shouldOutput = new PropertyService().getShouldOutputMessage();
+    private final boolean shouldOutput = new PropertyService().getProperty("outputMessage").equals("true");
     private StackExchangeClient client;
     private int roomId;
     private Belisarius belisarius;
