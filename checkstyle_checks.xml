@@ -426,7 +426,6 @@
       <property name="format" value="^([^\s\/*])"/>
       <message key="todo.match" value="Comment text should start with space."/>
     </module>
-    <module name="TrailingComment"/>
     <module name="UncommentedMain">
       <property name="excludedClasses" value="\.(Application|JavadocPropertiesGenerator)$"/>
     </module>

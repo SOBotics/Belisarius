@@ -65,7 +65,9 @@ public class JsonUtils {
         Connection.Response response = Jsoup.connect(url).method(Connection.Method.GET)
                                             .ignoreContentType(true).ignoreHttpErrors(true).execute();
         String body = response.body();
-        if (response.statusCode() != 200) {
+        if (response.statusCode() == 404) { // revision did not affect the body
+            return null;
+        } else if (response.statusCode() != 200) {
             throw new IOException("HTTP " + response.statusCode() + " error fetching " + url + ".");
         }
         return Jsoup.parse(body).getElementsByTag("pre").text();
