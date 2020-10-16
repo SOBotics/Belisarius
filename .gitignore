@@ -6,6 +6,7 @@
 /.project
 /.settings
 /properties
+/logs
 *.MF
 url*.txt
 json*.txt
