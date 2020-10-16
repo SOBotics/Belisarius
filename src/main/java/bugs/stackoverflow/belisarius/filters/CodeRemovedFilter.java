@@ -1,5 +1,9 @@
 package bugs.stackoverflow.belisarius.filters;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
@@ -31,13 +35,18 @@ public class CodeRemovedFilter implements Filter {
     }
 
     @Override
+    public double getTotalScore() {
+        return getScore();
+    }
+
+    @Override
     public String getFormattedReasonMessage() {
         return "**Code removed**";
     }
 
     @Override
-    public String getReasonName() {
-        return "Code removed";
+    public List<String> getReasonName() {
+        return new ArrayList<>(Arrays.asList("Code removed"));
     }
 
     @Override

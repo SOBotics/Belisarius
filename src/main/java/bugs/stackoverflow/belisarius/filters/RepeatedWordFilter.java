@@ -1,6 +1,9 @@
 package bugs.stackoverflow.belisarius.filters;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import bugs.stackoverflow.belisarius.models.Post;
@@ -37,6 +40,11 @@ public class RepeatedWordFilter implements Filter {
     }
 
     @Override
+    public double getTotalScore() {
+        return getScore();
+    }
+
+    @Override
     public String getFormattedReasonMessage() {
         String message = "";
 
@@ -48,8 +56,8 @@ public class RepeatedWordFilter implements Filter {
     }
 
     @Override
-    public String getReasonName() {
-        return "Contains repeated words";
+    public List<String> getReasonName() {
+        return new ArrayList<>(Arrays.asList("Contains repeated words"));
     }
 
     private String getRepeatedWords() {

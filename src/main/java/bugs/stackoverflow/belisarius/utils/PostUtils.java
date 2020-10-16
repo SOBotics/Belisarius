@@ -165,11 +165,12 @@ public class PostUtils {
         Map<String, Double> reasonNames = new HashMap<>();
         for (Filter filter: filters) {
             // loop through the list and check if a filter catches the post
-            // also create formattedReasonMessages for Higgs
+            // also create formattedReasonMessages for Higgs (reasonNames)
             if (filter.isHit()) {
                 filter.storeHit();
-                formattedReasonMessages.put(filter.getFormattedReasonMessage(), filter.getScore());
-                reasonNames.put(filter.getReasonName(), filter.getScore());
+                formattedReasonMessages.put(filter.getFormattedReasonMessage(), filter.getTotalScore());
+                // We need a different reason for Higgs for each blacklisted/offensive word!
+                filter.getReasonName().forEach(name -> reasonNames.put(name, filter.getScore()));
                 severity = filter.getSeverity();
             }
         }

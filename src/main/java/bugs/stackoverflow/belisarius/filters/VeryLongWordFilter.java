@@ -1,5 +1,9 @@
 package bugs.stackoverflow.belisarius.filters;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
@@ -35,13 +39,18 @@ public class VeryLongWordFilter implements Filter {
     }
 
     @Override
+    public double getTotalScore() {
+        return getScore();
+    }
+
+    @Override
     public String getFormattedReasonMessage() {
         return "**Contains very long word:** " + this.listedWord.substring(0, 40) + "...";
     }
 
     @Override
-    public String getReasonName() {
-        return "Contains very long word";
+    public List<String> getReasonName() {
+        return new ArrayList<>(Arrays.asList("Contains very long word"));
     }
 
     @Override

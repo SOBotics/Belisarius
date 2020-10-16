@@ -16,9 +16,7 @@ public class BlacklistedFilter implements Filter {
     private int roomId;
     private Post post;
     private int reasonId;
-    private Map<Integer, String> blacklistedWordsTitle = new HashMap<>();
-    private Map<Integer, String> blacklistedWordsBody = new HashMap<>();
-    private Map<Integer, String> blacklistedWordsEditSummary = new HashMap<>();
+    private Map<String, Map<Integer, String>> blacklistedWords = new HashMap<>();
 
     public BlacklistedFilter(int chatroomId, Post post, int reasonId) {
         this.roomId = chatroomId;
@@ -31,91 +29,79 @@ public class BlacklistedFilter implements Filter {
 
         if (post.getLastTitle() != null && "question".equals(post.getPostType())) {
             String titleDifference = StringUtils.difference(post.getLastTitle(), post.getTitle());
-            blacklistedWordsTitle = CheckUtils.checkForBlackListedWords(titleDifference, "question_title");
+            blacklistedWords.put("title", CheckUtils.checkForBlackListedWords(titleDifference, "question_title"));
         }
 
         if (post.getBody() != null) {
             String bodyDifference = StringUtils.difference(post.getLastBody(), post.getBody());
-            blacklistedWordsBody = CheckUtils.checkForBlackListedWords(bodyDifference, post.getPostType());
+            blacklistedWords.put("body", CheckUtils.checkForBlackListedWords(bodyDifference, post.getPostType()));
         }
 
         if (post.getComment() != null) {
-            blacklistedWordsEditSummary = CheckUtils.checkForBlackListedWords(post.getComment(), post.getPostType());
+            blacklistedWords.put("comment", CheckUtils.checkForBlackListedWords(post.getComment(), post.getPostType()));
         }
 
-        return getScore() > 0;
+        return getTotalScore() > 0;
     }
 
     @Override
     public double getScore() {
-        return this.blacklistedWordsTitle.size() + this.blacklistedWordsBody.size() + this.blacklistedWordsEditSummary.size();
+        return 1.0;
+    }
+
+    @Override
+    public double getTotalScore() {
+        int score = 0;
+        for (Map<Integer, String> words : blacklistedWords.values()) {
+            score += words.size();
+        }
+        return score;
     }
 
     @Override
     public String getFormattedReasonMessage() {
         String message = "";
 
-        if (this.blacklistedWordsTitle.size() > 0) {
-            message += "**Title contains blacklisted " + (this.blacklistedWordsTitle.size() > 1 ? "words" : "word") + ":** ";
-            message += getBlacklistedWordsTitle() + " ";
+        if (this.blacklistedWords.containsKey("title") && !this.blacklistedWords.get("title").isEmpty()) {
+            message += "**Title contain bslacklisted " + (this.blacklistedWords.get("title").size() > 1 ? "words" : "word") + ":** ";
+            message += getBlacklistedWords("title") + " ";
         }
 
-        if (this.blacklistedWordsBody.size() > 0) {
-            message += "**Body contains blacklisted " + (this.blacklistedWordsBody.size() > 1 ? "words" : "word") + ":** ";
-            message += getBlacklistedWordsBody() + " ";
+        if (this.blacklistedWords.containsKey("body") && !this.blacklistedWords.get("body").isEmpty()) {
+            message += "**Body contains blacklisted " + (this.blacklistedWords.get("body").size() > 1 ? "words" : "word") + ":** ";
+            message += getBlacklistedWords("body") + " ";
         }
 
-        if (this.blacklistedWordsEditSummary.size() > 0) {
-            message += "**Edit summary contains blacklisted " + (this.blacklistedWordsEditSummary.size() > 1 ? "words" : "word") + ":** ";
-            message += getBlacklistedWordsComment() + " ";
+        if (this.blacklistedWords.containsKey("comment") && !this.blacklistedWords.get("comment").isEmpty()) {
+            message += "**Edit summary contains blacklisted " + (this.blacklistedWords.get("comment").size() > 1 ? "words" : "word") + ":** ";
+            message += getBlacklistedWords("comment") + " ";
         }
 
         return message.trim();
     }
 
     @Override
-    public String getReasonName() {
-        String name = "Contains blacklisted words: ";
-        if (this.blacklistedWordsTitle.size() > 0) {
-            name += getBlacklistedWordsTitle();
-        }
-        if (this.blacklistedWordsBody.size() > 0) {
-            name += getBlacklistedWordsBody();
-        }
-        if (this.blacklistedWordsEditSummary.size() > 0) {
-            name += getBlacklistedWordsComment();
-        }
-        return name;
+    public List<String> getReasonName() {
+        String name = "Contains blacklisted word: ";
+        List<String> words = new ArrayList<>();
+
+        // add name + word to the words list
+        blacklistedWords.values().forEach(wordsMap -> {
+            // wordsMap is the Map<Integer, String> hashmap
+            // its values are the blacklisted words
+            wordsMap.values().forEach(word -> words.add(name + word));
+        });
+        return words;
     }
 
-    private String getBlacklistedWordsTitle() {
+    private String getBlacklistedWords(String postType) {
         StringBuilder words = new StringBuilder();
 
-        for (String word : blacklistedWordsTitle.values()) {
-            words.append(word);
+        for (String word : this.blacklistedWords.get(postType).values()) {
+            words.append(word).append(", ");
         }
 
-        return words.toString();
-    }
-
-    private String getBlacklistedWordsBody() {
-        StringBuilder words = new StringBuilder();
-
-        for (String word : blacklistedWordsBody.values()) {
-            words.append(word);
-        }
-
-        return words.toString();
-    }
-
-    private String getBlacklistedWordsComment() {
-        StringBuilder words = new StringBuilder();
-
-        for (String word : blacklistedWordsEditSummary.values()) {
-            words.append(word);
-        }
-
-        return words.toString();
+        return words.toString().substring(0, words.length() - 2);
     }
 
     @Override
@@ -125,11 +111,8 @@ public class BlacklistedFilter implements Filter {
 
     private List<Integer> getCaughtBlacklistedWordIds() {
         List<Integer> blacklistedWordIds = new ArrayList<>();
-
-        blacklistedWordIds.addAll(blacklistedWordsTitle.keySet());
-        blacklistedWordIds.addAll(blacklistedWordsBody.keySet());
-        blacklistedWordIds.addAll(blacklistedWordsEditSummary.keySet());
-
+        // for each of the hashmap of the blacklistedWords hashmap, add the keys to blacklistedWordIds
+        blacklistedWords.values().forEach(wordsMap -> blacklistedWordIds.addAll(wordsMap.keySet()));
         return blacklistedWordIds;
     }
 

@@ -1,5 +1,9 @@
 package bugs.stackoverflow.belisarius.filters;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
@@ -39,13 +43,18 @@ public class TextRemovedFilter implements Filter {
     }
 
     @Override
+    public double getTotalScore() {
+        return getScore();
+    }
+
+    @Override
     public String getFormattedReasonMessage() {
         return "**" + percentage * 100 + "% or more text removed with a JW score of " + Math.round(this.score * 100.0) / 100.0 + "**";
     }
 
     @Override
-    public String getReasonName() {
-        return "Lots of text removed with a high JW score";
+    public List<String> getReasonName() {
+        return new ArrayList<>(Arrays.asList("Lots of text removed with a high JW score"));
     }
 
     @Override

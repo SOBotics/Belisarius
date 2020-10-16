@@ -30,12 +30,17 @@ public class OffensiveWordFilter implements Filter {
             offensiveWords = CheckUtils.checkForOffensiveWords(this.post.getComment());
         }
 
-        return getScore() > 0;
+        return getTotalScore() > 0;
     }
 
     @Override
     public double getScore() {
-        return offensiveWords.size();
+        return 1.0;
+    }
+
+    @Override
+    public double getTotalScore() {
+        return this.offensiveWords.size();
     }
 
     @Override
@@ -44,18 +49,23 @@ public class OffensiveWordFilter implements Filter {
     }
 
     @Override
-    public String getReasonName() {
-        return "Edit summary contains offensive " + (this.offensiveWords.size() > 1 ? "words: " : "word: ") + getOffensiveWords();
+    public List<String> getReasonName() {
+        String name = "Contains offensive word: ";
+        List<String> words = new ArrayList<>();
+
+        // add name + word to the words list
+        offensiveWords.values().forEach(word -> words.add(name + word));
+        return words;
     }
 
     private String getOffensiveWords() {
         StringBuilder words = new StringBuilder();
 
         for (String word : offensiveWords.values()) {
-            words.append(word);
+            words.append(word).append(", ");
         }
 
-        return words.toString();
+        return words.toString().substring(0, words.length() - 2);
     }
 
     @Override
