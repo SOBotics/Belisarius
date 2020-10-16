@@ -150,14 +150,13 @@ public class PostUtils {
     public static VandalisedPost getVandalisedPost(Post post) {
         // create a list with all the filters
         List<Filter> filters = new ArrayList<>();
-        filters.add(new BlacklistedFilter(ROOM_ID, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(BlacklistedFilter.class.getName()))));
-        filters.add(new VeryLongWordFilter(ROOM_ID, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(VeryLongWordFilter.class.getName()))));
-        filters.add(new CodeRemovedFilter(ROOM_ID, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(CodeRemovedFilter.class.getName()))));
-        filters.add(new TextRemovedFilter(ROOM_ID, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(TextRemovedFilter.class.getName()))));
-        filters.add(new FewUniqueCharactersFilter(ROOM_ID, post,
-                                                  DatabaseUtils.getReasonId(ClassUtils.getClassName(FewUniqueCharactersFilter.class.getName()))));
-        filters.add(new OffensiveWordFilter(ROOM_ID, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(OffensiveWordFilter.class.getName()))));
-        filters.add(new RepeatedWordFilter(ROOM_ID, post, DatabaseUtils.getReasonId(ClassUtils.getClassName(RepeatedWordFilter.class.getName()))));
+        filters.add(new BlacklistedFilter(ROOM_ID, post, DatabaseUtils.getReasonId("BlacklistedFilter")));
+        filters.add(new VeryLongWordFilter(ROOM_ID, post, DatabaseUtils.getReasonId("VeryLongWordFilter")));
+        filters.add(new CodeRemovedFilter(ROOM_ID, post, DatabaseUtils.getReasonId("CodeRemovedFilter")));
+        filters.add(new TextRemovedFilter(ROOM_ID, post, DatabaseUtils.getReasonId("TextRemovedFilter")));
+        filters.add(new FewUniqueCharactersFilter(ROOM_ID, post, DatabaseUtils.getReasonId("FewUniqueCharactersFilter")));
+        filters.add(new OffensiveWordFilter(ROOM_ID, post, DatabaseUtils.getReasonId("OffensiveWordFilter")));
+        filters.add(new RepeatedWordFilter(ROOM_ID, post, DatabaseUtils.getReasonId("RepeatedWordFilter")));
 
         Severity severity = null;
 
