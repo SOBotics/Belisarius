@@ -249,6 +249,30 @@ public class DatabaseUtils {
         return false;
     }
 
+    public static boolean checkOffensiveWordCaughtExists(long postId, int revisionId, int roomId, int offensiveWordId) {
+        SQLiteConnection connection = new SQLiteConnection();
+
+        String sql = "SELECT (COUNT(*) > 0) As Found FROM OffensiveWordCaught WHERE PostId = ? AND RevisionId = ? AND RoomId = ? \n"
+                   + "AND OffensiveWordId = ?;";
+
+        try (Connection conn = connection.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+            preparedStatement.setLong(1, postId);
+            preparedStatement.setInt(2, revisionId);
+            preparedStatement.setInt(3, roomId);
+            preparedStatement.setInt(4, offensiveWordId);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getBoolean("Found");
+            }
+        } catch (SQLException exception) {
+            LOGGER.info("Failed to check for offensive word. PostId: " + postId + "; "
+                      + "Word id: " + offensiveWordId, exception);
+        }
+        return false;
+    }
+
     public static void storeVandalisedPost(long postId, long creationDate, int revisionId, int roomId, long ownerId, String title,
                                            String lastTitle, String body, String lastBody, boolean isRollback, String postType,
                                            String comment, String site, String severity, int higgsId, String revisionGuid,

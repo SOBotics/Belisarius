@@ -85,6 +85,10 @@ public class OffensiveWordFilter implements Filter {
             DatabaseUtils.storeReasonCaught(postId, revisionNumber, this.roomId, this.reasonId, this.getScore());
         }
 
-        this.getCaughtOffensiveWordIds().forEach(id -> DatabaseUtils.storeCaughtOffensiveWord(postId, revisionNumber, roomId, id));
+        this.getCaughtOffensiveWordIds().forEach(id -> {
+            if (!DatabaseUtils.checkOffensiveWordCaughtExists(postId, revisionNumber, this.roomId, id)) {
+                DatabaseUtils.storeCaughtOffensiveWord(postId, revisionNumber, this.roomId, id);
+            }
+        });
     }
 }
