@@ -1,9 +1,9 @@
 package bugs.stackoverflow.belisarius.utils;
 
-// import java.nio.file.StringWriter;
-import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -14,6 +14,23 @@ import org.jsoup.nodes.Document;
 import info.debatty.java.stringsimilarity.JaroWinkler;
 
 public class CheckUtils {
+
+    // Map with the threshold for the FewUniqueCharacters reason.
+    // Stolen from https://github.com/Charcoal-SE/SmokeDetector/blob/84099eecffbd85b15de90a1ea41a7c8776ac0903/findspam.py#L592-L595
+    // Key is the number of unique characters, value is a list with lengths which correspond to the key
+    private static final Map<Integer, List<Integer>> FEW_UNIQUES_THRESHOLD = new HashMap<Integer, List<Integer>>() {
+        {
+            put(6, Arrays.asList(30, 36));
+            put(7, Arrays.asList(36, 42));
+            put(8, Arrays.asList(42, 48));
+            put(9, Arrays.asList(48, 54));
+            put(10, Arrays.asList(54, 60));
+            put(11, Arrays.asList(60, 70));
+            put(12, Arrays.asList(70, 80));
+            put(13, Arrays.asList(80, 90));
+            put(14, Arrays.asList(90, 100));
+        }
+    };
 
     public static Map<Integer, String> checkForBlackListedWords(String target, String postType) {
         Map<Integer, String> blacklistedWords = DatabaseUtils.getBlacklistedWords(postType);
@@ -66,11 +83,18 @@ public class CheckUtils {
     public static String checkForFewUniqueCharacters(String target) {
         String body = removeHtml(stripTags(target));
 
-        long uniquesCount = body.chars().distinct().count();
-        // There are two cases: body's length is 30+ and unique chars are at least 5
-        //                      body's length is 100+ and unique characters are at least 15
-        if ((body.length() >= 30 && uniquesCount <= 6) || body.length() >= 100 && uniquesCount <= 15) {
-            return body.chars().distinct().collect(StringWriter::new, StringWriter::write, (swl, swr) -> swl.write(swr.toString())).toString();
+        long uniquesCount = body.codePoints().distinct().count();
+        long length = body.codePoints().count();
+
+        for (Map.Entry<Integer, List<Integer>> threshold : FEW_UNIQUES_THRESHOLD.entrySet()) {
+            List<Integer> lengths = threshold.getValue();
+            if (length >= lengths.get(0) && length < lengths.get(1) && uniquesCount <= threshold.getKey()) {
+                return body.codePoints()         // Intstream of codePoints
+                    .distinct()
+                    .collect(StringBuilder::new, // collect to a StringBuilder
+                             StringBuilder::appendCodePoint, (swl, swr) -> swl.append(swr.toString()))
+                    .toString();
+            }
         }
 
         return null;

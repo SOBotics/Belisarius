@@ -26,8 +26,7 @@ public class CheckUtilsTest {
                                         + "<a href=\"https://Verylongwordwhichisahrefwhichisstippedblablahhblahblah\">"
                                         + "Verylongwordwhichisinatagwhichisstippedblahblahblah</a>";
     private final String fewUniquesFirst = "aaaaaabbbbbbccccccddddddeeeeeeabcde";
-    private final String fewUniquesSecond = "aaaaabbbbbcccccdddddeeeeefffffggggghhhhhiiiiijjjjj"
-                                          + "kkkkklllllmmmmmnnnnnoooooabcdefghijklmnoabcabcdefghij";
+    private final String fewUniquesSecond = "aaaaaabbbbbbccccccddddddeeeeeeffffffgggggghhhhhhiiiiijjjjjjkkkkkkllllll";
     private final String notFewUniques = "This is some text a question could potentially have.";
 
     @Test
@@ -53,7 +52,7 @@ public class CheckUtilsTest {
     @Test
     public void fewUniqueCharactersReasonTest() {
         assertEquals("abcde", CheckUtils.checkForFewUniqueCharacters(fewUniquesFirst));
-        assertEquals("abcdefghijklmno", CheckUtils.checkForFewUniqueCharacters(fewUniquesSecond));
+        assertEquals("abcdefghijkl", CheckUtils.checkForFewUniqueCharacters(fewUniquesSecond));
         assertNull(CheckUtils.checkForFewUniqueCharacters(notFewUniques));
     }
 
