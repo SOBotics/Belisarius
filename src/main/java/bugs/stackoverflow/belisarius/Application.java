@@ -19,6 +19,7 @@ public class Application {
 
         PropertyService propertyService = new PropertyService();
         StackExchangeClient client = new StackExchangeClient(propertyService.getProperty("email"), propertyService.getProperty("password"));
+        LOGGER.info("Created a chatexchange client.");
 
         // Initialise database
         DatabaseUtils.createVandalisedPostTable();
@@ -29,6 +30,7 @@ public class Application {
         DatabaseUtils.createOffensiveWordCaughtTable();
         DatabaseUtils.createReasonCaughtTable();
         DatabaseUtils.createFeedbackTable();
+        LOGGER.info("Initialised database!");
 
         try {
             // Initialise Higgs
@@ -38,17 +40,20 @@ public class Application {
             if (propertyService.getProperty("useHiggs").equals("true") && higgsDashboardId != 0) {
                 HiggsService.initInstance(propertyService.getProperty("higgsUrl"), propertyService.getProperty("higgsSecret"));
             }
+            LOGGER.info("Initialised Higgs!");
 
             // Initialise Redunda
             PingService redunda = new PingService(propertyService.getProperty("redundaKey"), propertyService.getProperty("version"));
             if (propertyService.getProperty("useRedunda").equals("false")) {
                 redunda.setDebugging(true);
             }
+            LOGGER.info("Initialised Redunda!");
 
             MonitorService monitorService = new MonitorService(client, roomId, propertyService.getProperty("site"), redunda);
             monitorService.runMonitor();
+            LOGGER.info("Monitor started.");
         } catch (NumberFormatException exception) {
-            LOGGER.info("Failed to format values from login.properties file!", exception);
+            LOGGER.error("Failed to format values from login.properties file!", exception);
         }
 
     }

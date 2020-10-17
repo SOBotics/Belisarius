@@ -96,7 +96,7 @@ public class Monitor {
             PostUtils.storeVandalisedPost(vandalisedPost, higgsId, lastBodyMarkdown, bodyMarkdown);
             sendVandalismFoundMessage(post, vandalisedPost, higgsId);
         } catch (Exception exception) {
-            LOGGER.info("Error while trying to reportPost.", exception);
+            LOGGER.error("Error while trying to reportPost.", exception);
         }
     }
 

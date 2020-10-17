@@ -9,7 +9,11 @@ import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class OffensiveWordFilter implements Filter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(OffensiveWordFilter.class);
 
     private int roomId;
     private Post post;
@@ -88,6 +92,7 @@ public class OffensiveWordFilter implements Filter {
         this.getCaughtOffensiveWordIds().forEach(id -> {
             if (!DatabaseUtils.checkOffensiveWordCaughtExists(postId, revisionNumber, this.roomId, id)) {
                 DatabaseUtils.storeCaughtOffensiveWord(postId, revisionNumber, this.roomId, id);
+                LOGGER.info("Successfully stored offensive word id for post " + postId + " to database.");
             }
         });
     }

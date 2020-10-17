@@ -10,8 +10,11 @@ import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BlacklistedFilter implements Filter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BlacklistedFilter.class);
 
     private int roomId;
     private Post post;
@@ -122,11 +125,13 @@ public class BlacklistedFilter implements Filter {
         int revisionNumber = this.post.getRevisionNumber();
         if (!DatabaseUtils.checkReasonCaughtExists(postId, revisionNumber, this.roomId, this.reasonId)) {
             DatabaseUtils.storeReasonCaught(postId, revisionNumber, this.roomId, this.reasonId, this.getScore());
+            LOGGER.info("Successfully stored reason BlacklistedFilter for post " + postId + " to database.");
         }
 
         this.getCaughtBlacklistedWordIds().forEach(id -> {
             if (!DatabaseUtils.checkBlacklistedWordCaughtExists(postId, revisionNumber, this.roomId, id)) {
                 DatabaseUtils.storeCaughtBlacklistedWord(postId, revisionNumber, this.roomId, id);
+                LOGGER.info("Successfully stored blacklisted word id for post " + postId + " to database.");
             }
         });
     }

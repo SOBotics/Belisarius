@@ -8,7 +8,11 @@ import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class TextRemovedFilter implements Filter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TextRemovedFilter.class);
 
     private int roomId;
     private Post post;
@@ -68,6 +72,7 @@ public class TextRemovedFilter implements Filter {
         int revisionNumber = this.post.getRevisionNumber();
         if (!DatabaseUtils.checkReasonCaughtExists(postId, revisionNumber, this.roomId, this.reasonId)) {
             DatabaseUtils.storeReasonCaught(postId, revisionNumber, this.roomId, this.reasonId, this.getScore());
+            LOGGER.info("Successfully stored reason TextRemovedFilter for post " + postId + " to database.");
         }
     }
 }

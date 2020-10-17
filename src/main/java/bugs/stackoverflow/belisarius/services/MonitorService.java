@@ -19,7 +19,6 @@ import org.sobotics.chatexchange.chat.event.EventType;
 import org.sobotics.redunda.PingService;
 
 public class MonitorService {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(MonitorService.class);
 
     private final boolean shouldOutput = new PropertyService().getProperty("outputMessage").equals("true");
@@ -36,6 +35,7 @@ public class MonitorService {
         this.belisarius = new Belisarius(sitename);
         if (this.roomId != 0) {
             this.room = this.client.joinRoom(ChatUtils.getChatHost(sitename), this.roomId);
+            LOGGER.info("Joined room " + this.roomId + " on " + sitename + ".");
             // Add event listeners
             room.addEventListener(EventType.USER_MENTIONED, event -> ChatUtils.handleMentionedEvent(event, this));
             room.addEventListener(EventType.MESSAGE_REPLY, event -> ChatUtils.handleReplies(room, event));

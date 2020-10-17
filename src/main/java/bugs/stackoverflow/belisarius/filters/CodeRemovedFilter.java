@@ -8,7 +8,11 @@ import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class CodeRemovedFilter implements Filter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CodeRemovedFilter.class);
 
     private int roomId;
     private Post post;
@@ -60,6 +64,7 @@ public class CodeRemovedFilter implements Filter {
         int revisionNumber = this.post.getRevisionNumber();
         if (!DatabaseUtils.checkReasonCaughtExists(postId, revisionNumber, this.roomId, this.reasonId)) {
             DatabaseUtils.storeReasonCaught(postId, revisionNumber, this.roomId, this.reasonId, this.getScore());
+            LOGGER.info("Successfully stored reason CodeRemovedFilter for post " + postId + " to database.");
         }
     }
 }

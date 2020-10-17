@@ -1,6 +1,7 @@
 package bugs.stackoverflow.belisarius.utils;
 
 import java.io.IOException;
+import java.net.URL;
 
 import bugs.stackoverflow.belisarius.services.ApiService;
 
@@ -45,10 +46,10 @@ public class JsonUtils {
         try {
             root = JsonParser.parseString(json).getAsJsonObject();
         } catch (Exception exception) {
-            LOGGER.info("Exception occurred while parsing the JSON API returned.", exception);
+            LOGGER.error("Exception occurred while parsing the JSON API returned.", exception);
         }
 
-        LOGGER.info("Received an API response.");
+        LOGGER.info("Received an API response for method " + new URL(url).getPath() + ".");
 
         return root;
     }

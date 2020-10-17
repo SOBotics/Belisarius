@@ -67,7 +67,7 @@ public class Belisarius {
                 }
             }
         } catch (Exception exception) {
-            LOGGER.info("Failed to get posts", exception);
+            LOGGER.error("Failed to get posts", exception);
         }
 
         for (Post post : posts) {
@@ -87,7 +87,7 @@ public class Belisarius {
                 post = postsWithLatestRevisions.get(0);
             }
         } catch (Exception exception) {
-            LOGGER.info("Error while trying to get post with id " + postId, exception);
+            LOGGER.error("Error while trying to get post with id " + postId, exception);
         }
 
         if (post != null) {
@@ -126,7 +126,7 @@ public class Belisarius {
                 page++;
             } while (hasMore);
         } catch (IOException exception) {
-            LOGGER.info("Failed to fetch post ids by activity.", exception);
+            LOGGER.error("Failed to fetch post ids by activity.", exception);
         }
 
         return postIdsAndTitles;
@@ -140,7 +140,7 @@ public class Belisarius {
                 title = post.getAsJsonObject().get("title").getAsString();
             }
         } catch (Exception exception) {
-            LOGGER.info("Error occurred while trying to get post title for post " + postId, exception);
+            LOGGER.error("Error occurred while trying to get post title for post " + postId, exception);
         }
         return title;
     }
@@ -197,7 +197,7 @@ public class Belisarius {
             }
 
         } catch (Exception exception) {
-            LOGGER.info("Error while trying to get latest revisions for some posts", exception);
+            LOGGER.error("Error while trying to get latest revisions for some posts", exception);
         }
 
         return revisions;

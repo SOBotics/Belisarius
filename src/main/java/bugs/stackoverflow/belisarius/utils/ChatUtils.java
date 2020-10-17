@@ -14,8 +14,6 @@ import bugs.stackoverflow.belisarius.commands.StopCommand;
 import bugs.stackoverflow.belisarius.models.VandalisedPost.Feedback;
 import bugs.stackoverflow.belisarius.services.MonitorService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sobotics.chatexchange.chat.ChatHost;
 import org.sobotics.chatexchange.chat.Message;
 import org.sobotics.chatexchange.chat.Room;
@@ -23,8 +21,6 @@ import org.sobotics.chatexchange.chat.event.MessagePostedEvent;
 import org.sobotics.chatexchange.chat.event.PingMessageEvent;
 
 public class ChatUtils {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ChatUtils.class);
 
     public static ChatHost getChatHost(String siteName) {
         return "stackoverflow".equals(siteName) ? ChatHost.STACK_OVERFLOW : ChatHost.STACK_EXCHANGE;

@@ -9,6 +9,8 @@ import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.models.VandalisedPost;
 
 import org.jsoup.parser.Parser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.threeten.bp.Instant;
 import org.threeten.bp.OffsetDateTime;
 import org.threeten.bp.ZoneOffset;
@@ -24,6 +26,7 @@ import io.swagger.client.model.RegisterPostRequest;
 import io.swagger.client.model.RegisterUserFeedbackRequest;
 
 public final class HiggsService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(HiggsService.class);
 
     private static HiggsService instance;
     private String url;
@@ -54,11 +57,13 @@ public final class HiggsService {
         tokenRequest.setSecret(key);
 
         AquireTokenResponse tokenResponse = this.botApi.botAquireTokenPost(tokenRequest);
+        LOGGER.info("Higgs token is " + tokenResponse.getToken());
 
         Configuration.getDefaultApiClient().setAccessToken(tokenResponse.getToken());
     }
 
     public int registerVandalisedPost(VandalisedPost vandalisedPost, Post post, String lastBodyMarkdown, String bodyMarkdown) throws ApiException {
+        LOGGER.info("Attempting to register vandalised post " + post.getPostId() + " to Higgs.");
 
         // Avoid having null markdown bodies!
         String body = bodyMarkdown == null ? "The body was not changed in this revision" : bodyMarkdown;
@@ -131,6 +136,7 @@ public final class HiggsService {
     }
 
     public void sendFeedback(int reportId, int userId, VandalisedPost.Feedback feedback) throws ApiException {
+        LOGGER.info("Attempting to register feedback " + feedback.toString() + " by " + userId + " to Higgs.");
         RegisterUserFeedbackRequest registerUserFeedbackRequest = new RegisterUserFeedbackRequest();
         registerUserFeedbackRequest.setReportId(reportId);
         registerUserFeedbackRequest.setFeedback(feedback.toString());
