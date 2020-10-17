@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.sobotics.chatexchange.chat.Room;
 import org.sobotics.chatexchange.chat.StackExchangeClient;
 import org.sobotics.chatexchange.chat.event.EventType;
+import org.sobotics.redunda.PingService;
 
 public class MonitorService {
 
@@ -26,9 +27,10 @@ public class MonitorService {
     private int roomId;
     private Belisarius belisarius;
     private Room room;
+    private PingService redunda;
     private ScheduledExecutorService executorService;
 
-    public MonitorService(StackExchangeClient client, int chatroom, String sitename) {
+    public MonitorService(StackExchangeClient client, int chatroom, String sitename, PingService redunda) {
         this.client = client;
         this.roomId = chatroom;
         this.belisarius = new Belisarius(sitename);
@@ -39,9 +41,11 @@ public class MonitorService {
             room.addEventListener(EventType.MESSAGE_REPLY, event -> ChatUtils.handleReplies(room, event));
             room.addEventListener(EventType.MESSAGE_POSTED, event -> ChatUtils.handleMessagePostedEvent(event, this));
         }
+        this.redunda = redunda;
     }
 
     public void runMonitor() {
+        this.redunda.start();
         this.sendMessageToChat(Belisarius.README + "] started.");
         executorService = Executors.newSingleThreadScheduledExecutor();
         // Check posts from the API every 60 seconds
@@ -51,8 +55,10 @@ public class MonitorService {
     private void execute() {
         // using a try-catch here because of https://stackoverflow.com/a/24902026
         try {
-            List<Post> posts = belisarius.getPosts();
-            new Monitor().run(posts, this);
+            if (!this.redunda.standby.get()) {
+                List<Post> posts = belisarius.getPosts();
+                new Monitor().run(posts, this);
+            }
         } catch (Exception exception) {
             LOGGER.info("Exception occurred while executing a new monitor.", exception);
         }

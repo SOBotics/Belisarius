@@ -8,6 +8,7 @@ import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sobotics.chatexchange.chat.StackExchangeClient;
+import org.sobotics.redunda.PingService;
 
 import io.swagger.client.ApiException;
 
@@ -19,6 +20,7 @@ public class Application {
         PropertyService propertyService = new PropertyService();
         StackExchangeClient client = new StackExchangeClient(propertyService.getProperty("email"), propertyService.getProperty("password"));
 
+        // Initialise database
         DatabaseUtils.createVandalisedPostTable();
         DatabaseUtils.createReasonTable();
         DatabaseUtils.createBlacklistedWordTable();
@@ -29,6 +31,7 @@ public class Application {
         DatabaseUtils.createFeedbackTable();
 
         try {
+            // Initialise Higgs
             int higgsDashboardId = Integer.parseInt(propertyService.getProperty("higgsBotId"));
             int roomId = Integer.parseInt(propertyService.getProperty("roomid"));
 
@@ -36,11 +39,18 @@ public class Application {
                 HiggsService.initInstance(propertyService.getProperty("higgsUrl"), propertyService.getProperty("higgsSecret"));
             }
 
-            MonitorService monitorService = new MonitorService(client, roomId, propertyService.getProperty("site"));
+            // Initialise Redunda
+            PingService redunda = new PingService(propertyService.getProperty("redundaKey"), propertyService.getProperty("version"));
+            if (propertyService.getProperty("useRedunda").equals("false")) {
+                redunda.setDebugging(true);
+            }
+
+            MonitorService monitorService = new MonitorService(client, roomId, propertyService.getProperty("site"), redunda);
             monitorService.runMonitor();
         } catch (NumberFormatException exception) {
             LOGGER.info("Failed to format values from login.properties file!", exception);
         }
+
     }
 
 }
