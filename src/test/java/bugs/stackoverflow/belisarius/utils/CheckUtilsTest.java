@@ -1,7 +1,7 @@
 package bugs.stackoverflow.belisarius.utils;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -45,15 +45,15 @@ public class CheckUtilsTest {
 
     @Test
     public void veryLongWordReasonTest() {
-        assertNotNull(CheckUtils.checkForLongWords(veryLongWord));
+        assertEquals(veryLongWord, CheckUtils.checkForLongWords(veryLongWord));
         assertNull(CheckUtils.checkForLongWords(notLongWord));
         assertNull(CheckUtils.checkForLongWords(longWordInCode));
     }
 
     @Test
     public void fewUniqueCharactersReasonTest() {
-        assertNotNull(CheckUtils.checkForFewUniqueCharacters(fewUniquesFirst));
-        assertNotNull(CheckUtils.checkForFewUniqueCharacters(fewUniquesSecond));
+        assertEquals("abcde", CheckUtils.checkForFewUniqueCharacters(fewUniquesFirst));
+        assertEquals("abcdefghijklmno", CheckUtils.checkForFewUniqueCharacters(fewUniquesSecond));
         assertNull(CheckUtils.checkForFewUniqueCharacters(notFewUniques));
     }
 
