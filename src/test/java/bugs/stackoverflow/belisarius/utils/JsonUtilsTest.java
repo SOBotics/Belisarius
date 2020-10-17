@@ -3,8 +3,8 @@ package bugs.stackoverflow.belisarius.utils;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import bugs.stackoverflow.belisarius.utils.JsonUtils;
 
@@ -22,6 +22,6 @@ public class JsonUtilsTest {
     @Test
     public void getHtmlTest() throws Exception {
         assertNotNull(JsonUtils.getHtml(revisionUrl));
-        assertThrows(IOException.class, () -> { JsonUtils.getHtml("https://stackoverflow.com/revisions/ABCDE/view-source"); });
+        assertNull(JsonUtils.getHtml("https://stackoverflow.com/revisions/ABCDE/view-source"));
     }
 }
