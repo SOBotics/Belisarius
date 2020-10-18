@@ -40,6 +40,10 @@ public class Monitor {
     public void runOnce(Post post, MonitorService service) {
         monitorService = service;
 
+        if (post == null) {
+            service.sendMessageToChat("The post has been deleted.");
+        }
+
         if (post.getRevisionNumber() != 1) {
             VandalisedPost vandalisedPost = getVandalisedPost(post);
             // Check if the post exists

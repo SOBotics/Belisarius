@@ -83,6 +83,10 @@ public class Belisarius {
         postIdAndTitle.put(Long.valueOf(postId), getPostTitle(postId));
         try {
             List<Post> postsWithLatestRevisions = getPostsWithLatestRevision(postIdAndTitle);
+            if (postsWithLatestRevisions == null) { // handle post deletion
+                return null;
+            }
+
             if (postsWithLatestRevisions.size() == 1) {
                 post = postsWithLatestRevisions.get(0);
             }
@@ -93,6 +97,7 @@ public class Belisarius {
         if (post != null) {
             post.setSite(this.site);
         }
+
         return post;
     }
 
@@ -188,6 +193,9 @@ public class Belisarius {
                 long postId = idAndTitle.getKey();
                 String title = idAndTitle.getValue();
                 List<JsonObject> revisionsList = postIdsAndJsons.get(postId);
+                if (revisionsList == null) { // post is deleted
+                    return null;
+                }
 
                 if (revisionsList.size() > 1) {
                     // fetch the previous revision guid from the second revisionList item (previous revision)
