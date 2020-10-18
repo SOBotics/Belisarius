@@ -5,7 +5,7 @@
 There are two feedback:
 
 1. *tp*: This means that the reported edit is harmful and should be rolled back.
-2. *fp*: This meand that the reported edit is **not** harmful and no further action is required.
+2. *fp*: This means that the reported edit is **not** harmful and no further action is required.
 
 ### How can I send feedback?
 

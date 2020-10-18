@@ -30,7 +30,7 @@ public class CheckUtilsTest {
     private final String notFewUniques = "This is some text a question could potentially have.";
 
     @Test
-    public void blacklstedWordReasonTest() {
+    public void blacklistedWordReasonTest() {
         assertTrue(CheckUtils.checkForBlackListedWords(blacklistedQuestionWords, "question").size() == 7);
         assertTrue(CheckUtils.checkForBlackListedWords(blacklistedAnswerWords, "answer").size() == 2);
         assertTrue(CheckUtils.checkForBlackListedWords(blacklistedQuestionTitleWords, "question_title").size() == 1);

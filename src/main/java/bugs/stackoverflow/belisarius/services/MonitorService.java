@@ -23,19 +23,16 @@ public class MonitorService {
 
     private final boolean shouldOutput = new PropertyService().getProperty("outputMessage").equals("true");
     private StackExchangeClient client;
-    private int roomId;
     private Belisarius belisarius;
     private Room room;
     private PingService redunda;
     private ScheduledExecutorService executorService;
 
-    public MonitorService(StackExchangeClient client, int chatroom, String sitename, PingService redunda) {
-        this.client = client;
-        this.roomId = chatroom;
+    public MonitorService(StackExchangeClient client, int chatroomId, String sitename, PingService redunda) {
         this.belisarius = new Belisarius(sitename);
-        if (this.roomId != 0) {
-            this.room = this.client.joinRoom(ChatUtils.getChatHost(sitename), this.roomId);
-            LOGGER.info("Joined room " + this.roomId + " on " + sitename + ".");
+        if (chatroomId != 0) {
+            this.room = client.joinRoom(ChatUtils.getChatHost(sitename), chatroomId);
+            LOGGER.info("Joined room " + chatroomId + " on " + sitename + ".");
             // Add event listeners
             room.addEventListener(EventType.USER_MENTIONED, event -> ChatUtils.handleMentionedEvent(event, this));
             room.addEventListener(EventType.MESSAGE_REPLY, event -> ChatUtils.handleReplies(room, event));

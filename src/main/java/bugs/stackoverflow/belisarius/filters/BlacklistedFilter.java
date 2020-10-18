@@ -66,7 +66,7 @@ public class BlacklistedFilter implements Filter {
         String message = "";
 
         if (this.blacklistedWords.containsKey("title") && !this.blacklistedWords.get("title").isEmpty()) {
-            message += "**Title contain bslacklisted " + (this.blacklistedWords.get("title").size() > 1 ? "words" : "word") + ":** ";
+            message += "**Title contain blacklisted " + (this.blacklistedWords.get("title").size() > 1 ? "words" : "word") + ":** ";
             message += getBlacklistedWords("title") + " ";
         }
 

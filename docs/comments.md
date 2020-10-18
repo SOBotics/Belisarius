@@ -1,7 +1,7 @@
 # Auto-comments
 
 Sometimes, it's good to leave some comments in a vandalised post to help OP understand what they did wrong. Here are some you can use.
-They are in the format used by the [Stack Exchange AutoReview Coments userscript](https://stackapps.com/q/2116/58907) so that you can import and use them easily.
+They are in the format used by the [Stack Exchange AutoReview Comments userscript](https://stackapps.com/q/2116/58907) so that you can import and use them easily.
 
 ```
 ###[Q] Vandalism
