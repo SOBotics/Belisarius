@@ -31,15 +31,15 @@ public class CheckUtilsTest {
 
     @Test
     public void blacklistedWordReasonTest() {
-        assertTrue(CheckUtils.checkForBlackListedWords(blacklistedQuestionWords, "question").size() == 7);
-        assertTrue(CheckUtils.checkForBlackListedWords(blacklistedAnswerWords, "answer").size() == 2);
-        assertTrue(CheckUtils.checkForBlackListedWords(blacklistedQuestionTitleWords, "question_title").size() == 1);
-        assertTrue(CheckUtils.checkForBlackListedWords(blacklistedWordsInHtml, "question").size() == 0);
+        assertEquals(CheckUtils.checkForBlackListedWords(blacklistedQuestionWords, "question").size(), 7);
+        assertEquals(CheckUtils.checkForBlackListedWords(blacklistedAnswerWords, "answer").size(), 2);
+        assertEquals(CheckUtils.checkForBlackListedWords(blacklistedQuestionTitleWords, "question_title").size(), 1);
+        assertEquals(CheckUtils.checkForBlackListedWords(blacklistedWordsInHtml, "question").size(), 0);
     }
 
     @Test
     public void offensiveWordReasonTest() {
-        assertTrue(CheckUtils.checkForOffensiveWords(someOffensiveWords).size() == 2);
+        assertEquals(CheckUtils.checkForOffensiveWords(someOffensiveWords).size(), 2);
     }
 
     @Test

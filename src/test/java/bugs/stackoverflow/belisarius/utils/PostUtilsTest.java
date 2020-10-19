@@ -64,9 +64,9 @@ public class PostUtilsTest {
     public void getVandalisedPostTest() {
         try {
             VandalisedPost noVandalism = PostUtils.getVandalisedPost(belisarius.getPost("4"));
-            assertEquals(null, noVandalism.getSeverity());
+            assertNull(noVandalism.getSeverity());
             Post deletedPost = belisarius.getPost("1");
-            assertEquals(null, deletedPost);
+            assertNull(deletedPost);
 
             Map<String, VandalisedPost> vandalisedPosts = new HashMap<>();
             vandalisedPosts.put("low", PostUtils.getVandalisedPost(belisarius.getPost("64163328"))); // removed code Q
