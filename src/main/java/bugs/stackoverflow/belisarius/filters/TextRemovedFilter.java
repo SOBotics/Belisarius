@@ -14,9 +14,9 @@ import org.slf4j.LoggerFactory;
 public class TextRemovedFilter implements Filter {
     private static final Logger LOGGER = LoggerFactory.getLogger(TextRemovedFilter.class);
 
-    private int roomId;
-    private Post post;
-    private int reasonId;
+    private final int roomId;
+    private final Post post;
+    private final int reasonId;
     private final double percentage = 0.8;
     private double score;
 

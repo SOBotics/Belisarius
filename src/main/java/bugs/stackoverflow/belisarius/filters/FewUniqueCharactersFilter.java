@@ -14,9 +14,9 @@ import org.slf4j.LoggerFactory;
 public class FewUniqueCharactersFilter implements Filter {
     private static final Logger LOGGER = LoggerFactory.getLogger(FewUniqueCharactersFilter.class);
 
-    private int roomId;
-    private Post post;
-    private int reasonId;
+    private final int roomId;
+    private final Post post;
+    private final int reasonId;
     private String listedWord;
 
     public FewUniqueCharactersFilter(int chatroomId, Post post, int reasonId) {

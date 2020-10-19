@@ -12,7 +12,7 @@ public class QuotaCommand implements Command {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(QuotaCommand.class);
 
-    private Message message;
+    private final Message message;
 
     public QuotaCommand(Message message) {
         this.message = message;

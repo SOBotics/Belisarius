@@ -23,7 +23,7 @@ public class JsonUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonUtils.class);
 
     public synchronized JsonObject get(String url, String... data) throws IOException {
-        long backOffUntil = ApiService.getBackOffUntil();
+        long backOffUntil = ApiService.getBackoffField();
 
         if (backOffUntil > 0) {
             try {

@@ -29,7 +29,7 @@ public final class HiggsService {
     private static final Logger LOGGER = LoggerFactory.getLogger(HiggsService.class);
 
     private static HiggsService instance;
-    private String url;
+    private final String url;
     private BotApi botApi;
 
     private HiggsService(String url, String key) throws ApiException {

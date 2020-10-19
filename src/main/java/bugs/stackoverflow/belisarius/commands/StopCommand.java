@@ -11,7 +11,7 @@ public class StopCommand implements Command {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StopCommand.class);
 
-    private Message message;
+    private final Message message;
 
     public StopCommand(Message message) {
         this.message = message;

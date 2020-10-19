@@ -9,8 +9,8 @@ import org.sobotics.chatexchange.chat.Message;
 
 public class CommandsCommand implements Command {
 
-    private Message message;
-    private List<Command> commands;
+    private final Message message;
+    private final List<Command> commands;
 
     public CommandsCommand(Message message, List<Command> commands) {
         this.message = message;

@@ -15,9 +15,9 @@ import org.slf4j.LoggerFactory;
 public class VeryLongWordFilter implements Filter {
     private static final Logger LOGGER = LoggerFactory.getLogger(VeryLongWordFilter.class);
 
-    private int roomId;
-    private Post post;
-    private int reasonId;
+    private final int roomId;
+    private final Post post;
+    private final int reasonId;
     private String listedWord;
 
     public VeryLongWordFilter(int chatroomId, Post post, int reasonId) {
