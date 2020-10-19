@@ -1,12 +1,15 @@
 package bugs.stackoverflow.belisarius.utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import bugs.stackoverflow.belisarius.Belisarius;
@@ -68,23 +71,32 @@ public class PostUtilsTest {
             Post deletedPost = belisarius.getPost("1");
             assertNull(deletedPost);
 
-            Map<String, VandalisedPost> vandalisedPosts = new HashMap<>();
-            vandalisedPosts.put("low", PostUtils.getVandalisedPost(belisarius.getPost("64163328"))); // removed code Q
-            vandalisedPosts.put("low", PostUtils.getVandalisedPost(belisarius.getPost("60420830"))); // text removed Q
-            vandalisedPosts.put("low", PostUtils.getVandalisedPost(belisarius.getPost("64296039"))); // text removed A
-            vandalisedPosts.put("low", PostUtils.getVandalisedPost(belisarius.getPost("63769100"))); // both of the above
+            Map<String, List<VandalisedPost>> vandalisedPosts = new HashMap<>();
+            List<VandalisedPost> lowSeverityPosts = new ArrayList<>();
+            lowSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("64163328"))); // removed code Q
+            lowSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("60420830"))); // text removed Q
+            lowSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("64296039"))); // text removed A
+            lowSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("63769100"))); // both of the above
 
+            List<VandalisedPost> mediumSeverityPosts = new ArrayList<>();
             // blacklisted word(s)
-            vandalisedPosts.put("medium", PostUtils.getVandalisedPost(belisarius.getPost("31638488")));
-            vandalisedPosts.put("medium", PostUtils.getVandalisedPost(belisarius.getPost("63938251")));
-            vandalisedPosts.put("medium", PostUtils.getVandalisedPost(belisarius.getPost("63965719")));
-            vandalisedPosts.put("medium", PostUtils.getVandalisedPost(belisarius.getPost("57907645")));
-            vandalisedPosts.put("medium", PostUtils.getVandalisedPost(belisarius.getPost("64123548"))); // very long word
+            mediumSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("31638488")));
+            mediumSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("63938251")));
+            mediumSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("63965719")));
+            mediumSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("57907645")));
+            mediumSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("64123548"))); // very long word
 
-            vandalisedPosts.put("high", PostUtils.getVandalisedPost(belisarius.getPost("62812593"))); // offensive word
+            List<VandalisedPost> highSeverityPosts = new ArrayList<>();
+            highSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("62812593"))); // offensive word
 
-            for (Map.Entry<String, VandalisedPost> post : vandalisedPosts.entrySet()) {
-                assertEquals(post.getKey(), post.getValue().getSeverity());
+            vandalisedPosts.put("low", lowSeverityPosts);
+            vandalisedPosts.put("medium", mediumSeverityPosts);
+            vandalisedPosts.put("high", highSeverityPosts);
+
+            for (Map.Entry<String, List<VandalisedPost>> post : vandalisedPosts.entrySet()) {
+                for (VandalisedPost vandalisedPost : post.getValue()) {
+                    assertEquals(post.getKey(), vandalisedPost.getSeverity());
+                }
             }
         } catch (Exception exception) {
             exception.printStackTrace();
