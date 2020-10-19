@@ -93,7 +93,7 @@ public class MonitorService {
         if (shouldOutput) {
             room.replyTo(toReplyId, message);
         } else {
-            LOGGER.info(":" + String.valueOf(toReplyId) + " " + message);
+            LOGGER.info(":" + toReplyId + " " + message);
         }
     }
 }

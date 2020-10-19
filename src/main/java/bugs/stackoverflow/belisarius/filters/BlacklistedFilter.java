@@ -104,7 +104,7 @@ public class BlacklistedFilter implements Filter {
             words.append(word).append(", ");
         }
 
-        return words.toString().substring(0, words.length() - 2);
+        return words.substring(0, words.length() - 2);
     }
 
     @Override

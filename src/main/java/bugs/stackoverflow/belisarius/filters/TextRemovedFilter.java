@@ -1,7 +1,7 @@
 package bugs.stackoverflow.belisarius.filters;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import bugs.stackoverflow.belisarius.models.Post;
@@ -58,7 +58,7 @@ public class TextRemovedFilter implements Filter {
 
     @Override
     public List<String> getReasonName() {
-        return new ArrayList<>(Arrays.asList("Lots of text removed with a high JW score"));
+        return new ArrayList<>(Collections.singletonList("Lots of text removed with a high JW score"));
     }
 
     @Override

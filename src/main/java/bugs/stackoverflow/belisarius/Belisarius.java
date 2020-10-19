@@ -149,7 +149,7 @@ public class Belisarius {
     private List<Post> getPostsWithLatestRevision(Map<Long, String> idsAndTitles) {
         List<Post> revisions = new ArrayList<>();
         Map<Long, List<JsonObject>> postIdsAndJsons = new HashMap<>();
-        String[] postIds = idsAndTitles.keySet().stream().map(set -> set.toString()).toArray(String[]::new);
+        String[] postIds = idsAndTitles.keySet().stream().map(Object::toString).toArray(String[]::new);
         String semicolonSeparatedIds = String.join(";", postIds);
 
         boolean hasMore;

@@ -1,7 +1,7 @@
 package bugs.stackoverflow.belisarius.filters;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import bugs.stackoverflow.belisarius.models.Post;
@@ -53,7 +53,7 @@ public class VeryLongWordFilter implements Filter {
 
     @Override
     public List<String> getReasonName() {
-        return new ArrayList<>(Arrays.asList("Contains very long word"));
+        return new ArrayList<>(Collections.singletonList("Contains very long word"));
     }
 
     @Override

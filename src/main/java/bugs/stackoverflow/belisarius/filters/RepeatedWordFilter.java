@@ -1,7 +1,7 @@
 package bugs.stackoverflow.belisarius.filters;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -61,7 +61,7 @@ public class RepeatedWordFilter implements Filter {
 
     @Override
     public List<String> getReasonName() {
-        return new ArrayList<>(Arrays.asList("Contains repeated words"));
+        return new ArrayList<>(Collections.singletonList("Contains repeated words"));
     }
 
     private String getRepeatedWords() {
