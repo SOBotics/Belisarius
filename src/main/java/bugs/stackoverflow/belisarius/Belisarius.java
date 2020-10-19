@@ -83,11 +83,7 @@ public class Belisarius {
         postIdAndTitle.put(Long.valueOf(postId), getPostTitle(postId));
         try {
             List<Post> postsWithLatestRevisions = getPostsWithLatestRevision(postIdAndTitle);
-            if (postsWithLatestRevisions == null) { // handle post deletion
-                return null;
-            }
-
-            if (postsWithLatestRevisions.size() == 1) {
+            if (postsWithLatestRevisions != null && postsWithLatestRevisions.size() == 1) {
                 post = postsWithLatestRevisions.get(0);
             }
         } catch (Exception exception) {
