@@ -11,7 +11,7 @@ public class HelpCommand implements Command {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HelpCommand.class);
 
-    private Message message;
+    private final Message message;
 
     public HelpCommand(Message message) {
         this.message = message;

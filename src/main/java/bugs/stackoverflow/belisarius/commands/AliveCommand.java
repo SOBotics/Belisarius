@@ -11,7 +11,7 @@ public class AliveCommand implements Command {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AliveCommand.class);
 
-    private Message message;
+    private final Message message;
 
     public AliveCommand(Message message) {
         this.message = message;

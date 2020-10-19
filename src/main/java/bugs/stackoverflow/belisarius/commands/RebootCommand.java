@@ -11,7 +11,7 @@ public class RebootCommand implements Command {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RebootCommand.class);
 
-    private Message message;
+    private final Message message;
 
     public RebootCommand(Message message) {
         this.message = message;

@@ -16,10 +16,10 @@ import org.slf4j.LoggerFactory;
 public class BlacklistedFilter implements Filter {
     private static final Logger LOGGER = LoggerFactory.getLogger(BlacklistedFilter.class);
 
-    private int roomId;
-    private Post post;
-    private int reasonId;
-    private Map<String, Map<Integer, String>> blacklistedWords = new HashMap<>();
+    private final int roomId;
+    private final Post post;
+    private final int reasonId;
+    private final Map<String, Map<Integer, String>> blacklistedWords = new HashMap<>();
 
     public BlacklistedFilter(int chatroomId, Post post, int reasonId) {
         this.roomId = chatroomId;

@@ -22,9 +22,9 @@ public class MonitorService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MonitorService.class);
 
     private final boolean shouldOutput = new PropertyService().getProperty("outputMessage").equals("true");
-    private Belisarius belisarius;
+    private final Belisarius belisarius;
     private Room room;
-    private PingService redunda;
+    private final PingService redunda;
     private ScheduledExecutorService executorService;
 
     public MonitorService(StackExchangeClient client, int chatroomId, String sitename, PingService redunda) {

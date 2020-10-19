@@ -23,10 +23,10 @@ public class VandalisedPost {
         }
     }
 
-    private Post post;
-    private Map<String, Double> reasons;
-    private Severity severity;
-    private Map<String, Double> reasonNames;
+    private final Post post;
+    private final Map<String, Double> reasons;
+    private final Severity severity;
+    private final Map<String, Double> reasonNames;
 
     public VandalisedPost(Post post, Map<String, Double> reasons, Severity severity, Map<String, Double> reasonNames) {
         this.post = post;

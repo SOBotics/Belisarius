@@ -10,11 +10,11 @@ import com.google.gson.JsonObject;
 
 public class ApiService {
 
-    private static AtomicInteger remainingQuota = new AtomicInteger(-1);
-    private static AtomicLong backOffUntil = new AtomicLong(0);
+    private static final AtomicInteger REMAINING_QUOTA = new AtomicInteger(-1);
+    private static final AtomicLong BACKOFF_FIELD = new AtomicLong(0);
 
-    private String apiKey = new PropertyService().getProperty("apikey");
-    private String site;
+    private final String apiKey = new PropertyService().getProperty("apikey");
+    private final String site;
 
     public ApiService(String site) {
         this.site = site;
@@ -42,23 +42,23 @@ public class ApiService {
     }
 
     public void setQuota(int quota) {
-        remainingQuota.set(quota);
+        REMAINING_QUOTA.set(quota);
     }
 
     public static int getQuota() {
-        return remainingQuota.get();
+        return REMAINING_QUOTA.get();
     }
 
     public void setBackOffUntil(JsonObject jsonObject) {
         if (jsonObject.has("backoff")) {
-            backOffUntil.set(jsonObject.get("backoff").getAsLong());
+            BACKOFF_FIELD.set(jsonObject.get("backoff").getAsLong());
         } else {
             // Remember to reset to 0 if backoff doesn't exist!
-            backOffUntil.set(0L);
+            BACKOFF_FIELD.set(0L);
         }
     }
 
-    public static long getBackOffUntil() {
-        return backOffUntil.get();
+    public static long getBackoffField() {
+        return BACKOFF_FIELD.get();
     }
 }

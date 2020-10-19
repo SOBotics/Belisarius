@@ -16,9 +16,9 @@ import org.slf4j.LoggerFactory;
 public class RepeatedWordFilter implements Filter {
     private static final Logger LOGGER = LoggerFactory.getLogger(RepeatedWordFilter.class);
 
-    private int roomId;
-    private Post post;
-    private int reasonId;
+    private final int roomId;
+    private final Post post;
+    private final int reasonId;
     private Set<String> repeatedWords = new HashSet<>();
 
     public RepeatedWordFilter(int chatroomId, Post post, int reasonId) {

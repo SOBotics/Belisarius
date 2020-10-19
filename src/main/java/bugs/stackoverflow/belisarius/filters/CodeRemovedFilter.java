@@ -14,9 +14,9 @@ import org.slf4j.LoggerFactory;
 public class CodeRemovedFilter implements Filter {
     private static final Logger LOGGER = LoggerFactory.getLogger(CodeRemovedFilter.class);
 
-    private int roomId;
-    private Post post;
-    private int reasonId;
+    private final int roomId;
+    private final Post post;
+    private final int reasonId;
 
     public CodeRemovedFilter(int chatroomId, Post post, int reasonId) {
         this.roomId = chatroomId;

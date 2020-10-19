@@ -28,8 +28,8 @@ public class Belisarius {
     private static final Logger LOGGER = LoggerFactory.getLogger(Belisarius.class);
 
     private long lastPostTime;
-    private ApiService apiService;
-    private String site;
+    private final ApiService apiService;
+    private final String site;
 
     public Belisarius(String site) {
         this.lastPostTime = System.currentTimeMillis() / 1000 - 60;
