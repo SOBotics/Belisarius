@@ -51,7 +51,7 @@ public class MonitorService {
     private void execute() {
         // using a try-catch here because of https://stackoverflow.com/a/24902026
         try {
-            if (!this.redunda.standby.get()) {
+            if (!PingService.standby.get()) {
                 List<Post> posts = belisarius.getPosts();
                 new Monitor().run(posts, this);
             }
