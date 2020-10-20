@@ -42,6 +42,7 @@ public class Monitor {
 
         if (post == null) {
             service.sendMessageToChat("The post has been deleted.");
+            return;
         }
 
         if (post.getRevisionNumber() != 1) {

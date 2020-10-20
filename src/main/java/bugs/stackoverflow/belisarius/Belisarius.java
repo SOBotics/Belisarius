@@ -2,6 +2,7 @@ package bugs.stackoverflow.belisarius;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,7 +84,7 @@ public class Belisarius {
         postIdAndTitle.put(Long.valueOf(postId), getPostTitle(postId));
         try {
             List<Post> postsWithLatestRevisions = getPostsWithLatestRevision(postIdAndTitle);
-            if (postsWithLatestRevisions != null && postsWithLatestRevisions.size() == 1) {
+            if (postsWithLatestRevisions.size() == 1) {
                 post = postsWithLatestRevisions.get(0);
             }
         } catch (Exception exception) {
@@ -190,7 +191,7 @@ public class Belisarius {
                 String title = idAndTitle.getValue();
                 List<JsonObject> revisionsList = postIdsAndJsons.get(postId);
                 if (revisionsList == null) { // post is deleted
-                    return null;
+                    return Collections.emptyList();
                 }
 
                 if (revisionsList.size() > 1) {
