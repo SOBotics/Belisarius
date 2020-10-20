@@ -125,16 +125,8 @@ public class CheckUtils {
     }
 
     public static Set<String> checkRepeatedWords(String target) {
-        Set<String> repeatedWords = new HashSet<>();
-
         String[] words = target.split("\\W");
-        for (String word : words) {
-            if (!repeatedWords.contains(word)) {
-                repeatedWords.add(word);
-            }
-        }
-
-        return repeatedWords;
+        return new HashSet<String>(Arrays.asList(words));
     }
 
 }

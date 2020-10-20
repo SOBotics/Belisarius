@@ -28,6 +28,8 @@ public class CheckUtilsTest {
     private final String fewUniquesFirst = "aaaaaabbbbbbccccccddddddeeeeeeabcde";
     private final String fewUniquesSecond = "aaaaaabbbbbbccccccddddddeeeeeeffffffgggggghhhhhhiiiiijjjjjjkkkkkkllllll";
     private final String notFewUniques = "This is some text a question could potentially have.";
+    private final String repeatedWords = "dddddddddd dddddddddd dddddddddd dddddddddd";
+    private final String notRepeatedWords = "This is is just some some normal text.";
 
     @Test
     public void blacklistedWordReasonTest() {
@@ -60,5 +62,11 @@ public class CheckUtilsTest {
     public void checkIfNoCodeBlockTest() {
         assertTrue(CheckUtils.checkIfNoCodeBlock("Not a code block"));
         assertFalse(CheckUtils.checkIfNoCodeBlock("<code>This is a code block</code>"));
+    }
+
+    @Test
+    public void repeatedWordTest() {
+        assertEquals(CheckUtils.checkRepeatedWords(repeatedWords).size(), 1);
+        assertEquals(CheckUtils.checkRepeatedWords(notRepeatedWords).size(), 6);
     }
 }
