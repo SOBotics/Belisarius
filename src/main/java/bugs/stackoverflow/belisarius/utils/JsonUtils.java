@@ -59,7 +59,7 @@ public class JsonUtils {
     }
 
     public static String sanitizeChatMessage(String message) {
-        return message.replaceAll("(\\[|\\]|_|\\*|`)", "\\\\$1");
+        return message.replaceAll("([\\[\\]_*`])", "\\\\$1");
     }
 
     public static String getHtml(String url) throws IOException {

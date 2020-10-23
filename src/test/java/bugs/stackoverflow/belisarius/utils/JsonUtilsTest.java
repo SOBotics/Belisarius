@@ -18,6 +18,11 @@ public class JsonUtilsTest {
     }
 
     @Test
+    public void sanitizeChatMessageTest() {
+        assertEquals("\\[\\]\\*\\_\\`", JsonUtils.sanitizeChatMessage("[]*_`"));
+    }
+
+    @Test
     public void getHtmlTest() throws Exception {
         assertNotNull(JsonUtils.getHtml(revisionUrl));
         assertNull(JsonUtils.getHtml("https://stackoverflow.com/revisions/ABCDE/view-source"));
