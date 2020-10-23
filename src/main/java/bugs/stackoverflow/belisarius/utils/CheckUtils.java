@@ -126,7 +126,7 @@ public class CheckUtils {
 
     public static Set<String> checkRepeatedWords(String target) {
         String[] words = target.split("\\W");
-        return new HashSet<String>(Arrays.asList(words));
+        return new HashSet<>(Arrays.asList(words));
     }
 
 }
