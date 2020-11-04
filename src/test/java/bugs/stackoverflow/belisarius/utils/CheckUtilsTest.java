@@ -13,8 +13,8 @@ public class CheckUtilsTest {
 
     // Blacklisted and offensive words strings
     private final String blacklistedQuestionWords = "problem now solved  problem has been now fixed  found my solution  "
-                                                  + "answer:  approval overridden  solved:  fixed -";
-    private final String blacklistedAnswerWords = "help me  approval overridden";
+                                                  + "answer:  approval overridden  solved: ";
+    private final String blacklistedAnswerWords = "approval overridden";
     private final String blacklistedQuestionTitleWords = "How do to Y with Z? [SOLVED]";
     private final String blacklistedWordsInHtml = "<pre><code>Blacklisted word in code: answer:</code></pre>";
     private final String someOffensiveWords = "shitty question  bullshit";
@@ -33,8 +33,8 @@ public class CheckUtilsTest {
 
     @Test
     public void blacklistedWordReasonTest() {
-        assertEquals(CheckUtils.checkForBlackListedWords(blacklistedQuestionWords, "question").size(), 7);
-        assertEquals(CheckUtils.checkForBlackListedWords(blacklistedAnswerWords, "answer").size(), 2);
+        assertEquals(CheckUtils.checkForBlackListedWords(blacklistedQuestionWords, "question").size(), 6);
+        assertEquals(CheckUtils.checkForBlackListedWords(blacklistedAnswerWords, "answer").size(), 1);
         assertEquals(CheckUtils.checkForBlackListedWords(blacklistedQuestionTitleWords, "question_title").size(), 1);
         assertEquals(CheckUtils.checkForBlackListedWords(blacklistedWordsInHtml, "question").size(), 0);
     }
