@@ -8,7 +8,7 @@ import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 
-import org.apache.commons.lang3.StringUtils;
+// import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,8 +30,9 @@ public class VeryLongWordFilter implements Filter {
     public boolean isHit() {
         this.listedWord = "";
         if (post.getBody() != null) {
-            this.listedWord = CheckUtils.checkForLongWords(StringUtils.difference(post.getLastBody(), post.getBody()));
-            return this.listedWord != null;
+            this.listedWord = CheckUtils.checkForLongWords(post.getBody());
+            String oldListedWord = CheckUtils.checkForLongWords(post.getLastBody());
+            return this.listedWord != null && oldListedWord == null;
         }
         return false;
     }
