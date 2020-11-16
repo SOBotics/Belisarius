@@ -33,10 +33,10 @@ public class CheckUtilsTest {
 
     @Test
     public void blacklistedWordReasonTest() {
-        assertEquals(CheckUtils.checkForBlackListedWords(blacklistedQuestionWords, "question").size(), 6);
-        assertEquals(CheckUtils.checkForBlackListedWords(blacklistedAnswerWords, "answer").size(), 1);
-        assertEquals(CheckUtils.checkForBlackListedWords(blacklistedQuestionTitleWords, "question_title").size(), 1);
-        assertEquals(CheckUtils.checkForBlackListedWords(blacklistedWordsInHtml, "question").size(), 0);
+        assertEquals(CheckUtils.checkForBlackListedWords(blacklistedQuestionWords, null, "question").size(), 6);
+        assertEquals(CheckUtils.checkForBlackListedWords(blacklistedAnswerWords, null, "answer").size(), 1);
+        assertEquals(CheckUtils.checkForBlackListedWords(blacklistedQuestionTitleWords, null, "question_title").size(), 1);
+        assertEquals(CheckUtils.checkForBlackListedWords(blacklistedWordsInHtml, null, "question").size(), 0);
     }
 
     @Test

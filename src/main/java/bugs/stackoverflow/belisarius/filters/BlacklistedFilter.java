@@ -9,7 +9,6 @@ import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,19 +28,16 @@ public class BlacklistedFilter implements Filter {
 
     @Override
     public boolean isHit() {
-
         if (post.getLastTitle() != null && "question".equals(post.getPostType())) {
-            String titleDifference = StringUtils.difference(post.getLastTitle(), post.getTitle());
-            blacklistedWords.put("title", CheckUtils.checkForBlackListedWords(titleDifference, "question_title"));
+            blacklistedWords.put("title", CheckUtils.checkForBlackListedWords(post.getTitle(), post.getLastTitle(), "question_title"));
         }
 
         if (post.getBody() != null) {
-            String bodyDifference = StringUtils.difference(post.getLastBody(), post.getBody());
-            blacklistedWords.put("body", CheckUtils.checkForBlackListedWords(bodyDifference, post.getPostType()));
+            blacklistedWords.put("body", CheckUtils.checkForBlackListedWords(post.getBody(), post.getLastBody(), post.getPostType()));
         }
 
         if (post.getComment() != null) {
-            blacklistedWords.put("comment", CheckUtils.checkForBlackListedWords(post.getComment(), post.getPostType()));
+            blacklistedWords.put("comment", CheckUtils.checkForBlackListedWords(post.getComment(), null, post.getPostType()));
         }
 
         return getTotalScore() > 0;

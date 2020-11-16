@@ -32,9 +32,22 @@ public class CheckUtils {
         }
     };
 
-    public static Map<Integer, String> checkForBlackListedWords(String target, String postType) {
+    public static Map<Integer, String> checkForBlackListedWords(String target, String lastTarget, String postType) {
         Map<Integer, String> blacklistedWords = DatabaseUtils.getBlacklistedWords(postType);
-        return getCaughtByRegex(blacklistedWords, removeHtml(stripTags(target)));
+        Map<Integer, String> blacklistedWordsCaught = new HashMap<>();
+        Map<Integer, String> lastBodyBlacklistedWords = getCaughtByRegex(blacklistedWords, removeHtml(stripTags(lastTarget)));
+        Map<Integer, String> bodyBlacklistedWords = getCaughtByRegex(blacklistedWords, removeHtml(stripTags(target)));
+
+        // Instead of finding the difference between the most recent revisions, then checking that piece for vandalism,
+        // we check if the blacklisted part was added with the latest revision (i.e. old blacklisted !== new blacklisted).
+        // However, there are cases where a blacklisted word is added to a post which already contains one.
+        // The hashmaps won't be the same (the bodyBlacklistedWords will have more words), but we still want to report the post.
+        // Thus, we also check if both of them are NOT empty.
+        if (!(lastBodyBlacklistedWords.equals(bodyBlacklistedWords) || (lastBodyBlacklistedWords.isEmpty()
+                                                                     && bodyBlacklistedWords.isEmpty())) || lastTarget == null) {
+            blacklistedWordsCaught.putAll(bodyBlacklistedWords);
+        }
+        return blacklistedWordsCaught;
     }
 
     private static String stripTags(String target) {
