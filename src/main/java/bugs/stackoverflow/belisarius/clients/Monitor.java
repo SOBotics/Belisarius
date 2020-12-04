@@ -8,7 +8,6 @@ import bugs.stackoverflow.belisarius.models.VandalisedPost;
 import bugs.stackoverflow.belisarius.services.HiggsService;
 import bugs.stackoverflow.belisarius.services.MonitorService;
 import bugs.stackoverflow.belisarius.services.PropertyService;
-import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 import bugs.stackoverflow.belisarius.utils.JsonUtils;
 import bugs.stackoverflow.belisarius.utils.PostUtils;
 
@@ -50,9 +49,7 @@ public class Monitor {
             // Check if the post exists
             if (PostUtils.checkVandalisedPost(post)) {
                 LOGGER.info("The given post has already been reported.");
-                int roomId = Integer.parseInt(new PropertyService().getProperty("roomid"));
-                int higgsId = DatabaseUtils.getHiggsId(post.getPostId(), post.getRevisionNumber(), roomId);
-                sendPostAlreadyReportedMessage(post, higgsId, vandalisedPost.getSeverity());
+                sendPostAlreadyReportedMessage(post, vandalisedPost.getSeverity());
             } else if (vandalisedPost.getSeverity() != null) {
                 // if the post hasn't been caught and it has been potentially vandalised report it
                 reportPost(vandalisedPost, post);
@@ -116,8 +113,8 @@ public class Monitor {
                                 post.getRevisionNumber(), post.getRevisionUrl(), monitorService);
     }
 
-    private void sendPostAlreadyReportedMessage(Post post, int higgsId, String severity) {
-        Belisarius.buildMessage(higgsId, post.getPostType().toLowerCase(), severity, Belisarius.ALREADY_REPORTED, post.getAllRevisionsUrl(),
+    private void sendPostAlreadyReportedMessage(Post post, String severity) {
+        Belisarius.buildMessage(0, post.getPostType().toLowerCase(), severity, Belisarius.ALREADY_REPORTED, post.getAllRevisionsUrl(),
                                 post.getRevisionNumber(), post.getRevisionUrl(), monitorService);
     }
 

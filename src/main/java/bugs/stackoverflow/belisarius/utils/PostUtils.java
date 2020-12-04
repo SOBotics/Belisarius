@@ -115,7 +115,7 @@ public class PostUtils {
         PropertyService propertyService = new PropertyService();
         try {
             if (propertyService.getProperty("useHiggs").equals("true")) {
-                int higgsId = DatabaseUtils.getHiggsId(postId, revisionNumber, ROOM_ID);
+                int higgsId = getHiggsIdFromMessage(repliedToMessage.getPlainContent().trim());
                 HiggsService.getInstance().sendFeedback(higgsId, (int) event.getMessage().getUser().getId(), feedback);
             }
         } catch (ApiException exception) {
@@ -133,8 +133,7 @@ public class PostUtils {
         DatabaseUtils.storeVandalisedPost(post.getPostId(), post.getCreationDate(), post.getRevisionNumber(), ROOM_ID,
                                           post.getUser().getUserId(), post.getTitle(), post.getLastTitle(), post.getBody(),
                                           post.getLastBody(), post.getIsRollback(), post.getPostType(), post.getComment(),
-                                          post.getSite(), vandalisedPost.getSeverity(), higgsId, post.getRevisionGuid(),
-                                          post.getPreviousRevisionGuid(), lastBodyMarkdown, bodyMarkdown);
+                                          post.getSite(), vandalisedPost.getSeverity(), post.getRevisionGuid());
 
     }
 
@@ -147,16 +146,20 @@ public class PostUtils {
         return Integer.parseInt(message.substring(message.length() - 2, message.length() - 1));
     }
 
+    private static int getHiggsIdFromMessage(String message) {
+        return Integer.parseInt(message.split("Hippo\\]\\(")[1].split("\\)")[0].substring(40));
+    }
+
     public static VandalisedPost getVandalisedPost(Post post) {
         // create a list with all the filters
         List<Filter> filters = new ArrayList<>();
-        filters.add(new BlacklistedFilter(ROOM_ID, post, DatabaseUtils.getReasonId("BlacklistedFilter")));
-        filters.add(new VeryLongWordFilter(ROOM_ID, post, DatabaseUtils.getReasonId("VeryLongWordFilter")));
-        filters.add(new CodeRemovedFilter(ROOM_ID, post, DatabaseUtils.getReasonId("CodeRemovedFilter")));
-        filters.add(new TextRemovedFilter(ROOM_ID, post, DatabaseUtils.getReasonId("TextRemovedFilter")));
-        filters.add(new FewUniqueCharactersFilter(ROOM_ID, post, DatabaseUtils.getReasonId("FewUniqueCharactersFilter")));
-        filters.add(new OffensiveWordFilter(ROOM_ID, post, DatabaseUtils.getReasonId("OffensiveWordFilter")));
-        filters.add(new RepeatedWordFilter(ROOM_ID, post, DatabaseUtils.getReasonId("RepeatedWordFilter")));
+        filters.add(new BlacklistedFilter(ROOM_ID, post));
+        filters.add(new VeryLongWordFilter(ROOM_ID, post));
+        filters.add(new CodeRemovedFilter(ROOM_ID, post));
+        filters.add(new TextRemovedFilter(ROOM_ID, post));
+        filters.add(new FewUniqueCharactersFilter(ROOM_ID, post));
+        filters.add(new OffensiveWordFilter(ROOM_ID, post));
+        filters.add(new RepeatedWordFilter(ROOM_ID, post));
 
         Severity severity = null;
 

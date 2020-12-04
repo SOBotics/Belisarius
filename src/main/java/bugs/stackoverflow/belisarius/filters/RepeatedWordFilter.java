@@ -18,13 +18,12 @@ public class RepeatedWordFilter implements Filter {
 
     private final int roomId;
     private final Post post;
-    private final int reasonId;
+    private final int reasonId = 5;
     private Set<String> repeatedWords = new HashSet<>();
 
-    public RepeatedWordFilter(int chatroomId, Post post, int reasonId) {
+    public RepeatedWordFilter(int chatroomId, Post post) {
         this.roomId = chatroomId;
         this.post = post;
-        this.reasonId = reasonId;
     }
 
     @Override

@@ -32,15 +32,15 @@ public class MonitorService {
         if (chatroomId != 0) {
             this.room = client.joinRoom(ChatUtils.getChatHost(sitename), chatroomId);
             LOGGER.info("Joined room " + chatroomId + " on " + sitename + ".");
-            // Add event listeners
-            room.addEventListener(EventType.USER_MENTIONED, event -> ChatUtils.handleMentionedEvent(event, this));
-            room.addEventListener(EventType.MESSAGE_REPLY, event -> ChatUtils.handleReplies(room, event));
-            room.addEventListener(EventType.MESSAGE_POSTED, event -> ChatUtils.handleMessagePostedEvent(event, this));
         }
         this.redunda = redunda;
     }
 
     public void runMonitor() {
+        // Add event listeners
+        room.addEventListener(EventType.USER_MENTIONED, event -> ChatUtils.handleMentionedEvent(event, this));
+        room.addEventListener(EventType.MESSAGE_REPLY, event -> ChatUtils.handleReplies(room, event));
+        room.addEventListener(EventType.MESSAGE_POSTED, event -> ChatUtils.handleMessagePostedEvent(event, this));
         this.redunda.start();
         this.sendMessageToChat(Belisarius.README + "] started.");
         executorService = Executors.newSingleThreadScheduledExecutor();

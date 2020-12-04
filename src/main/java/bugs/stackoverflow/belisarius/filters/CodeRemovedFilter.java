@@ -16,12 +16,11 @@ public class CodeRemovedFilter implements Filter {
 
     private final int roomId;
     private final Post post;
-    private final int reasonId;
+    private final int reasonId = 2;
 
-    public CodeRemovedFilter(int chatroomId, Post post, int reasonId) {
+    public CodeRemovedFilter(int chatroomId, Post post) {
         this.roomId = chatroomId;
         this.post = post;
-        this.reasonId = reasonId;
     }
 
     @Override

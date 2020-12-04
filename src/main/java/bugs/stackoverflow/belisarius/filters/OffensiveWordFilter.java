@@ -17,14 +17,13 @@ public class OffensiveWordFilter implements Filter {
 
     private final int roomId;
     private final Post post;
-    private final int reasonId;
+    private final int reasonId = 4;
 
     private Map<Integer, String> offensiveWords = new HashMap<>();
 
-    public OffensiveWordFilter(int chatroomId, Post post, int reasonId) {
+    public OffensiveWordFilter(int chatroomId, Post post) {
         this.roomId = chatroomId;
         this.post = post;
-        this.reasonId = reasonId;
     }
 
     @Override

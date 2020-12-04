@@ -17,13 +17,12 @@ public class BlacklistedFilter implements Filter {
 
     private final int roomId;
     private final Post post;
-    private final int reasonId;
+    private final int reasonId = 1;
     private final Map<String, Map<Integer, String>> blacklistedWords = new HashMap<>();
 
-    public BlacklistedFilter(int chatroomId, Post post, int reasonId) {
+    public BlacklistedFilter(int chatroomId, Post post) {
         this.roomId = chatroomId;
         this.post = post;
-        this.reasonId = reasonId;
     }
 
     @Override

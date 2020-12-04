@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import bugs.stackoverflow.belisarius.utils.PathUtils;
+import bugs.stackoverflow.belisarius.utils.FileUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,7 @@ public class SQLiteConnection {
 
     public Connection connect() {
         try {
-            conn = DriverManager.getConnection(PathUtils.DATABASE_FILE);
+            conn = DriverManager.getConnection(FileUtils.DATABASE_FILE);
         } catch (SQLException exception) {
             LOGGER.info("Error occurred while trying to connect to the SQLite database.", exception);
         }

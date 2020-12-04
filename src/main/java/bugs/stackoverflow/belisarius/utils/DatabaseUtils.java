@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import bugs.stackoverflow.belisarius.database.SQLiteConnection;
@@ -15,6 +16,9 @@ import org.slf4j.LoggerFactory;
 
 public class DatabaseUtils {
 
+    // The variable holds a map that has a map (Id, BlacklistedWord) and the post type
+    public static final Map<String, Map<Integer, String>> BLACKLISTED_WORDS = getBlacklistedWords();
+    public static final Map<Integer, String> OFFENSIVE_WORDS = getOffensiveWords();
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseUtils.class);
 
     public static void createVandalisedPostTable() {
@@ -34,11 +38,7 @@ public class DatabaseUtils {
                                                             + " Comment text, \n"
                                                             + " Site text, \n"
                                                             + " Severity text, \n"
-                                                            + " HiggsId integer, \n"
                                                             + " RevisionGuid text, \n"
-                                                            + " PreviousRevisionGuid text, \n"
-                                                            + " LastBodyMarkdown text, \n"
-                                                            + " BodyMarkdown text, \n"
                                                             + " PRIMARY KEY(PostId, RevisionId, RoomId));";
 
         try (Connection conn = connection.getConnection();
@@ -46,21 +46,6 @@ public class DatabaseUtils {
             statement.execute(sql);
         } catch (SQLException exception) {
             LOGGER.error("Failed to create VandalisedPost table.", exception);
-        }
-    }
-
-    public static void createReasonTable() {
-        SQLiteConnection connection = new SQLiteConnection();
-
-        String sql = "CREATE TABLE IF NOT EXISTS Reason(ReasonId integer, \n"
-                                                    + " Reason integer, \n"
-                                                    + " PRIMARY KEY(ReasonId));";
-
-        try (Connection conn = connection.getConnection();
-            Statement statement = conn.createStatement()) {
-            statement.execute(sql);
-        } catch (SQLException exception) {
-            LOGGER.error("Failed to create Reason table.", exception);
         }
     }
 
@@ -86,22 +71,6 @@ public class DatabaseUtils {
         }
     }
 
-    public static void createBlacklistedWordTable() {
-        SQLiteConnection connection = new SQLiteConnection();
-
-        String sql = "CREATE TABLE IF NOT EXISTS BlacklistedWord(BlacklistedWordId integer, \n"
-                                                             + " BlacklistedWord text, \n"
-                                                             + " PostType text, \n"
-                                                             + " PRIMARY KEY(BlacklistedWordId));";
-
-        try (Connection conn = connection.getConnection();
-            Statement statement = conn.createStatement()) {
-            statement.execute(sql);
-        } catch (SQLException exception) {
-            LOGGER.error("Failed to create BlacklistWord table.", exception);
-        }
-    }
-
     public static void createBlacklistedWordCaughtTable() {
         SQLiteConnection connection = new SQLiteConnection();
 
@@ -121,21 +90,6 @@ public class DatabaseUtils {
             statement.execute(sql);
         } catch (SQLException exception) {
             LOGGER.error("Failed to create BlacklistedWordCaught table.", exception);
-        }
-    }
-
-    public static void createOffensiveWordTable() {
-        SQLiteConnection connection = new SQLiteConnection();
-
-        String sql = "CREATE TABLE IF NOT EXISTS OffensiveWord(OffensiveWordId integer, \n"
-                                                           + " OffensiveWord text, \n"
-                                                           + " PRIMARY KEY(OffensiveWordId));";
-
-        try (Connection conn = connection.getConnection();
-            Statement statement = conn.createStatement()) {
-            statement.execute(sql);
-        } catch (SQLException exception) {
-            LOGGER.error("Failed to create OffensiveWord table.", exception);
         }
     }
 
@@ -275,12 +229,11 @@ public class DatabaseUtils {
 
     public static void storeVandalisedPost(long postId, long creationDate, int revisionId, int roomId, long ownerId, String title,
                                            String lastTitle, String body, String lastBody, boolean isRollback, String postType,
-                                           String comment, String site, String severity, int higgsId, String revisionGuid,
-                                           String previousRevisionGuid, String lastBodyMarkdown, String bodyMarkdown) {
+                                           String comment, String site, String severity, String revisionGuid) {
 
         SQLiteConnection connection = new SQLiteConnection();
 
-        String sql = "INSERT INTO VandalisedPost VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        String sql = "INSERT INTO VandalisedPost VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
         try (Connection conn = connection.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
@@ -298,11 +251,7 @@ public class DatabaseUtils {
             preparedStatement.setString(12, comment);
             preparedStatement.setString(13, site);
             preparedStatement.setString(14, severity);
-            preparedStatement.setInt(15, higgsId);
-            preparedStatement.setString(16, revisionGuid);
-            preparedStatement.setString(17, previousRevisionGuid);
-            preparedStatement.setString(18, lastBodyMarkdown);
-            preparedStatement.setString(19, bodyMarkdown);
+            preparedStatement.setString(15, revisionGuid);
 
             preparedStatement.executeUpdate();
         } catch (SQLException exception) {
@@ -352,87 +301,6 @@ public class DatabaseUtils {
         }
     }
 
-    public static int getHiggsId(long postId, int revisionId, int roomId) {
-        SQLiteConnection connection = new SQLiteConnection();
-
-        String sql = "SELECT HiggsId FROM VandalisedPost WHERE PostId = ? AND RevisionId = ? AND RoomId = ?;";
-
-        try (Connection conn = connection.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-            preparedStatement.setLong(1, postId);
-            preparedStatement.setInt(2, revisionId);
-            preparedStatement.setInt(3, roomId);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getInt("HiggsId");
-            }
-        } catch (SQLException exception) {
-            LOGGER.error("Failed to get HiggsId. PostId: " + postId + "; "
-                      + "RevisionId: " + revisionId + "; RoomId: " + roomId, exception);
-        }
-
-        return 0;
-    }
-
-    public static Map<Integer, String> getBlacklistedWords(String postType) {
-        SQLiteConnection connection = new SQLiteConnection();
-
-        String sql = "SELECT BlacklistedWordId, BlacklistedWord FROM BlacklistedWord WHERE PostType = ?;";
-
-        Map<Integer, String> blacklistedWords = new HashMap<>();
-        try (Connection conn = connection.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-            preparedStatement.setString(1, postType);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                blacklistedWords.put(resultSet.getInt("BlacklistedWordId"), resultSet.getString("BlacklistedWord"));
-            }
-        } catch (SQLException exception) {
-            LOGGER.error("Failed to get blacklisted words.", exception);
-        }
-        return blacklistedWords;
-    }
-
-    public static Map<Integer, String> getOffensiveWords() {
-        SQLiteConnection connection = new SQLiteConnection();
-
-        String sql = "SELECT OffensiveWordId, OffensiveWord FROM OffensiveWord;";
-
-        Map<Integer, String> offensiveWords = new HashMap<>();
-        try (Connection conn = connection.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                offensiveWords.put(resultSet.getInt("OffensiveWordId"), resultSet.getString("OffensiveWord"));
-            }
-        } catch (SQLException exception) {
-            LOGGER.error("Failed to get offensive words.", exception);
-        }
-        return offensiveWords;
-    }
-
-    public static int getReasonId(String reason) {
-        SQLiteConnection connection = new SQLiteConnection();
-
-        String sql = "SELECT ReasonId FROM Reason WHERE Reason = ?;";
-
-        try (Connection conn = connection.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-            preparedStatement.setString(1, reason);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getInt("ReasonId");
-            }
-        } catch (SQLException exception) {
-            LOGGER.error("Failed to get reason Id.", exception);
-        }
-        return 0;
-    }
-
     public static void storeCaughtBlacklistedWord(long postId, int revisionId, int roomId, int blacklistedWordId) {
 
         SQLiteConnection connection = new SQLiteConnection();
@@ -473,4 +341,29 @@ public class DatabaseUtils {
         }
     }
 
+    public static Map<String, Map<Integer, String>> getBlacklistedWords() {
+        Map<String, Map<Integer, String>> blacklistedWordsMap = new HashMap<>();
+        blacklistedWordsMap.put("question", new HashMap<>());
+        blacklistedWordsMap.put("answer", new HashMap<>());
+        blacklistedWordsMap.put("question_title", new HashMap<>());
+
+        FileUtils.readFile(FileUtils.BLACKLISTED_WORDS_FILE).forEach(line -> {
+            List<String> matches = FileUtils.splitLine(line);
+            blacklistedWordsMap.get(matches.get(2)).put(Integer.parseInt(matches.get(0)), matches.get(1));
+        });
+        return blacklistedWordsMap;
+    }
+
+    public static Map<Integer, String> getOffensiveWords() {
+        Map<Integer, String> offensiveWordsMap = new HashMap<>();
+        FileUtils.readFile(FileUtils.OFFENSIVE_WORDS_FILE).forEach(line -> {
+            List<String> matches = FileUtils.splitLine(line);
+            offensiveWordsMap.put(Integer.parseInt(matches.get(0)), matches.get(1));
+        });
+        return offensiveWordsMap;
+    }
+
+    public static Map<Integer, String> getBlacklistedWordsByType(String postType) {
+        return BLACKLISTED_WORDS.get(postType);
+    }
 }

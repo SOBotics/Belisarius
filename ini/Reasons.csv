@@ -1,7 +1,0 @@
-1,BlacklistedFilter
-2,VeryLongWordFilter
-3,CodeRemovedFilter
-4,TextRemovedFilter
-5,FewUniqueCharactersFilter
-6,OffensiveWordFilter
-7,RepeatedWordFilter

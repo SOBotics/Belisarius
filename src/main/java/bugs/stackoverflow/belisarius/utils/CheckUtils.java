@@ -33,7 +33,7 @@ public class CheckUtils {
     };
 
     public static Map<Integer, String> checkForBlackListedWords(String target, String lastTarget, String postType) {
-        Map<Integer, String> blacklistedWords = DatabaseUtils.getBlacklistedWords(postType);
+        Map<Integer, String> blacklistedWords = DatabaseUtils.getBlacklistedWordsByType(postType);
         Map<Integer, String> blacklistedWordsCaught = new HashMap<>();
         Map<Integer, String> lastBodyBlacklistedWords = getCaughtByRegex(blacklistedWords, removeHtml(stripTags(lastTarget)));
         Map<Integer, String> bodyBlacklistedWords = getCaughtByRegex(blacklistedWords, removeHtml(stripTags(target)));
@@ -43,8 +43,7 @@ public class CheckUtils {
         // However, there are cases where a blacklisted word is added to a post which already contains one.
         // The hashmaps won't be the same (the bodyBlacklistedWords will have more words), but we still want to report the post.
         // Thus, we also check if both of them are NOT empty.
-        if (!(lastBodyBlacklistedWords.equals(bodyBlacklistedWords) || (lastBodyBlacklistedWords.isEmpty()
-                                                                     && bodyBlacklistedWords.isEmpty())) || lastTarget == null) {
+        if (!(lastBodyBlacklistedWords.equals(bodyBlacklistedWords) || bodyBlacklistedWords.isEmpty()) || lastTarget == null) {
             blacklistedWordsCaught.putAll(bodyBlacklistedWords);
         }
         return blacklistedWordsCaught;
@@ -114,12 +113,15 @@ public class CheckUtils {
     }
 
     public static Map<Integer, String> checkForOffensiveWords(String target) {
-        Map<Integer, String> offensiveWords = DatabaseUtils.getOffensiveWords();
+        Map<Integer, String> offensiveWords = DatabaseUtils.OFFENSIVE_WORDS;
         return getCaughtByRegex(offensiveWords, target);
     }
 
     private static Map<Integer, String> getCaughtByRegex(Map<Integer, String> words, String target) {
         Map<Integer, String> caught = new HashMap<>();
+        if (target == null) {
+            return caught; // no need to make any checks if the target is null
+        }
 
         for (Map.Entry<Integer, String> word : words.entrySet()) {
             Pattern pattern = Pattern.compile(word.getValue());

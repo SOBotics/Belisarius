@@ -16,13 +16,12 @@ public class FewUniqueCharactersFilter implements Filter {
 
     private final int roomId;
     private final Post post;
-    private final int reasonId;
+    private final int reasonId = 3;
     private String listedWord;
 
-    public FewUniqueCharactersFilter(int chatroomId, Post post, int reasonId) {
+    public FewUniqueCharactersFilter(int chatroomId, Post post) {
         this.roomId = chatroomId;
         this.post = post;
-        this.reasonId = reasonId;
     }
 
     @Override

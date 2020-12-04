@@ -4,7 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import bugs.stackoverflow.belisarius.utils.PathUtils;
+import bugs.stackoverflow.belisarius.utils.FileUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +16,11 @@ public class PropertyService {
     private Properties prop;
 
     public PropertyService() {
-        try (FileInputStream propertiesFis = new FileInputStream(PathUtils.LOGIN_PROPERTIES_FILE)) {
+        try (FileInputStream propertiesFis = new FileInputStream(FileUtils.LOGIN_PROPERTIES_FILE)) {
             prop = new Properties();
             prop.load(propertiesFis);
         } catch (IOException exception) {
-            LOGGER.info("IOException occurred while loading properties from " + PathUtils.LOGIN_PROPERTIES_FILE, exception);
+            LOGGER.info("IOException occurred while loading properties from " + FileUtils.LOGIN_PROPERTIES_FILE, exception);
         }
     }
 

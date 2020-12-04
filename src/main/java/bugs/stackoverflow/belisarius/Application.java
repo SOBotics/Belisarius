@@ -23,10 +23,7 @@ public class Application {
 
         // Initialise database
         DatabaseUtils.createVandalisedPostTable();
-        DatabaseUtils.createReasonTable();
-        DatabaseUtils.createBlacklistedWordTable();
         DatabaseUtils.createBlacklistedWordCaughtTable();
-        DatabaseUtils.createOffensiveWordTable();
         DatabaseUtils.createOffensiveWordCaughtTable();
         DatabaseUtils.createReasonCaughtTable();
         DatabaseUtils.createFeedbackTable();

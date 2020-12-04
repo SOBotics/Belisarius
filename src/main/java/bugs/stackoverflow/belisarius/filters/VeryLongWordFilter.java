@@ -17,13 +17,12 @@ public class VeryLongWordFilter implements Filter {
 
     private final int roomId;
     private final Post post;
-    private final int reasonId;
+    private final int reasonId = 6;
     private String listedWord;
 
-    public VeryLongWordFilter(int chatroomId, Post post, int reasonId) {
+    public VeryLongWordFilter(int chatroomId, Post post) {
         this.roomId = chatroomId;
         this.post = post;
-        this.reasonId = reasonId;
     }
 
     @Override
