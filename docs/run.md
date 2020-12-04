@@ -17,7 +17,7 @@ Clone the repository and build it with Maven:
 - Edit the `properties/login.properties` file with the information you like.  
 - Run the bot with the following command:
 
-      java -cp target/belisarius-1.6.2.jar:./lib/* bugs.stackoverflow.belisarius.Application
+      java -cp target/belisarius-1.7.0.jar:./lib/* bugs.stackoverflow.belisarius.Application
 
 -----
 
