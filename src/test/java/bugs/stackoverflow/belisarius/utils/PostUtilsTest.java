@@ -81,7 +81,6 @@ public class PostUtilsTest {
             List<VandalisedPost> mediumSeverityPosts = new ArrayList<>();
             // blacklisted word(s)
             mediumSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("27421094")));
-            mediumSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("45639660")));
             mediumSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("31883097")));
             mediumSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("64643310")));
             mediumSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("64123548"))); // very long word
