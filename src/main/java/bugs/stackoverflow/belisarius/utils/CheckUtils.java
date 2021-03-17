@@ -19,6 +19,8 @@ public class CheckUtils {
     // Stolen from https://github.com/Charcoal-SE/SmokeDetector/blob/84099eecffbd85b15de90a1ea41a7c8776ac0903/findspam.py#L592-L595
     // Key is the number of unique characters, value is a list with lengths which correspond to the key
     private static final Map<Integer, List<Integer>> FEW_UNIQUES_THRESHOLD = new HashMap<Integer, List<Integer>>() {
+        private static final long serialVersionUID = -2936670361661267625L;
+
         {
             put(6, Arrays.asList(30, 36));
             put(7, Arrays.asList(36, 42));
