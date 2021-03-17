@@ -20,6 +20,8 @@ public class JsonUtilsTest {
     @Test
     public void sanitizeChatMessageTest() {
         assertEquals("\\[\\]\\*\\_\\`", JsonUtils.sanitizeChatMessage("[]*_`"));
+        // test case from https://chat.stackoverflow.com/messages/51803561/history
+        assertEquals("reio09ug\\[t8", JsonUtils.sanitizeChatMessage("reio09ug[t8"));
     }
 
     @Test

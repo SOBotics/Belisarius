@@ -7,6 +7,7 @@ import java.util.List;
 import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
+import bugs.stackoverflow.belisarius.utils.JsonUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +47,8 @@ public class FewUniqueCharactersFilter implements Filter {
 
     @Override
     public String getFormattedReasonMessage() {
-        return "**Few unique characters detected:** " + this.listedWord;
+        // make sure to escape characters like [], see https://chat.stackoverflow.com/messages/51803561/history
+        return "**Few unique characters detected:** " + JsonUtils.sanitizeChatMessage(this.listedWord);
     }
 
     @Override
