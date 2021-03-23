@@ -70,7 +70,7 @@ public class RepeatedWordFilter implements Filter {
             words.append(word);
         }
 
-        return words.toString();
+        return words.toString().substring(0, 40) + "...";
     }
 
     @Override
