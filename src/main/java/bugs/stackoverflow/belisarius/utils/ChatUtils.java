@@ -62,7 +62,7 @@ public class ChatUtils {
         int codePoint = Character.codePointAt(message, 0);
         if (message.toLowerCase().startsWith("@bots alive")) {
             service.sendMessageToChat("Yeah, I'm alive.");
-        } else if (codePoint == 128642 || (codePoint >= 128644 && codePoint <= 128650)) {
+        } else if (codePoint == 128642 || codePoint >= 128644 && codePoint <= 128650) {
             service.sendMessageToChat("[\uD83D\uDE83](https://www.youtube.com/watch?v=oKk-2Pu2N8g)");
         }
     }
