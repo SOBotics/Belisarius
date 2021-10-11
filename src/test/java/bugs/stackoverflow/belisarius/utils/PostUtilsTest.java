@@ -73,7 +73,7 @@ public class PostUtilsTest {
 
             Map<String, List<VandalisedPost>> vandalisedPosts = new HashMap<>();
             List<VandalisedPost> lowSeverityPosts = new ArrayList<>();
-            lowSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("64163328"))); // removed code Q
+            lowSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("66373993"))); // removed code Q
             lowSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("63575223"))); // text removed Q
             lowSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("64296039"))); // text removed A
             lowSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("63769100"))); // both of the above
