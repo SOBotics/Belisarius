@@ -63,6 +63,8 @@ public class PostUtilsTest {
         }
     }
 
+    /**
+    * These test are may become not valid over time since posts changes (new edits/post deleted), for now I'm (@Petter) removing them. Static content would be needed.
     @Test
     public void getVandalisedPostTest() {
         try {
@@ -101,4 +103,5 @@ public class PostUtilsTest {
             exception.printStackTrace();
         }
     }
+    */
 }
