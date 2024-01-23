@@ -13,8 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      max-parallel: 2
       matrix:
-        java: [ 8, 9.0.x, 10, 11.0.x, 12, 13 ]
+        java: [ 11.0.x, 12, 13, 14, 15, 16 ]
 
     steps:
     - uses: actions/checkout@v4

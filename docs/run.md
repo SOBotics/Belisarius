@@ -3,16 +3,25 @@
 #### Minimum requirements
 
 - Maven 3.6
-- Java 8
+- Java 11
 - SQLite for reading the database - instructions to install for [Windows](https://www.sqlitetutorial.net/download-install-sqlite), [Linux](https://linoxide.com/linux-how-to/install-use-sqlite-linux) and [MacOS](https://flaviocopes.com/sqlite-how-to-install)
 
 #### Compile and run
 
-Clone the repository and build it with Maven:
+- Clone the repository and build it with Maven:
 
-    git clone https://github.com/SOBotics/Belisarius
-    cd Belisarius
-    mvn clean install
+      git clone https://github.com/SOBotics/Belisarius
+      cd Belisarius
+
+- Install the swagger-java-client jar, which is used to communicate with Higgs, and build:
+
+      mvn -B install:install-file -Dfile="./lib/swagger-java-client-1.0.0.jar" \
+                                  -DgroupId="io.swagger" \
+                                  -DartifactId="swagger-java-client" \
+                                  -Dversion="1.0.0" \
+                                  -Dpackaging="jar" \
+                                  -DgeneratePom="true"
+      mvn clean install
 
 - Edit the `properties/login.properties` file with the information you like.  
 - Run the bot with the following command:

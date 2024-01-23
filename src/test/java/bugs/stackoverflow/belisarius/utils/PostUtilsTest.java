@@ -63,8 +63,6 @@ public class PostUtilsTest {
         }
     }
 
-    /**
-    * These test are may become not valid over time since posts changes (new edits/post deleted), for now I'm (@Petter) removing them. Static content would be needed.
     @Test
     public void getVandalisedPostTest() {
         try {
@@ -74,25 +72,25 @@ public class PostUtilsTest {
             assertNull(deletedPost);
 
             Map<String, List<VandalisedPost>> vandalisedPosts = new HashMap<>();
-            List<VandalisedPost> lowSeverityPosts = new ArrayList<>();
-            lowSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("66373993"))); // removed code Q
-            lowSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("63575223"))); // text removed Q
-            lowSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("64296039"))); // text removed A
-            lowSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("63769100"))); // both of the above
+            List<VandalisedPost> low = new ArrayList<>();
+            low.add(PostUtils.getVandalisedPost(belisarius.getPost("66373993"))); // removed code Q
+            low.add(PostUtils.getVandalisedPost(belisarius.getPost("63575223"))); // text removed Q
+            low.add(PostUtils.getVandalisedPost(belisarius.getPost("64296039"))); // text removed A
+            low.add(PostUtils.getVandalisedPost(belisarius.getPost("63769100"))); // both of the above
 
-            List<VandalisedPost> mediumSeverityPosts = new ArrayList<>();
+            List<VandalisedPost> medium = new ArrayList<>();
             // blacklisted word(s)
-            mediumSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("27421094")));
-            mediumSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("31883097")));
-            mediumSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("64643310")));
-            mediumSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("64123548"))); // very long word
+            medium.add(PostUtils.getVandalisedPost(belisarius.getPost("63193055")));
+            medium.add(PostUtils.getVandalisedPost(belisarius.getPost("31883097")));
+            medium.add(PostUtils.getVandalisedPost(belisarius.getPost("64643310")));
+            medium.add(PostUtils.getVandalisedPost(belisarius.getPost("64123548"))); // very long word
 
-            List<VandalisedPost> highSeverityPosts = new ArrayList<>();
-            highSeverityPosts.add(PostUtils.getVandalisedPost(belisarius.getPost("62812593"))); // offensive word
+            List<VandalisedPost> high = new ArrayList<>();
+            high.add(PostUtils.getVandalisedPost(belisarius.getPost("62812593"))); // offensive word
 
-            vandalisedPosts.put("low", lowSeverityPosts);
-            vandalisedPosts.put("medium", mediumSeverityPosts);
-            vandalisedPosts.put("high", highSeverityPosts);
+            vandalisedPosts.put("low", low);
+            vandalisedPosts.put("medium", medium);
+            vandalisedPosts.put("high", high);
 
             for (Map.Entry<String, List<VandalisedPost>> post : vandalisedPosts.entrySet()) {
                 for (VandalisedPost vandalisedPost : post.getValue()) {
@@ -103,5 +101,4 @@ public class PostUtilsTest {
             exception.printStackTrace();
         }
     }
-    */
 }
