@@ -20,12 +20,16 @@ public class PropertyService {
             prop = new Properties();
             prop.load(propertiesFis);
         } catch (IOException exception) {
-            LOGGER.info("IOException occurred while loading properties from " + FileUtils.LOGIN_PROPERTIES_FILE, exception);
+            LOGGER.info(
+                "IOException occurred while loading properties from " + FileUtils.LOGIN_PROPERTIES_FILE,
+                exception
+            );
         }
     }
 
     public String getProperty(String name) {
         String property = prop.getProperty(name);
+
         if (property == null) {
             property = System.getenv(name);
         }

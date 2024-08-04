@@ -46,6 +46,7 @@ public final class HiggsService {
         if (instance == null) {
             throw new ApiException("Higgs has not been initialised");
         }
+
         return instance;
     }
 
@@ -59,18 +60,25 @@ public final class HiggsService {
         AquireTokenResponse tokenResponse = this.botApi.botAquireTokenPost(tokenRequest);
         LOGGER.info("Higgs token is " + tokenResponse.getToken());
 
-        Configuration.getDefaultApiClient().setAccessToken(tokenResponse.getToken());
+        Configuration
+            .getDefaultApiClient()
+            .setAccessToken(tokenResponse.getToken());
     }
 
     public int registerVandalisedPost(VandalisedPost vandalisedPost, Post post, String lastBodyMarkdown, String bodyMarkdown) throws ApiException {
-        LOGGER.info("Attempting to register vandalised post " + post.getPostId() + " to Higgs.");
+        LOGGER.info("Registering vandalised post " + post.getPostId() + " to Higgs.");
 
         // Avoid having null markdown bodies!
-        String body = bodyMarkdown == null ? "The body was not changed in this revision" : bodyMarkdown;
-        String lastBody = lastBodyMarkdown == null ? "The body was not changed in this revision" : lastBodyMarkdown;
+        String body = bodyMarkdown == null
+            ? "The body was not changed in this revision"
+            : bodyMarkdown;
+        String lastBody = lastBodyMarkdown == null
+            ? "The body was not changed in this revision"
+            : lastBodyMarkdown;
 
         // The titles the API returns contain unescaped HTML entities
         String title = Parser.unescapeEntities(post.getTitle(), true);
+
         // Make it clear the post is an answer in Higgs by prepending 'Answer to: '
         if (post.getPostType().equals("answer")) {
             title = "Answer to: " + title;
@@ -129,18 +137,29 @@ public final class HiggsService {
         }
         postRequest.setReasons(reasons);
 
-        postRequest.setAllowedFeedback(Arrays.asList(VandalisedPost.Feedback.TP.toString(), VandalisedPost.Feedback.FP.toString()));
+        postRequest.setAllowedFeedback(
+            Arrays.asList(
+                VandalisedPost.Feedback.TP.toString(),
+                VandalisedPost.Feedback.FP.toString()
+            )
+        );
 
         // Registers the bot. Returns the hippo id.
         return botApi.botRegisterPostPost(postRequest);
     }
 
-    public void sendFeedback(int reportId, int userId, VandalisedPost.Feedback feedback) throws ApiException {
+    public void sendFeedback(
+        int reportId,
+        int userId,
+        VandalisedPost.Feedback feedback
+    ) throws ApiException {
         LOGGER.info("Attempting to register feedback " + feedback.toString() + " by " + userId + " to Higgs.");
+
         RegisterUserFeedbackRequest registerUserFeedbackRequest = new RegisterUserFeedbackRequest();
         registerUserFeedbackRequest.setReportId(reportId);
         registerUserFeedbackRequest.setFeedback(feedback.toString());
         registerUserFeedbackRequest.setUserId(userId);
+
         botApi.botRegisterUserFeedbackPost(registerUserFeedbackRequest);
     }
 }

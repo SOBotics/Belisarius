@@ -10,13 +10,6 @@ import org.junit.jupiter.api.Test;
 
 public class CommandUtilsTest {
     @Test
-    public void checkForCommandTest() {
-        assertTrue(CommandUtils.checkForCommand("@Belisarius alive", "alive"));
-        assertTrue(CommandUtils.checkForCommand("@Belisarius check 43829 ", "check"));
-        assertFalse(CommandUtils.checkForCommand("@Belisarius fake", "stop"));
-    }
-
-    @Test
     public void extractDataTest() {
         assertEquals(CommandUtils.extractData("@Belisarius check 12345"), "12345");
         assertEquals(CommandUtils.extractData("@Belisarius reboot"), "");

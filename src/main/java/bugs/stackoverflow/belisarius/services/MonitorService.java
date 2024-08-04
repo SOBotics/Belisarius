@@ -29,10 +29,12 @@ public class MonitorService {
 
     public MonitorService(StackExchangeClient client, int chatroomId, String sitename, PingService redunda) {
         this.belisarius = new Belisarius(sitename);
+
         if (chatroomId != 0) {
             this.room = client.joinRoom(ChatUtils.getChatHost(sitename), chatroomId);
             LOGGER.info("Joined room " + chatroomId + " on " + sitename + ".");
         }
+
         this.redunda = redunda;
     }
 
@@ -41,9 +43,11 @@ public class MonitorService {
         room.addEventListener(EventType.USER_MENTIONED, event -> ChatUtils.handleMentionedEvent(event, this));
         room.addEventListener(EventType.MESSAGE_REPLY, event -> ChatUtils.handleReplies(room, event));
         room.addEventListener(EventType.MESSAGE_POSTED, event -> ChatUtils.handleMessagePostedEvent(event, this));
+
         this.redunda.start();
         this.sendMessageToChat(Belisarius.README + "] started.");
         executorService = Executors.newSingleThreadScheduledExecutor();
+
         // Check posts from the API every 60 seconds
         executorService.scheduleAtFixedRate(this::execute, 0, 60, TimeUnit.SECONDS);
     }
@@ -53,6 +57,7 @@ public class MonitorService {
         try {
             if (!PingService.standby.get()) {
                 List<Post> posts = belisarius.getPosts();
+
                 new Monitor().run(posts, this);
             }
         } catch (Exception exception) {
@@ -62,6 +67,7 @@ public class MonitorService {
 
     public void executeOnce(String postId) {
         Post post = belisarius.getPost(postId);
+
         new Monitor().runOnce(post, this);
     }
 
@@ -72,8 +78,10 @@ public class MonitorService {
     public void reboot() {
         this.stop();
         executorService = Executors.newSingleThreadScheduledExecutor();
+
         this.runMonitor();
         sendMessageToChat(Belisarius.README + "] rebooted at " + Instant.now());
+
         try {
             Thread.sleep(1000);
         } catch (InterruptedException exception) {

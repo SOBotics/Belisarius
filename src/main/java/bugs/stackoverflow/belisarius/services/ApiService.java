@@ -20,24 +20,29 @@ public class ApiService {
         this.site = site;
     }
 
+    private void updateQuotaAndBackoff(JsonObject json) {
+        setQuota(json.get("quota_remaining").getAsInt());
+        setBackOffUntil(json);
+    }
+
     public JsonObject getPostIdsByActivityDesc(int page, long minActivityDate) throws IOException {
         JsonObject postsJson = ApiUtils.getPostIdsByActivityDesc(page, site, apiKey, minActivityDate);
-        setQuota(postsJson.get("quota_remaining").getAsInt());
-        setBackOffUntil(postsJson);
+        this.updateQuotaAndBackoff(postsJson);
+
         return postsJson;
     }
 
     public JsonObject getLatestRevisions(String postIdInput, int page) throws IOException {
         JsonObject revisionJson = ApiUtils.getLastestRevisions(postIdInput, site, apiKey, page);
-        setQuota(revisionJson.get("quota_remaining").getAsInt());
-        setBackOffUntil(revisionJson);
+        this.updateQuotaAndBackoff(revisionJson);
+
         return revisionJson;
     }
 
     public JsonObject getMorePostInformation(String postId) throws IOException {
         JsonObject postJson = ApiUtils.getMorePostInformation(postId, site, apiKey);
-        setQuota(postJson.get("quota_remaining").getAsInt());
-        setBackOffUntil(postJson);
+        this.updateQuotaAndBackoff(postJson);
+
         return postJson;
     }
 

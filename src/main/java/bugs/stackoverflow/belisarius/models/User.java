@@ -8,27 +8,25 @@ public class User {
     private int userId;
     private long reputation;
 
-    public String getUsername() {
-        return username;
+    public User(
+        String username,
+        int userId,
+        long reputation
+    ) {
+        this.username = username;
+        this.userId = userId;
+        this.reputation = reputation;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getUsername() {
+        return username;
     }
 
     public int getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
     public long getReputation() {
         return reputation;
-    }
-
-    public void setReputation(long reputation) {
-        this.reputation = reputation;
     }
 }

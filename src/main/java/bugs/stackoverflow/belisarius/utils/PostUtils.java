@@ -52,53 +52,32 @@ public class PostUtils {
     }
 
     public static Post getPost(JsonObject post, String site, String title, String previousRevisionGuid) {
-
-        Post newPost = new Post();
-
-        newPost.setPostId(post.get("post_id").getAsInt());
-
-        newPost.setRevisionNumber(post.get("revision_number").getAsInt());
-        newPost.setCreationDate(post.get("creation_date").getAsLong());
-
-        newPost.setRevisionUrl("https://" + site + ".com/revisions/" + post.get("post_id").getAsString()
-                             + "/" + post.get("revision_number").getAsString());
-        newPost.setAllRevisionsUrl("https://" + site + ".com/posts/" + post.get("post_id").getAsString() + "/revisions");
-
-        newPost.setTitle(title);
-        if (post.has("last_title")) {
-            newPost.setLastTitle(post.get("last_title").getAsString());
-        }
-
-        if (post.has("body")) {
-            newPost.setBody(post.get("body").getAsString());
-        }
-
-        if (post.has("last_body")) {
-            newPost.setLastBody(post.get("last_body").getAsString());
-        }
-
-        newPost.setIsRollback(post.get("is_rollback").getAsBoolean());
-        newPost.setPostType(post.get("post_type").getAsString());
-
-        if (post.has("comment")) {
-            newPost.setComment(post.get("comment").getAsString());
-        }
-
-        newPost.setRevisionGuid(post.get("revision_guid").getAsString());
-        newPost.setPreviousRevisionGuid(previousRevisionGuid);
-
         JsonObject userJson = post.get("user").getAsJsonObject();
-        User user = new User();
+        User user = new User(
+            JsonUtils.escapeHtmlEncoding(userJson.get("display_name").getAsString()),
+            userJson.get("user_id").getAsInt(),
+            userJson.get("reputation").getAsLong()
+        );
 
-        try {
-            user.setReputation(userJson.get("reputation").getAsLong());
-            user.setUsername(JsonUtils.escapeHtmlEncoding(userJson.get("display_name").getAsString()));
-            user.setUserId(userJson.get("user_id").getAsInt());
-        } catch (Exception exception) {
-            LOGGER.info("Error while creating a StackOverflowUser object.", exception);
-        }
+        Post newPost = new Post(
+            post.get("post_id").getAsInt(),
+            post.get("revision_number").getAsInt(),
+            post.get("creation_date").getAsLong(),
 
-        newPost.setUser(user);
+            title,
+            post.has("last_title") ? post.get("last_title").getAsString() : null,
+            post.has("body") ? post.get("body").getAsString() : null,
+            post.has("last_body") ? post.get("last_body").getAsString() : null,
+
+            user,
+            post.get("is_rollback").getAsBoolean(),
+            post.get("post_type").getAsString(),
+            post.has("comment") ? post.get("comment").getAsString() : null,
+
+            site,
+            post.get("revision_guid").getAsString(),
+            previousRevisionGuid
+        );
 
         return newPost;
     }

@@ -23,12 +23,15 @@ import org.sobotics.chatexchange.chat.event.PingMessageEvent;
 public class ChatUtils {
 
     public static ChatHost getChatHost(String siteName) {
-        return "stackoverflow".equals(siteName) ? ChatHost.STACK_OVERFLOW : ChatHost.STACK_EXCHANGE;
+        return "stackoverflow".equals(siteName)
+            ? ChatHost.STACK_OVERFLOW
+            : ChatHost.STACK_EXCHANGE;
     }
 
     public static void handleReplies(Room room, PingMessageEvent event) {
         String message = event.getMessage().getPlainContent().trim();
         String feedbackArg = message.split(" ")[1].toLowerCase();
+
         if (feedbackArg.equals(Feedback.T.toString()) || feedbackArg.equals(Feedback.TP.toString())) {
             PostUtils.storeFeedback(room, event, Feedback.TP);
         } else if (feedbackArg.equals(Feedback.F.toString()) || feedbackArg.equals(Feedback.FP.toString())) {

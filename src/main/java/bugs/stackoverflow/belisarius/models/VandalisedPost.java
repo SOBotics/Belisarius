@@ -6,9 +6,7 @@ import java.util.Map;
 import bugs.stackoverflow.belisarius.filters.Filter.Severity;
 
 public class VandalisedPost {
-
     public enum Feedback {
-
         T("t"), TP("tp"), F("f"), FP("fp");
 
         private final String text;
@@ -28,7 +26,12 @@ public class VandalisedPost {
     private final Severity severity;
     private final Map<String, Double> reasonNames;
 
-    public VandalisedPost(Post post, Map<String, Double> reasons, Severity severity, Map<String, Double> reasonNames) {
+    public VandalisedPost(
+        Post post,
+        Map<String, Double> reasons,
+        Severity severity,
+        Map<String, Double> reasonNames
+    ) {
         this.post = post;
         this.reasons = reasons;
         this.severity = severity;
@@ -61,18 +64,27 @@ public class VandalisedPost {
     }
 
     public double getScore() {
-        return this.reasons.values().stream().mapToDouble(Number::doubleValue).sum();
+        return this.reasons
+            .values()
+            .stream()
+            .mapToDouble(Number::doubleValue)
+            .sum();
     }
 
     public String getSeverity() {
-        if (this.severity == Severity.LOW) {
-            return "low";
-        } else if (this.severity == Severity.MEDIUM) {
-            return "medium";
-        } else if (this.severity == Severity.HIGH) {
-            return "high";
+        if (this.severity == null) {
+            return null;
         }
-        return null;
-    }
 
+        switch (this.severity) {
+            case LOW:
+                return "low";
+            case MEDIUM:
+                return "medium";
+            case HIGH:
+                return "high";
+            default:
+                return null;
+        }
+    }
 }

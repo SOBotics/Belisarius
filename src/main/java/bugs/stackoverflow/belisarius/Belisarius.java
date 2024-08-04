@@ -84,10 +84,6 @@ public class Belisarius {
             LOGGER.error("Failed to get posts", exception);
         }
 
-        for (Post post : posts) {
-            post.setSite(this.site);
-        }
-
         return posts;
     }
 
@@ -102,10 +98,6 @@ public class Belisarius {
             }
         } catch (Exception exception) {
             LOGGER.error("Error while trying to get post with id " + postId, exception);
-        }
-
-        if (post != null) {
-            post.setSite(this.site);
         }
 
         return post;

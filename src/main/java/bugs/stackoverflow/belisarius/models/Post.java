@@ -19,20 +19,47 @@ public class Post {
     private String revisionGuid;
     private String previousRevisionGuid;
 
+    public Post(
+        int postId,
+        int revisionNumber,
+        long creationDate,
+        String title,
+        String lastTitle,
+        String body,
+        String lastBody,
+        User user,
+        boolean isRollback,
+        String postType,
+        String comment,
+        String site,
+        String revisionGuid,
+        String previousRevisionGuid
+    ) {
+        this.postId = postId;
+        this.revisionNumber = revisionNumber;
+        this.creationDate = creationDate;
+        this.title = title;
+        this.lastTitle = lastTitle;
+        this.body = body;
+        this.lastBody = lastBody;
+        this.user = user;
+        this.isRollback = isRollback;
+        this.postType = postType;
+        this.comment = comment;
+        this.site = site;
+        this.revisionGuid = revisionGuid;
+        this.previousRevisionGuid = previousRevisionGuid;
+
+        this.revisionUrl = "https://" + site + ".com/revisions/" + postId + "/" + revisionNumber;
+        this.allRevisionsUrl = "https://" + site + ".com/posts/" + postId + "/revisions";
+    }
+
     public int getPostId() {
         return postId;
     }
 
-    public void setPostId(int postId) {
-        this.postId = postId;
-    }
-
     public int getRevisionNumber() {
         return revisionNumber;
-    }
-
-    public void setRevisionNumber(int revisionNumber) {
-        this.revisionNumber = revisionNumber;
     }
 
     public long getCreationDate() {
@@ -47,28 +74,12 @@ public class Post {
         return revisionUrl;
     }
 
-    public void setRevisionUrl(String revisionUrl) {
-        this.revisionUrl = revisionUrl;
-    }
-
     public String getAllRevisionsUrl() {
         return allRevisionsUrl;
     }
 
-    public void setAllRevisionsUrl(String allRevisionsUrl) {
-        this.allRevisionsUrl = allRevisionsUrl;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getTitle() {
         return title;
-    }
-
-    public void setLastTitle(String lastTitle) {
-        this.lastTitle = lastTitle;
     }
 
     public String getLastTitle() {
@@ -79,72 +90,35 @@ public class Post {
         return body;
     }
 
-    public void setBody(String body) {
-        this.body = body;
-    }
-
     public String getLastBody() {
         return lastBody;
-    }
-
-    public void setLastBody(String lastBody) {
-        this.lastBody = lastBody;
     }
 
     public User getUser() {
         return user;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public boolean getIsRollback() {
         return isRollback;
-    }
-
-    public void setIsRollback(boolean isRollback) {
-        this.isRollback = isRollback;
     }
 
     public String getPostType() {
         return postType;
     }
 
-    public void setPostType(String postType) {
-        this.postType = postType;
-    }
-
     public String getComment() {
         return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
     }
 
     public String getSite() {
         return site;
     }
 
-    public void setSite(String site) {
-        this.site = site;
-    }
-
     public String getRevisionGuid() {
         return revisionGuid;
-    }
-
-    public void setRevisionGuid(String revisionGuid) {
-        this.revisionGuid = revisionGuid;
     }
 
     public String getPreviousRevisionGuid() {
         return previousRevisionGuid;
     }
-
-    public void setPreviousRevisionGuid(String previousRevisionGuid) {
-        this.previousRevisionGuid = previousRevisionGuid;
-    }
-
 }
