@@ -38,21 +38,34 @@ public class Belisarius {
         this.site = site;
     }
 
-    public static void buildMessage(int higgsId, String postType, String severity, String status,
-                                    String allRevs, int revNum, String revUrl, MonitorService service) {
+    public static void buildMessage(
+        int higgsId,
+        String postType,
+        String severity,
+        String status,
+        String allRevs,
+        int revNum,
+        String revUrl,
+        MonitorService service
+    ) {
         // Builds the message that is sent to chat. There are three formats:
         // Example 1: potential vandalism - https://chat.stackoverflow.com/transcript/message/50551213
         // Example 2: post already reported - https://chat.stackoverflow.com/transcript/167908?m=50000163
         // Example 3: no issues with the revision - https://chat.stackoverflow.com/transcript/111347?m=50384193
         String message = README;
+
         if (higgsId != 0) {
             message += HIGGS_URL + higgsId + ") ";
         }
+
         message += "] [tag:" + postType + "]";
+
         if (severity != null) {
             message += " [tag:severity-" + severity + "]";
         }
+
         message += " " + status + " [All revisions](" + allRevs + "). Revision: [" + revNum + "](" + revUrl + ")";
+
         service.sendMessageToChat(message);
     }
 

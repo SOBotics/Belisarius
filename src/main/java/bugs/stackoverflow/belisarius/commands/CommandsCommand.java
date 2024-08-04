@@ -3,32 +3,32 @@ package bugs.stackoverflow.belisarius.commands;
 import java.util.List;
 
 import bugs.stackoverflow.belisarius.services.MonitorService;
-import bugs.stackoverflow.belisarius.utils.CommandUtils;
 
 import org.sobotics.chatexchange.chat.Message;
 
-public class CommandsCommand implements Command {
-
-    private final Message message;
+public class CommandsCommand extends Command {
     private final List<Command> commands;
 
     public CommandsCommand(Message message, List<Command> commands) {
-        this.message = message;
-        this.commands = commands;
-    }
+        super(message);
 
-    @Override
-    public boolean validate() {
-        return CommandUtils.checkForCommand(this.message.getPlainContent(), this.getName());
+        this.commands = commands;
     }
 
     @Override
     public void execute(MonitorService service) {
         StringBuilder commandString = new StringBuilder();
+
         for (Command c : this.commands) {
-            commandString.append("    ").append(padRight(c.getName(), 15)).append(" - ").append(c.getDescription()).append("\n");
+            commandString
+                .append("    ")
+                .append(padRight(c.getName(), 15))
+                .append(" - ")
+                .append(c.getDescription())
+                .append("\n");
         }
-        service.replyToMessage(this.message.getId(), "The list of commands are as follows:");
+
+        service.replyToMessage(this.message.getId(), "The list of commands is as follows:");
         service.sendMessageToChat(commandString.toString());
     }
 
