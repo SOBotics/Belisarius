@@ -67,30 +67,24 @@ A sample image of a report is:
 
 #### Run
 
-- Clone the repository and build it with Maven:
+- Clone the repository:
 
       git clone https://github.com/SOBotics/Belisarius
       cd Belisarius
 
-- Install the swagger-java-client jar, which is used to communicate with Higgs, and build:
+- Install dependencies:
 
-      mvn -B install:install-file -Dfile="./lib/swagger-java-client-1.0.0.jar" \
-                                  -DgroupId="io.swagger" \
-                                  -DartifactId="swagger-java-client" \
-                                  -Dversion="1.0.0" \
-                                  -Dpackaging="jar" \
-                                  -DgeneratePom="true"
       mvn clean install
 
-- Edit the `properties/login.properties` file with the information you like.  
-- Run the bot with the following command:
+- Fill in `properties/login.properties`.
+- Start the bot:
 
       java -cp target/belisarius-1.7.1.jar:./lib/* bugs.stackoverflow.belisarius.Application
 
 -----
 
-If you want to changes the log location, then edit `src/main/resources/log4j.xml` and change the path in line 16.
-However, you should build the project again with `mvn install`, so that the changes are applied.
+If you want to change the location of the log file, edit `src/main/resources/log4j.xml` and change the path in line 16.
+Please note that the project should be rebuilt (`mvn install`), for the changes to be applied.
 
 The source code is available on [GitHub][8] and suggestions are welcome.
 
