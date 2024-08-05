@@ -65,7 +65,12 @@ public final class HiggsService {
             .setAccessToken(tokenResponse.getToken());
     }
 
-    public int registerVandalisedPost(VandalisedPost vandalisedPost, Post post, String lastBodyMarkdown, String bodyMarkdown) throws ApiException {
+    public int registerVandalisedPost(
+        VandalisedPost vandalisedPost,
+        String lastBodyMarkdown,
+        String bodyMarkdown
+    ) throws ApiException {
+        Post post = vandalisedPost.getPost();
         LOGGER.info("Registering vandalised post " + post.getPostId() + " to Higgs.");
 
         // Avoid having null markdown bodies!

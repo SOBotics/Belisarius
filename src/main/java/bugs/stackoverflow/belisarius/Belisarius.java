@@ -9,7 +9,6 @@ import java.util.Map;
 
 import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.services.ApiService;
-import bugs.stackoverflow.belisarius.services.MonitorService;
 import bugs.stackoverflow.belisarius.utils.PostUtils;
 
 import org.slf4j.Logger;
@@ -38,16 +37,18 @@ public class Belisarius {
         this.site = site;
     }
 
-    public static void buildMessage(
+    public static String buildMessage(
         int higgsId,
-        String postType,
+        Post post,
         String severity,
-        String status,
-        String allRevs,
-        int revNum,
-        String revUrl,
-        MonitorService service
+        String status
     ) {
+        String postType = post.getPostType().toLowerCase();
+        String allRevs = post.getAllRevisionsUrl();
+        String revUrl = post.getRevisionUrl();
+
+        int revNum = post.getRevisionNumber();
+
         // Builds the message that is sent to chat. There are three formats:
         // Example 1: potential vandalism - https://chat.stackoverflow.com/transcript/message/50551213
         // Example 2: post already reported - https://chat.stackoverflow.com/transcript/167908?m=50000163
@@ -66,7 +67,7 @@ public class Belisarius {
 
         message += " " + status + " [All revisions](" + allRevs + "). Revision: [" + revNum + "](" + revUrl + ")";
 
-        service.sendMessageToChat(message);
+        return message;
     }
 
     public List<Post> getPosts() {

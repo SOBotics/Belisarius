@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SQLiteConnection {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(SQLiteConnection.class);
 
     Connection conn;
@@ -31,5 +30,4 @@ public class SQLiteConnection {
         }
         return conn;
     }
-
 }
