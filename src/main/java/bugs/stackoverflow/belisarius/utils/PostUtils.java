@@ -1,6 +1,6 @@
 package bugs.stackoverflow.belisarius.utils;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -124,22 +124,45 @@ public class PostUtils {
         return DatabaseUtils.checkVandalisedPostExists(post.getPostId(), post.getRevisionNumber(), ROOM_ID);
     }
 
-    public static void storeVandalisedPost(VandalisedPost vandalisedPost, int higgsId, String lastBodyMarkdown, String bodyMarkdown) {
+    public static void storeVandalisedPost(
+        VandalisedPost vandalisedPost,
+        int higgsId,
+        String lastBodyMarkdown,
+        String bodyMarkdown
+    ) {
         Post post = vandalisedPost.getPost();
-        DatabaseUtils.storeVandalisedPost(post.getPostId(), post.getCreationDate(), post.getRevisionNumber(), ROOM_ID,
-                                          post.getUser().getUserId(), post.getTitle(), post.getLastTitle(), post.getBody(),
-                                          post.getLastBody(), post.getIsRollback(), post.getPostType(), post.getComment(),
-                                          post.getSite(), vandalisedPost.getSeverity(), post.getRevisionGuid());
 
+        DatabaseUtils.storeVandalisedPost(
+            post.getPostId(),
+            post.getCreationDate(),
+            post.getRevisionNumber(),
+            ROOM_ID,
+            post.getUser().getUserId(),
+            post.getTitle(),
+            post.getLastTitle(),
+            post.getBody(),
+            post.getLastBody(),
+            post.getIsRollback(),
+            post.getPostType(),
+            post.getComment(),
+            post.getSite(),
+            vandalisedPost.getSeverity(),
+            post.getRevisionGuid()
+        );
     }
 
     private static long getPostIdFromMessage(String message) {
-        message = message.split("//stackoverflow.com/posts/")[1];
-        return Long.parseLong(message.substring(0, message.indexOf("/")));
+        return Long.parseLong(
+            message
+                .split("//stackoverflow.com/posts/")[1]
+                .substring(0, message.indexOf("/"))
+        );
     }
 
     private static int getRevisionNumberFromMessage(String message) {
-        return Integer.parseInt(message.substring(message.length() - 2, message.length() - 1));
+        return Integer.parseInt(
+            message.substring(message.length() - 2, message.length() - 1)
+        );
     }
 
     private static int getHiggsIdFromMessage(String message) {
@@ -148,31 +171,34 @@ public class PostUtils {
 
     public static VandalisedPost getVandalisedPost(Post post) {
         // create a list with all the filters
-        List<Filter> filters = new ArrayList<>();
-        filters.add(new BlacklistedFilter(ROOM_ID, post));
-        filters.add(new VeryLongWordFilter(ROOM_ID, post));
-        filters.add(new CodeRemovedFilter(ROOM_ID, post));
-        filters.add(new TextRemovedFilter(ROOM_ID, post));
-        filters.add(new FewUniqueCharactersFilter(ROOM_ID, post));
-        filters.add(new OffensiveWordFilter(ROOM_ID, post));
-        filters.add(new RepeatedWordFilter(ROOM_ID, post));
+        List<Filter> filters = Arrays.asList(
+            new BlacklistedFilter(ROOM_ID, post),
+            new VeryLongWordFilter(ROOM_ID, post),
+            new CodeRemovedFilter(ROOM_ID, post),
+            new TextRemovedFilter(ROOM_ID, post),
+            new FewUniqueCharactersFilter(ROOM_ID, post),
+            new OffensiveWordFilter(ROOM_ID, post),
+            new RepeatedWordFilter(ROOM_ID, post)
+        );
 
         Severity severity = null;
 
-        Map<String, Double> formattedReasonMessages = new HashMap<>();
+        Map<String, Double> formatted = new HashMap<>();
         Map<String, Double> reasonNames = new HashMap<>();
+
         for (Filter filter: filters) {
             // loop through the list and check if a filter catches the post
-            // also create formattedReasonMessages for Higgs (reasonNames)
+            // also create formatted for Higgs (reasonNames)
             if (filter.isHit()) {
                 filter.storeHit();
-                formattedReasonMessages.put(filter.getFormattedReasonMessage(), filter.getTotalScore());
+                formatted.put(filter.getFormattedReasonMessage(), filter.getTotalScore());
+
                 // We need a different reason for Higgs for each blacklisted/offensive word!
                 filter.getReasonName().forEach(name -> reasonNames.put(name, filter.getScore()));
                 severity = filter.getSeverity();
             }
         }
 
-        return new VandalisedPost(post, formattedReasonMessages, severity, reasonNames);
+        return new VandalisedPost(post, formatted, severity, reasonNames);
     }
 }

@@ -1,7 +1,6 @@
 package bugs.stackoverflow.belisarius.utils;
 
 import java.io.IOException;
-import java.net.URL;
 
 import bugs.stackoverflow.belisarius.services.ApiService;
 
@@ -13,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 /**
  * Created by bhargav.h on 22-Jan-17.
@@ -26,36 +26,52 @@ public class JsonUtils {
         long backOffUntil = ApiService.getBackoffField();
 
         if (backOffUntil > 0) {
+            LOGGER.info("BACKOFF received. Timeout for " + (backOffUntil + 2) + " seconds.");
+
             try {
                 // sleep for 2 more seconds to avoid more BACKOFFs in the future
-                LOGGER.info("BACKOFF received. Timeout for " + (backOffUntil + 2) + " seconds.");
                 Thread.sleep(1000 * backOffUntil + 2000);
             } catch (InterruptedException exception) {
-                exception.printStackTrace();
+                LOGGER.info("sleep interrupted.", exception);
             }
         }
 
-        Connection.Response response = Jsoup.connect(url).data(data).method(Connection.Method.GET).maxBodySize(20971520)
-                                            .ignoreContentType(true).ignoreHttpErrors(true).execute();
+        Connection.Response response = Jsoup
+            .connect(url)
+            .data(data)
+            .method(Connection.Method.GET)
+            .maxBodySize(20971520)
+            .ignoreContentType(true)
+            .ignoreHttpErrors(true)
+            .execute();
+
         String json = response.body();
         if (response.statusCode() != 200) {
-            throw new IOException("HTTP " + response.statusCode() + " fetching URL " + url + ". Body is: " + response.body());
+            throw new IOException(
+                "HTTP " + response.statusCode()
+                    + " fetching URL " + url + ". "
+                    + "Body is: " + response.body()
+            );
         }
 
         JsonObject root = null;
         try {
             root = JsonParser.parseString(json).getAsJsonObject();
-        } catch (Exception exception) {
+        } catch (JsonSyntaxException exception) {
             LOGGER.error("Exception occurred while parsing the JSON API returned.", exception);
         }
 
-        LOGGER.info("Received an API response for method " + new URL(url).getPath() + ".");
+        LOGGER.info("Received an API response for method " + url + ".");
 
         return root;
     }
 
     public static String escapeHtmlEncoding(String message) {
-        return Parser.unescapeEntities(JsonUtils.sanitizeChatMessage(message), false).trim();
+        String sanitised = JsonUtils.sanitizeChatMessage(message);
+
+        return Parser
+            .unescapeEntities(sanitised, false)
+            .trim();
     }
 
     public static String sanitizeChatMessage(String message) {
@@ -63,14 +79,23 @@ public class JsonUtils {
     }
 
     public static String getHtml(String url) throws IOException {
-        Connection.Response response = Jsoup.connect(url).method(Connection.Method.GET)
-                                            .ignoreContentType(true).ignoreHttpErrors(true).execute();
+        Connection.Response response = Jsoup
+            .connect(url)
+            .method(Connection.Method.GET)
+            .ignoreContentType(true)
+            .ignoreHttpErrors(true)
+            .execute();
+
         String body = response.body();
-        if (response.statusCode() == 404) { // revision did not affect the body
+
+        if (response.statusCode() == 404) { // body was not edited
             return null;
         } else if (response.statusCode() != 200) {
-            throw new IOException("HTTP " + response.statusCode() + " error fetching " + url + ".");
+            throw new IOException(
+                "HTTP " + response.statusCode() + " error fetching " + url + "."
+            );
         }
+
         return Jsoup.parse(body).getElementsByTag("pre").text();
     }
 

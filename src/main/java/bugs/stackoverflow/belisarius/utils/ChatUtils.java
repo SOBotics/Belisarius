@@ -30,11 +30,12 @@ public class ChatUtils {
 
     public static void handleReplies(Room room, PingMessageEvent event) {
         String message = event.getMessage().getPlainContent().trim();
-        String feedbackArg = message.split(" ")[1].toLowerCase();
+        String feedback = message.split(" ")[1].toLowerCase();
 
-        if (feedbackArg.equals(Feedback.T.toString()) || feedbackArg.equals(Feedback.TP.toString())) {
+        if (feedback.equals(Feedback.T.toString()) || feedback.equals(Feedback.TP.toString())) {
             PostUtils.storeFeedback(room, event, Feedback.TP);
-        } else if (feedbackArg.equals(Feedback.F.toString()) || feedbackArg.equals(Feedback.FP.toString())) {
+        } else if (feedback.equals(Feedback.F.toString()) || feedback.equals(Feedback.FP.toString())
+        ) {
             PostUtils.storeFeedback(room, event, Feedback.FP);
         }
     }
@@ -63,6 +64,7 @@ public class ChatUtils {
         String message = event.getMessage().getPlainContent().trim();
 
         int codePoint = Character.codePointAt(message, 0);
+
         if (message.toLowerCase().startsWith("@bots alive")) {
             service.sendMessageToChat("Yeah, I'm alive.");
         } else if (codePoint == 128642 || codePoint >= 128644 && codePoint <= 128650) {

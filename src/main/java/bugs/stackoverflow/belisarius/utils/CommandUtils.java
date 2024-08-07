@@ -8,5 +8,4 @@ public class CommandUtils {
 
         return String.join(" ", Arrays.copyOfRange(parts, 2, parts.length));
     }
-
 }

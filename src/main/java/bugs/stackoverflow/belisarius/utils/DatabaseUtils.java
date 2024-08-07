@@ -138,7 +138,10 @@ public class DatabaseUtils {
     public static boolean checkVandalisedPostExists(long postId, int revisionId, int roomId) {
         SQLiteConnection connection = new SQLiteConnection();
 
-        String sql = "SELECT (COUNT(*) > 0) As Found FROM VandalisedPost WHERE PostId = ? AND RevisionId = ? AND RoomId = ?;";
+        String sql = "SELECT (COUNT(*) > 0) As Found FROM VandalisedPost "
+                                                  + "WHERE PostId = ? "
+                                                  + "AND RevisionId = ? "
+                                                  + "AND RoomId = ?;";
 
         try (Connection conn = connection.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
@@ -151,8 +154,12 @@ public class DatabaseUtils {
                 return resultSet.getBoolean("Found");
             }
         } catch (SQLException exception) {
-            LOGGER.error("Failed to check for vandalised post. PostId: " + postId + "; "
-                      + "RevisionId: " + revisionId + ".", exception);
+            LOGGER.error(
+                "Failed to check for vandalised post. "
+                    + "PostId: " + postId + "; "
+                    + "RevisionId: " + revisionId + ".",
+                exception
+            );
         }
         return false;
     }
@@ -160,7 +167,11 @@ public class DatabaseUtils {
     public static boolean checkReasonCaughtExists(long postId, int revisionId, int roomId, int reasonId) {
         SQLiteConnection connection = new SQLiteConnection();
 
-        String sql = "SELECT (COUNT(*) > 0) As Found FROM ReasonCaught WHERE PostId = ? AND RevisionId = ? AND RoomId = ? AND ReasonId = ?;";
+        String sql = "SELECT (COUNT(*) > 0) As Found FROM ReasonCaught "
+                                                  + "WHERE PostId = ? "
+                                                  + "AND RevisionId = ? "
+                                                  + "AND RoomId = ? "
+                                                  + "AND ReasonId = ?;";
 
         try (Connection conn = connection.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
@@ -174,7 +185,12 @@ public class DatabaseUtils {
                 return resultSet.getBoolean("Found");
             }
         } catch (SQLException exception) {
-            LOGGER.error("Failed to check for ReasonCaught. PostId: " + postId + "; ReasonId: " + reasonId + ".", exception);
+            LOGGER.error(
+                "Failed to check for ReasonCaught. "
+                    + "PostId: " + postId + "; "
+                    + "ReasonId: " + reasonId + ".",
+                exception
+            );
         }
         return false;
     }
@@ -182,8 +198,11 @@ public class DatabaseUtils {
     public static boolean checkBlacklistedWordCaughtExists(long postId, int revisionId, int roomId, int blacklistedWordId) {
         SQLiteConnection connection = new SQLiteConnection();
 
-        String sql = "SELECT (COUNT(*) > 0) As Found FROM BlacklistedWordCaught WHERE PostId = ? AND RevisionId = ? AND RoomId = ? \n"
-                   + "AND BlacklistedWordId = ?;";
+        String sql = "SELECT (COUNT(*) > 0) As Found FROM BlacklistedWordCaught "
+                                                  + "WHERE PostId = ? "
+                                                  + "AND RevisionId = ? "
+                                                  + "AND RoomId = ? \n"
+                                                  + "AND BlacklistedWordId = ?;";
 
         try (Connection conn = connection.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
@@ -197,17 +216,25 @@ public class DatabaseUtils {
                 return resultSet.getBoolean("Found");
             }
         } catch (SQLException exception) {
-            LOGGER.error("Failed to check for blacklisted word. PostId: " + postId + "; "
-                      + "Word id: " + blacklistedWordId, exception);
+            LOGGER.error(
+                "Failed to check for blacklisted word. "
+                + "PostId: " + postId + "; "
+                + "Word id: " + blacklistedWordId,
+                exception
+            );
         }
+
         return false;
     }
 
     public static boolean checkOffensiveWordCaughtExists(long postId, int revisionId, int roomId, int offensiveWordId) {
         SQLiteConnection connection = new SQLiteConnection();
 
-        String sql = "SELECT (COUNT(*) > 0) As Found FROM OffensiveWordCaught WHERE PostId = ? AND RevisionId = ? AND RoomId = ? \n"
-                   + "AND OffensiveWordId = ?;";
+        String sql = "SELECT (COUNT(*) > 0) As Found FROM OffensiveWordCaught "
+                                                  + "WHERE PostId = ? "
+                                                  + "AND RevisionId = ? "
+                                                  + "AND RoomId = ? \n"
+                                                  + "AND OffensiveWordId = ?;";
 
         try (Connection conn = connection.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
@@ -221,16 +248,34 @@ public class DatabaseUtils {
                 return resultSet.getBoolean("Found");
             }
         } catch (SQLException exception) {
-            LOGGER.error("Failed to check for offensive word. PostId: " + postId + "; "
-                      + "Word id: " + offensiveWordId, exception);
+            LOGGER.error(
+                "Failed to check for offensive word. "
+                    + "PostId: " + postId + "; "
+                    + "Word id: " + offensiveWordId,
+                exception
+            );
         }
+
         return false;
     }
 
-    public static void storeVandalisedPost(long postId, long creationDate, int revisionId, int roomId, long ownerId, String title,
-                                           String lastTitle, String body, String lastBody, boolean isRollback, String postType,
-                                           String comment, String site, String severity, String revisionGuid) {
-
+    public static void storeVandalisedPost(
+        long postId,
+        long creationDate,
+        int revisionId,
+        int roomId,
+        long ownerId,
+        String title,
+        String lastTitle,
+        String body,
+        String lastBody,
+        boolean isRollback,
+        String postType,
+        String comment,
+        String site,
+        String severity,
+        String revisionGuid
+    ) {
         SQLiteConnection connection = new SQLiteConnection();
 
         String sql = "INSERT INTO VandalisedPost VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
@@ -280,7 +325,6 @@ public class DatabaseUtils {
     }
 
     public static void storeFeedback(long postId, int revisionId, int roomId, String feedback, long userId) {
-
         SQLiteConnection connection = new SQLiteConnection();
 
         String sql = "INSERT OR REPLACE INTO Feedback VALUES (?, ?, ?, ?, ?);";
@@ -322,7 +366,6 @@ public class DatabaseUtils {
     }
 
     public static void storeCaughtOffensiveWord(long postId, int revisionId, int roomId, int offensiveWordId) {
-
         SQLiteConnection connection = new SQLiteConnection();
 
         String sql = "INSERT INTO OffensiveWordCaught VALUES (?, ?, ?, ?);";
@@ -342,24 +385,34 @@ public class DatabaseUtils {
     }
 
     public static Map<String, Map<Integer, String>> getBlacklistedWords() {
-        Map<String, Map<Integer, String>> blacklistedWordsMap = new HashMap<>();
-        blacklistedWordsMap.put("question", new HashMap<>());
-        blacklistedWordsMap.put("answer", new HashMap<>());
-        blacklistedWordsMap.put("question_title", new HashMap<>());
+        Map<String, Map<Integer, String>> blacklistedWordsMap = Map.of(
+            "question", new HashMap<>(),
+            "answer", new HashMap<>(),
+            "question_title", new HashMap<>()
+        );
 
-        FileUtils.readFile(FileUtils.BLACKLISTED_WORDS_FILE).forEach(line -> {
-            List<String> matches = FileUtils.splitLine(line);
-            blacklistedWordsMap.get(matches.get(2)).put(Integer.parseInt(matches.get(0)), matches.get(1));
-        });
+        FileUtils
+            .readFile(FileUtils.BLACKLISTED_WORDS_FILE)
+            .forEach(line -> {
+                List<String> matches = FileUtils.splitLine(line);
+
+                blacklistedWordsMap
+                    .get(matches.get(2))
+                    .put(Integer.valueOf(matches.get(0)), matches.get(1));
+            });
+
         return blacklistedWordsMap;
     }
 
     public static Map<Integer, String> getOffensiveWords() {
         Map<Integer, String> offensiveWordsMap = new HashMap<>();
+
         FileUtils.readFile(FileUtils.OFFENSIVE_WORDS_FILE).forEach(line -> {
             List<String> matches = FileUtils.splitLine(line);
-            offensiveWordsMap.put(Integer.parseInt(matches.get(0)), matches.get(1));
+
+            offensiveWordsMap.put(Integer.valueOf(matches.get(0)), matches.get(1));
         });
+
         return offensiveWordsMap;
     }
 

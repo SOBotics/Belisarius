@@ -24,20 +24,24 @@ public class FileUtils {
 
     public static List<String> readFile(Path filepath) {
         List<String> fileContent = new ArrayList<>();
+
         try {
             fileContent = Files.readAllLines(filepath);
         } catch (IOException exception) {
             LOGGER.error("Failed to read " + filepath.toString() + ". Perhaps the file doesn't exist?", exception);
         }
+
         return fileContent;
     }
 
     public static List<String> splitLine(String line) {
         List<String> parts = new ArrayList<>();
         Matcher splitLine = CSV_REGEX.matcher(line);
+
         while (splitLine.find()) {
             parts.add(splitLine.group(1).replace("\"", ""));
         }
+
         return parts;
     }
 }

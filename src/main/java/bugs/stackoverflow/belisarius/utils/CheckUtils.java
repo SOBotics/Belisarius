@@ -37,28 +37,43 @@ public class CheckUtils {
     public static Map<Integer, String> checkForBlackListedWords(String target, String lastTarget, String postType) {
         Map<Integer, String> blacklistedWords = DatabaseUtils.getBlacklistedWordsByType(postType);
         Map<Integer, String> blacklistedWordsCaught = new HashMap<>();
-        Map<Integer, String> lastBodyBlacklistedWords = getCaughtByRegex(blacklistedWords, removeHtml(stripTags(lastTarget)));
-        Map<Integer, String> bodyBlacklistedWords = getCaughtByRegex(blacklistedWords, removeHtml(stripTags(target)));
 
-        // Instead of finding the difference between the most recent revisions, then checking that piece for vandalism,
-        // we check if the blacklisted part was added with the latest revision (i.e. old blacklisted !== new blacklisted).
-        // However, there are cases where a blacklisted word is added to a post which already contains one.
-        // The hashmaps won't be the same (the bodyBlacklistedWords will have more words), but we still want to report the post.
+        Map<Integer, String> lastBodyBlacklistedWords = getCaughtByRegex(
+            blacklistedWords,
+            removeHtml(stripTags(lastTarget))
+        );
+        Map<Integer, String> bodyBlacklistedWords = getCaughtByRegex(
+            blacklistedWords,
+            removeHtml(stripTags(target))
+        );
+
+        // Instead of finding the difference between the most recent revisions,
+        // then checking that piece for vandalism, we check if the blacklisted part was
+        // added with the latest revision (i.e. old blacklisted !== new blacklisted).
+        // However, there are cases where a blacklisted word is added to a post
+        // which already contains one. The hashmaps won't be the same (the bodyBlacklistedWords
+        // will have more words), but we still want to report the post.
         // Thus, we also check if both of them are NOT empty.
-        if (!(lastBodyBlacklistedWords.equals(bodyBlacklistedWords) || bodyBlacklistedWords.isEmpty()) || lastTarget == null) {
+        if (!lastBodyBlacklistedWords.equals(bodyBlacklistedWords)
+            && !bodyBlacklistedWords.isEmpty()
+            || lastTarget == null
+        ) {
             blacklistedWordsCaught.putAll(bodyBlacklistedWords);
         }
+
         return blacklistedWordsCaught;
     }
 
     private static String stripTags(String target) {
         // strips links, code, images and blockquotes, as we don't want to catch the text inside those
         Document doc = Jsoup.parse("<body>" + target + "</body>");
+
         doc.getElementsByTag("a").remove();
         doc.getElementsByTag("code").remove();
         doc.getElementsByTag("img").remove();
         doc.getElementsByTag("pre").remove();
         doc.getElementsByTag("blockquote").remove();
+
         return doc.outerHtml();
     }
 
@@ -67,13 +82,17 @@ public class CheckUtils {
     }
 
     public static String checkForLongWords(String target) {
-        String[] bodyParts = removeHtml(stripTags(target)).replaceAll("[^a-zA-Z ]", " ").split(" ");
+        String[] bodyParts = removeHtml(stripTags(target))
+            .replaceAll("[^a-zA-Z ]", " ")
+            .split(" ");
+
         for (String part : bodyParts) {
             // check for words which are longer than 50 characters
             if (part.length() > 50) {
                 return part;
             }
         }
+
         return null;
     }
 
@@ -88,6 +107,7 @@ public class CheckUtils {
 
         if (targetBody.length() < originalBody.length() * percentage) {
             JaroWinkler jaroWinklerScore = new JaroWinkler();
+
             score = jaroWinklerScore.similarity(targetBody, originalBody);
         }
 
@@ -102,11 +122,18 @@ public class CheckUtils {
 
         for (Map.Entry<Integer, List<Integer>> threshold : FEW_UNIQUES_THRESHOLD.entrySet()) {
             List<Integer> lengths = threshold.getValue();
-            if (length >= lengths.get(0) && length < lengths.get(1) && uniquesCount <= threshold.getKey()) {
+
+            if (length >= lengths.get(0)
+                && length < lengths.get(1)
+                && uniquesCount <= threshold.getKey()
+            ) {
                 return body.codePoints()         // Intstream of codePoints
                     .distinct()
-                    .collect(StringBuilder::new, // collect to a StringBuilder
-                             StringBuilder::appendCodePoint, (swl, swr) -> swl.append(swr.toString()))
+                    .collect(
+                        StringBuilder::new, // collect to a StringBuilder
+                        StringBuilder::appendCodePoint,
+                        (swl, swr) -> swl.append(swr.toString())
+                    )
                     .toString();
             }
         }
@@ -115,8 +142,10 @@ public class CheckUtils {
     }
 
     public static Map<Integer, String> checkForOffensiveWords(String target) {
-        Map<Integer, String> offensiveWords = DatabaseUtils.OFFENSIVE_WORDS;
-        return getCaughtByRegex(offensiveWords, target);
+        return getCaughtByRegex(
+            DatabaseUtils.OFFENSIVE_WORDS,
+            target
+        );
     }
 
     private static Map<Integer, String> getCaughtByRegex(Map<Integer, String> words, String target) {
@@ -138,12 +167,13 @@ public class CheckUtils {
 
     public static boolean checkIfBodyContainsWord(Pattern pattern, String target) {
         String body = removeHtml(target);
+
         return pattern.matcher(body).find();
     }
 
     public static Set<String> checkRepeatedWords(String target) {
         String[] words = target.split("\\W");
+
         return new HashSet<>(Arrays.asList(words));
     }
-
 }
