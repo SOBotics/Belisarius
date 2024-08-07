@@ -22,12 +22,13 @@ public class SQLiteConnection {
         return conn;
     }
 
-    public Connection connect() {
+    public final Connection connect() {
         try {
             conn = DriverManager.getConnection(FileUtils.DATABASE_FILE);
         } catch (SQLException exception) {
             LOGGER.info("Error occurred while trying to connect to the SQLite database.", exception);
         }
+
         return conn;
     }
 }

@@ -45,13 +45,14 @@ public class PostUtils {
         if (!post.has("last_editor") || !post.has("owner")) {
             return false;
         }
+
         long ownerId = post.get("owner").getAsJsonObject().get("user_id").getAsLong();
         long editorId = post.get("last_editor").getAsJsonObject().get("user_id").getAsLong();
 
         return ownerId == editorId;
     }
 
-    public static Post getPost(JsonObject post, String site, String title, String previousRevisionGuid) {
+    public static Post getPost(JsonObject post, String site, String title) {
         JsonObject userJson = post.get("user").getAsJsonObject();
         User user = new User(
             JsonUtils.escapeHtmlEncoding(userJson.get("display_name").getAsString()),
@@ -75,8 +76,7 @@ public class PostUtils {
             post.has("comment") ? post.get("comment").getAsString() : null,
 
             site,
-            post.get("revision_guid").getAsString(),
-            previousRevisionGuid
+            post.get("revision_guid").getAsString()
         );
 
         return newPost;
@@ -85,21 +85,38 @@ public class PostUtils {
     public static void storeFeedback(Room room, PingMessageEvent event, Feedback feedback) {
         long repliedTo = event.getParentMessageId();
         Message repliedToMessage = room.getMessage(repliedTo);
+        String message = repliedToMessage.getPlainContent().trim();
 
-        long postId = getPostIdFromMessage(repliedToMessage.getPlainContent().trim());
-        int revisionNumber = getRevisionNumberFromMessage(repliedToMessage.getPlainContent().trim());
+        long postId = getPostIdFromMessage(message);
+        int revisionNumber = getRevisionNumberFromMessage(message);
 
-        DatabaseUtils.storeFeedback(postId, revisionNumber, ROOM_ID, feedback.toString(), event.getMessage().getUser().getId());
+        DatabaseUtils.storeFeedback(
+            postId,
+            revisionNumber,
+            ROOM_ID,
+            feedback.toString(),
+            event.getMessage().getUser().getId()
+        );
 
         PropertyService propertyService = new PropertyService();
         try {
             if (propertyService.getProperty("useHiggs").equals("true")) {
-                int higgsId = getHiggsIdFromMessage(repliedToMessage.getPlainContent().trim());
-                HiggsService.getInstance().sendFeedback(higgsId, (int) event.getMessage().getUser().getId(), feedback);
+                int higgsId = getHiggsIdFromMessage(message);
+
+                HiggsService
+                    .getInstance()
+                    .sendFeedback(
+                        higgsId,
+                        (int) event.getMessage().getUser().getId(),
+                        feedback
+                    );
             }
         } catch (ApiException exception) {
-            LOGGER.info("ApiException was thrown while trying to send feedback " + feedback.toString() + " to Higgs"
-                      + " from " + event.getMessage().getUser().getId(), exception);
+            LOGGER.info(
+                "ApiException was thrown while trying to send feedback "
+                    + feedback.toString() + " to Higgs"
+                    + " from " + event.getMessage().getUser().getId(), exception
+            );
         }
     }
 

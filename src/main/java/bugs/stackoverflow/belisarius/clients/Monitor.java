@@ -1,5 +1,6 @@
 package bugs.stackoverflow.belisarius.clients;
 
+import java.io.IOException;
 import java.util.List;
 
 import bugs.stackoverflow.belisarius.Belisarius;
@@ -13,6 +14,8 @@ import bugs.stackoverflow.belisarius.utils.PostUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.swagger.client.ApiException;
 
 public class Monitor {
     private static final Logger LOGGER = LoggerFactory.getLogger(Monitor.class);
@@ -28,7 +31,7 @@ public class Monitor {
                 continue;
             }
 
-            VandalisedPost vandalisedPost = getVandalisedPost(post);
+            VandalisedPost vandalisedPost = PostUtils.getVandalisedPost(post);
             boolean postExists = PostUtils.checkVandalisedPost(post);
 
             if (vandalisedPost.getSeverity() != null && !postExists) {
@@ -47,7 +50,7 @@ public class Monitor {
         }
 
         if (post.getRevisionNumber() != 1) {
-            VandalisedPost vandalisedPost = getVandalisedPost(post);
+            VandalisedPost vandalisedPost = PostUtils.getVandalisedPost(post);
             // Check if the post exists
             if (PostUtils.checkVandalisedPost(post)) {
                 LOGGER.info("The given post has already been reported.");
@@ -65,13 +68,10 @@ public class Monitor {
         } else {
             // revision 1; unlikely to be bad
             LOGGER.info("No vandalism found was found for given post.");
+
             sendNoVandalismFoundMessage(post);
         }
 
-    }
-
-    private VandalisedPost getVandalisedPost(Post post) {
-        return PostUtils.getVandalisedPost(post);
     }
 
     private void reportPost(VandalisedPost vandalisedPost, Post post) {
@@ -85,18 +85,20 @@ public class Monitor {
             String prevRevGuid = post.getPreviousRevisionGuid();
 
             String previous = "https://" + site + ".com/revisions/" + prevRevGuid + "/view-source";
-            String current = "https://" + post.getSite() + ".com/revisions/" + revGuid + "/view-source";
+            String current = "https://" + site + ".com/revisions/" + revGuid + "/view-source";
 
             // Only fetch the markdown if last body and body exist!
             if (post.getLastBody() != null) {
                 lastBodyMarkdown = JsonUtils.getHtml(previous);
             }
+
             if (post.getBody() != null) {
                 bodyMarkdown = JsonUtils.getHtml(current);
             }
 
             PropertyService propertyService = new PropertyService();
             int higgsId;
+
             if (propertyService.getProperty("useHiggs").equals("true")) {
                 higgsId = HiggsService
                     .getInstance()
@@ -111,8 +113,10 @@ public class Monitor {
 
             PostUtils.storeVandalisedPost(vandalisedPost, higgsId, lastBodyMarkdown, bodyMarkdown);
             sendVandalismFoundMessage(vandalisedPost, higgsId);
-        } catch (Exception exception) {
-            LOGGER.error("Error while trying to reportPost.", exception);
+        } catch (IOException exception) {
+            LOGGER.error("Error while trying to fetch revisions markdown.", exception);
+        } catch (ApiException exception) {
+            LOGGER.error("Error while trying to report post to Higgs", exception);
         }
     }
 

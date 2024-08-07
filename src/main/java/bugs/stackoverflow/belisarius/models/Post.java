@@ -2,21 +2,21 @@ package bugs.stackoverflow.belisarius.models;
 
 public class Post {
 
-    private int postId;
-    private int revisionNumber;
-    private long creationDate;
-    private String revisionUrl;
-    private String allRevisionsUrl;
-    private String title;
-    private String lastTitle;
-    private String body;
-    private String lastBody;
-    private User user;
-    private boolean isRollback;
-    private String postType;
-    private String comment;
-    private String site;
-    private String revisionGuid;
+    private final int postId;
+    private final int revisionNumber;
+    private final long creationDate;
+    private final String revisionUrl;
+    private final String allRevisionsUrl;
+    private final String title;
+    private final String lastTitle;
+    private final String body;
+    private final String lastBody;
+    private final User user;
+    private final boolean isRollback;
+    private final String postType;
+    private final String comment;
+    private final String site;
+    private final String revisionGuid;
     private String previousRevisionGuid;
 
     public Post(
@@ -32,8 +32,7 @@ public class Post {
         String postType,
         String comment,
         String site,
-        String revisionGuid,
-        String previousRevisionGuid
+        String revisionGuid
     ) {
         this.postId = postId;
         this.revisionNumber = revisionNumber;
@@ -48,7 +47,6 @@ public class Post {
         this.comment = comment;
         this.site = site;
         this.revisionGuid = revisionGuid;
-        this.previousRevisionGuid = previousRevisionGuid;
 
         this.revisionUrl = "https://" + site + ".com/revisions/" + postId + "/" + revisionNumber;
         this.allRevisionsUrl = "https://" + site + ".com/posts/" + postId + "/revisions";
@@ -64,10 +62,6 @@ public class Post {
 
     public long getCreationDate() {
         return creationDate;
-    }
-
-    public void setCreationDate(long creationDate) {
-        this.creationDate = creationDate;
     }
 
     public String getRevisionUrl() {
@@ -120,5 +114,9 @@ public class Post {
 
     public String getPreviousRevisionGuid() {
         return previousRevisionGuid;
+    }
+
+    public void setPreviousRevisionGuid(String guid) {
+        this.previousRevisionGuid = guid;
     }
 }

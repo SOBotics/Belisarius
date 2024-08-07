@@ -4,9 +4,9 @@ package bugs.stackoverflow.belisarius.models;
  * Created by bhargav.h on 01-Oct-16.
  */
 public class User {
-    private String username;
-    private int userId;
-    private long reputation;
+    private final String username;
+    private final int userId;
+    private final long reputation;
 
     public User(
         String username,

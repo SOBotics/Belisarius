@@ -8,7 +8,7 @@ public class ApiUtils {
 
     private static final String POSTS_FILTER = "!b0OfN5SJ6GH.YG";
     private static final String REVISIONS_FILTER = "!--Ozln_OPoiF";
-    private static final String POST_FILTER = "!T.nr)x29OFqqjA8axH";
+    private static final String POST_FILTER = "!aydfie9ilBirs-";
     private static final String API_VERSION = "2.3";
     private static final String BASE_URL = "https://api.stackexchange.com/" + API_VERSION;
 
@@ -53,7 +53,11 @@ public class ApiUtils {
         );
     }
 
-    public static JsonObject getMorePostInformation(String postId, String site, String apiKey) throws IOException {
+    public static JsonObject getMorePostInformation(
+        String postId,
+        String site,
+        String apiKey
+    ) throws IOException {
         String postUrl = BASE_URL + "/posts/" + postId;
 
         return JSON_UTILS.get(

@@ -27,11 +27,17 @@ public class MonitorService {
     private final PingService redunda;
     private ScheduledExecutorService executorService;
 
-    public MonitorService(StackExchangeClient client, int chatroomId, String sitename, PingService redunda) {
+    public MonitorService(
+        StackExchangeClient client,
+        int chatroomId,
+        String sitename,
+        PingService redunda
+    ) {
         this.belisarius = new Belisarius(sitename);
 
         if (chatroomId != 0) {
             this.room = client.joinRoom(ChatUtils.getChatHost(sitename), chatroomId);
+
             LOGGER.info("Joined room " + chatroomId + " on " + sitename + ".");
         }
 
@@ -85,7 +91,7 @@ public class MonitorService {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException exception) {
-            exception.printStackTrace();
+            LOGGER.error("sleep was interrupted", exception);
         }
     }
 

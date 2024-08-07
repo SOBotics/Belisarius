@@ -52,7 +52,7 @@ public class Application {
             String version = propertyService.getProperty("version");
 
             PingService redunda = new PingService(redundaKey, version);
-            if ("false".equals(useHiggs)) {
+            if ("false".equals(useRedunda)) {
                 redunda.setDebugging(true);
             }
             LOGGER.info("Initialised Redunda!");

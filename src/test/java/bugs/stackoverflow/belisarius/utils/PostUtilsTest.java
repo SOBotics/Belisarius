@@ -16,7 +16,6 @@ import bugs.stackoverflow.belisarius.Belisarius;
 import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.models.VandalisedPost;
 import bugs.stackoverflow.belisarius.services.ApiService;
-import bugs.stackoverflow.belisarius.utils.PostUtils;
 
 import org.junit.jupiter.api.Test;
 import com.google.gson.JsonObject;
@@ -52,7 +51,9 @@ public class PostUtilsTest {
     public void getPostObjectTest() {
         try {
             JsonObject exampleRevisionObject = apiService.getLatestRevisions("4", 1).get("items").getAsJsonArray().get(0).getAsJsonObject();
-            Post postObject = PostUtils.getPost(exampleRevisionObject.getAsJsonObject(), "stackoverflow", "test", "ABCDE12345");
+            Post postObject = PostUtils.getPost(exampleRevisionObject.getAsJsonObject(), "stackoverflow", "test");
+            postObject.setPreviousRevisionGuid("ABCDE12345");
+
             assertNotNull(postObject);
             assertEquals(4, postObject.getPostId());
             assertEquals("question", postObject.getPostType());

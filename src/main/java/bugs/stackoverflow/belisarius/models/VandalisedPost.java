@@ -43,20 +43,20 @@ public class VandalisedPost {
     }
 
     public String getReasonMessage() {
-        String reasons = null;
-        ArrayList<String> reasonNames = new ArrayList<>();
+        String allReasons = null;
+        ArrayList<String> names = new ArrayList<>();
         double score = 0;
 
         for (Map.Entry<String, Double> entry : this.reasons.entrySet()) {
-            reasonNames.add(entry.getKey());
+            names.add(entry.getKey());
             score += entry.getValue();
         }
 
-        if (!reasonNames.isEmpty() && score > 0) {
-            reasons = String.join(", ", reasonNames) + "; **Score:** " + score;
+        if (!names.isEmpty() && score > 0) {
+            allReasons = String.join(", ", names) + "; **Score:** " + score;
         }
 
-        return reasons;
+        return allReasons;
     }
 
     public Map<String, Double> getReasonNames() {
