@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 public class CheckUtilsTest {
+    private final double percentage = 0.8;
 
     // Blacklisted and offensive words strings
     private final String blacklistedQuestionWords = "problem now solved  problem has been now fixed  found my solution  "
@@ -66,5 +67,59 @@ public class CheckUtilsTest {
     public void repeatedWordTest() {
         assertEquals(CheckUtils.checkRepeatedWords(repeatedWords).size(), 1);
         assertEquals(CheckUtils.checkRepeatedWords(notRepeatedWords).size(), 6);
+    }
+
+    @Test
+    public void jaroWinklerScoreTest() {
+        double score1 = CheckUtils.getJaroWinklerScore(
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, "
+                + "sed do eiusmod tempor incididunt ut labore et dolore magna "
+                + "aliqua. Ut enim ad minim veniam, quis nostrud exercitation "
+                + "ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis "
+                + "aute irure dolor in reprehenderit in voluptate velit esse cillum "
+                + "dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat "
+                + "non proident, sunt in culpa qui officia deserunt mollit anim id "
+                + "est laborum.",
+            "This text has nothing to do with the above one.",
+            percentage
+        );
+        assertTrue(score1 < 0.6); // this should be caught
+
+        double score2 = CheckUtils.getJaroWinklerScore(
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, "
+                + "sed do <code>eiusmod tempor incididunt ut</code> labore et dolore magna "
+                + "aliqua. <blockquote>Ut enim</blockquote> ad minim veniam, quis nostrud exercitation "
+                + "ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis "
+                + "<pre>aute irure dolor in reprehenderit in voluptate velit esse cillum</pre> "
+                + "dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat "
+                + "non <a href=\"#\">proident</a>, sunt in culpa qui officia deserunt mollit anim id "
+                + "est laborum.",
+            "This text has nothing to do with the above one.",
+            percentage
+        );
+        assertTrue(score2 < 0.6); // this should also be caught
+
+        // and have the same score, as HTML tags are stripped
+        assertEquals(score1, score2);
+
+        double score3 = CheckUtils.getJaroWinklerScore(
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, "
+                + "sed do eiusmod tempor incididunt ut labore et dolore magna "
+                + "aliqua. Ut enim ad minim veniam, quis nostrud exercitation "
+                + "ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis "
+                + "aute irure dolor in reprehenderit in voluptate velit esse cillum "
+                + "dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat "
+                + "non proident, sunt in culpa qui officia deserunt mollit anim id "
+                + "est laborum.",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, "
+                + "sed do eiusmoda tempor incididunt ut labore et dolore magna "
+                + "aliqua. Ut enim ad minim veniamd, quis nostrud exercitation "
+                + "ullamco laboris nisi ut aliquixp ex ea commodo consequat. Duis "
+                + "aute irure dolor in reprehendxerit in voluptate velit esse cillum ",
+            percentage
+        );
+        // edit removes text, but does not change body completely
+        // => should not be reported
+        assertTrue(score3 > 0.6);
     }
 }

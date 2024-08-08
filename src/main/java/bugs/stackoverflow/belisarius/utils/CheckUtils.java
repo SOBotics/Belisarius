@@ -100,8 +100,8 @@ public class CheckUtils {
     }
 
     public static double getJaroWinklerScore(String original, String target, double percentage) {
-        String originalBody = stripTags(original);
-        String targetBody = stripTags(target);
+        String targetBody = removeHtml(target);
+        String originalBody = removeHtml(original);
         double score = 1.0;
 
         if (targetBody.length() < originalBody.length() * percentage) {
