@@ -34,8 +34,7 @@ public class ChatUtils {
 
         if (feedback.equals(Feedback.T.toString()) || feedback.equals(Feedback.TP.toString())) {
             PostUtils.storeFeedback(room, event, Feedback.TP);
-        } else if (feedback.equals(Feedback.F.toString()) || feedback.equals(Feedback.FP.toString())
-        ) {
+        } else if (feedback.equals(Feedback.F.toString()) || feedback.equals(Feedback.FP.toString())) {
             PostUtils.storeFeedback(room, event, Feedback.FP);
         }
     }

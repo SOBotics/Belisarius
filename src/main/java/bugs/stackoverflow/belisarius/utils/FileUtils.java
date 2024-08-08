@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class FileUtils {
-
     public static final String LOGIN_PROPERTIES_FILE = "./properties/login.properties";
     public static final Path OFFENSIVE_WORDS_FILE = Paths.get("./ini/OffensiveWords.csv");
     public static final Path BLACKLISTED_WORDS_FILE = Paths.get("./ini/BlacklistedWords.csv");

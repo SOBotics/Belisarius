@@ -14,7 +14,6 @@ import org.jsoup.nodes.Document;
 import info.debatty.java.stringsimilarity.JaroWinkler;
 
 public class CheckUtils {
-
     // Map with the threshold for the FewUniqueCharacters reason.
     // Stolen from https://github.com/Charcoal-SE/SmokeDetector/blob/84099eecffbd85b15de90a1ea41a7c8776ac0903/findspam.py#L592-L595
     // Key is the number of unique characters, value is a list with lengths which correspond to the key

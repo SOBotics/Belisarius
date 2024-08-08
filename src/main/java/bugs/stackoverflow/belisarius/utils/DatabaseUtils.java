@@ -164,7 +164,7 @@ public class DatabaseUtils {
         return false;
     }
 
-    public static boolean checkReasonCaughtExists(long postId, int revisionId, int roomId, int reasonId) {
+    private static boolean checkReasonCaughtExists(long postId, int revisionId, int roomId, int reasonId) {
         SQLiteConnection connection = new SQLiteConnection();
 
         String sql = "SELECT (COUNT(*) > 0) As Found FROM ReasonCaught "
@@ -195,7 +195,12 @@ public class DatabaseUtils {
         return false;
     }
 
-    public static boolean checkBlacklistedWordCaughtExists(long postId, int revisionId, int roomId, int blacklistedWordId) {
+    private static boolean checkBlacklistedWordCaughtExists(
+        long postId,
+        int revisionId,
+        int roomId,
+        int blacklistedWordId
+    ) {
         SQLiteConnection connection = new SQLiteConnection();
 
         String sql = "SELECT (COUNT(*) > 0) As Found FROM BlacklistedWordCaught "
@@ -227,7 +232,12 @@ public class DatabaseUtils {
         return false;
     }
 
-    public static boolean checkOffensiveWordCaughtExists(long postId, int revisionId, int roomId, int offensiveWordId) {
+    private static boolean checkOffensiveWordCaughtExists(
+        long postId,
+        int revisionId,
+        int roomId,
+        int offensiveWordId
+    ) {
         SQLiteConnection connection = new SQLiteConnection();
 
         String sql = "SELECT (COUNT(*) > 0) As Found FROM OffensiveWordCaught "
@@ -300,11 +310,22 @@ public class DatabaseUtils {
 
             preparedStatement.executeUpdate();
         } catch (SQLException exception) {
-            LOGGER.error("Failed to store vandalised post. PostId: " + postId + "; RevisionId: " + revisionId + ".", exception);
+            LOGGER.error(
+                "Failed to store vandalised post. "
+                    + "PostId: " + postId + "; "
+                    + "RevisionId: " + revisionId + ".",
+                exception
+            );
         }
     }
 
-    public static void storeReasonCaught(long postId, int revisionId, int roomId, int reasonId, double score) {
+    private static void storeReasonCaught(
+        long postId,
+        int revisionId,
+        int roomId,
+        int reasonId,
+        double score
+    ) {
         SQLiteConnection connection = new SQLiteConnection();
 
         String sql = "INSERT INTO ReasonCaught VALUES (?, ?, ?, ?, ?);";
@@ -320,11 +341,22 @@ public class DatabaseUtils {
 
             preparedStatement.executeUpdate();
         } catch (SQLException exception) {
-            LOGGER.error("Failed to store reason caught. Post id: " + postId + "; Reason id: " + reasonId, exception);
+            LOGGER.error(
+                "Failed to store reason caught. "
+                    + "Post id: " + postId + "; "
+                    + "Reason id: " + reasonId,
+                exception
+            );
         }
     }
 
-    public static void storeFeedback(long postId, int revisionId, int roomId, String feedback, long userId) {
+    public static void storeFeedback(
+        long postId,
+        int revisionId,
+        int roomId,
+        String feedback,
+        long userId
+    ) {
         SQLiteConnection connection = new SQLiteConnection();
 
         String sql = "INSERT OR REPLACE INTO Feedback VALUES (?, ?, ?, ?, ?);";
@@ -340,13 +372,22 @@ public class DatabaseUtils {
 
             preparedStatement.executeUpdate();
         } catch (SQLException exception) {
-            LOGGER.error("Failed to store feedback for vandalised post. PostId: " + postId + "; "
-                      + "RevisionId: " + revisionId + "; Feedback: " + feedback + ".", exception);
+            LOGGER.error(
+                "Failed to store feedback for vandalised post. "
+                    + "PostId: " + postId + "; "
+                    + "RevisionId: " + revisionId + "; "
+                    + "Feedback: " + feedback + ".",
+                exception
+            );
         }
     }
 
-    public static void storeCaughtBlacklistedWord(long postId, int revisionId, int roomId, int blacklistedWordId) {
-
+    private static void storeCaughtBlacklistedWord(
+        long postId,
+        int revisionId,
+        int roomId,
+        int blacklistedWordId
+    ) {
         SQLiteConnection connection = new SQLiteConnection();
 
         String sql = "INSERT INTO BlacklistedWordCaught VALUES (?, ?, ?, ?);";
@@ -361,11 +402,21 @@ public class DatabaseUtils {
 
             preparedStatement.executeUpdate();
         } catch (SQLException exception) {
-            LOGGER.error("Failed to store caught blacklisted word. Post: " + postId + "; Word: " + blacklistedWordId, exception);
+            LOGGER.error(
+                "Failed to store caught blacklisted word. "
+                    + "Post id: " + postId + "; "
+                    + "Word: " + blacklistedWordId,
+                exception
+            );
         }
     }
 
-    public static void storeCaughtOffensiveWord(long postId, int revisionId, int roomId, int offensiveWordId) {
+    private static void storeCaughtOffensiveWord(
+        long postId,
+        int revisionId,
+        int roomId,
+        int offensiveWordId
+    ) {
         SQLiteConnection connection = new SQLiteConnection();
 
         String sql = "INSERT INTO OffensiveWordCaught VALUES (?, ?, ?, ?);";
@@ -380,7 +431,12 @@ public class DatabaseUtils {
 
             preparedStatement.executeUpdate();
         } catch (SQLException exception) {
-            LOGGER.error("Failed to store caught offensive word. PostId: " + postId + "; WordId: " + offensiveWordId, exception);
+            LOGGER.error(
+                "Failed to store caught offensive word. "
+                    + "PostId: " + postId + "; "
+                    + "WordId: " + offensiveWordId,
+                exception
+            );
         }
     }
 
@@ -418,5 +474,54 @@ public class DatabaseUtils {
 
     public static Map<Integer, String> getBlacklistedWordsByType(String postType) {
         return BLACKLISTED_WORDS.get(postType);
+    }
+
+    public static void storeReason(
+        long postId,
+        int revisionNumber,
+        int roomId,
+        int reasonId,
+        double score
+    ) {
+        if (checkReasonCaughtExists(postId, revisionNumber, roomId, reasonId)) {
+            return;
+        }
+
+        storeReasonCaught(postId, revisionNumber, roomId, reasonId, score);
+        LOGGER.info("Stored reason " + reasonId + " for post " + postId + " to the database.");
+    }
+
+    public static void storeBlacklistedWord(
+        long postId,
+        int revisionNumber,
+        int roomId,
+        int wordId
+    ) {
+        if (checkBlacklistedWordCaughtExists(postId, revisionNumber, roomId, wordId)) {
+            return;
+        }
+
+        storeCaughtBlacklistedWord(postId, revisionNumber, roomId, wordId);
+        LOGGER.info(
+            "Successfully stored blacklisted word " + wordId
+                + " for post " + postId + " to database."
+        );
+    }
+
+    public static void storeOffensiveWord(
+        long postId,
+        int revisionNumber,
+        int roomId,
+        int wordId
+    ) {
+        if (checkOffensiveWordCaughtExists(postId, revisionNumber, roomId, wordId)) {
+            return;
+        }
+
+        storeCaughtOffensiveWord(postId, revisionNumber, roomId, wordId);
+        LOGGER.info(
+            "Successfully stored offensive word " + wordId
+                + " for post " + postId + " to database."
+        );
     }
 }

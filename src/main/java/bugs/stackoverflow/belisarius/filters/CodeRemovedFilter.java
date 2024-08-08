@@ -8,12 +8,7 @@ import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class CodeRemovedFilter implements Filter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CodeRemovedFilter.class);
-
     private final int roomId;
     private final Post post;
     private final int reasonId = 2;
@@ -25,10 +20,16 @@ public class CodeRemovedFilter implements Filter {
 
     @Override
     public boolean isHit() {
-        // Check if code has been removed when the post is a question (https://chat.stackoverflow.com/transcript/message/50208463)
-        if (post.getLastBody() != null && post.getBody() != null && "question".equals(post.getPostType())) {
-            return !CheckUtils.checkIfNoCodeBlock(post.getLastBody()) && CheckUtils.checkIfNoCodeBlock(post.getBody());
+        // Check if code has been removed when the post is a question
+        // (https://chat.stackoverflow.com/transcript/message/50208463)
+        if (post.getLastBody() != null
+            && post.getBody() != null
+            && "question".equals(post.getPostType())
+        ) {
+            return !CheckUtils.checkIfNoCodeBlock(post.getLastBody())
+                && CheckUtils.checkIfNoCodeBlock(post.getBody());
         }
+
         return false;
     }
 
@@ -59,11 +60,10 @@ public class CodeRemovedFilter implements Filter {
 
     @Override
     public void storeHit() {
-        long postId = this.post.getPostId();
-        int revisionNumber = this.post.getRevisionNumber();
-        if (!DatabaseUtils.checkReasonCaughtExists(postId, revisionNumber, this.roomId, this.reasonId)) {
-            DatabaseUtils.storeReasonCaught(postId, revisionNumber, this.roomId, this.reasonId, this.getScore());
-            LOGGER.info("Successfully stored reason CodeRemovedFilter for post " + postId + " to database.");
-        }
+        long postId = post.getPostId();
+        int revisionNumber = post.getRevisionNumber();
+        double score = getScore();
+
+        DatabaseUtils.storeReason(postId, revisionNumber, roomId, reasonId, score);
     }
 }

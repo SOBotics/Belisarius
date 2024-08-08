@@ -9,12 +9,7 @@ import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 import bugs.stackoverflow.belisarius.utils.JsonUtils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class FewUniqueCharactersFilter implements Filter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FewUniqueCharactersFilter.class);
-
     private final int roomId;
     private final Post post;
     private final int reasonId = 3;
@@ -28,10 +23,13 @@ public class FewUniqueCharactersFilter implements Filter {
     @Override
     public boolean isHit() {
         this.listedWord = "";
+
         if (post.getBody() != null) {
             this.listedWord = CheckUtils.checkForFewUniqueCharacters(post.getBody());
+
             return this.listedWord != null;
         }
+
         return false;
     }
 
@@ -47,7 +45,8 @@ public class FewUniqueCharactersFilter implements Filter {
 
     @Override
     public String getFormattedReasonMessage() {
-        // make sure to escape characters like [], see https://chat.stackoverflow.com/messages/51803561/history
+        // make sure to escape characters like [], see
+        // https://chat.stackoverflow.com/messages/51803561/history
         return "**Few unique characters detected:** " + JsonUtils.sanitizeChatMessage(this.listedWord);
     }
 
@@ -63,12 +62,10 @@ public class FewUniqueCharactersFilter implements Filter {
 
     @Override
     public void storeHit() {
-        long postId = this.post.getPostId();
-        int revisionNumber = this.post.getRevisionNumber();
-        if (!DatabaseUtils.checkReasonCaughtExists(postId, revisionNumber, this.roomId, this.reasonId)) {
-            DatabaseUtils.storeReasonCaught(postId, revisionNumber, this.roomId, this.reasonId, this.getScore());
-            LOGGER.info("Successfully stored reasonFewUniqueCharactersFilter for post " + postId + " to database.");
-        }
-    }
+        long postId = post.getPostId();
+        int revisionNumber = post.getRevisionNumber();
+        double score = getScore();
 
+        DatabaseUtils.storeReason(postId, revisionNumber, roomId, reasonId, score);
+    }
 }

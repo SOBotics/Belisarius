@@ -115,7 +115,8 @@ public class PostUtils {
             LOGGER.info(
                 "ApiException was thrown while trying to send feedback "
                     + feedback.toString() + " to Higgs"
-                    + " from " + event.getMessage().getUser().getId(), exception
+                    + " from " + event.getMessage().getUser().getId(),
+                exception
             );
         }
     }
@@ -152,10 +153,13 @@ public class PostUtils {
     }
 
     private static long getPostIdFromMessage(String message) {
+        String splitMessage = message.split("//stackoverflow.com/posts/")[1];
+
         return Long.parseLong(
-            message
-                .split("//stackoverflow.com/posts/")[1]
-                .substring(0, message.indexOf("/"))
+            splitMessage.substring(
+                0,
+                splitMessage.indexOf("/")
+            )
         );
     }
 

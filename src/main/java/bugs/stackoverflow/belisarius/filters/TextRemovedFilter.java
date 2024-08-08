@@ -8,12 +8,7 @@ import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class TextRemovedFilter implements Filter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TextRemovedFilter.class);
-
     private final int roomId;
     private final Post post;
     private final int reasonId = 6;
@@ -52,7 +47,8 @@ public class TextRemovedFilter implements Filter {
 
     @Override
     public String getFormattedReasonMessage() {
-        return "**" + percentage * 100 + "% or more text removed with a JW score of " + Math.round(this.score * 100.0) / 100.0 + "**";
+        return "**" + percentage * 100 + "% or more text removed "
+            + "with a JW score of " + Math.round(this.score * 100.0) / 100.0 + "**";
     }
 
     @Override
@@ -67,11 +63,9 @@ public class TextRemovedFilter implements Filter {
 
     @Override
     public void storeHit() {
-        long postId = this.post.getPostId();
-        int revisionNumber = this.post.getRevisionNumber();
-        if (!DatabaseUtils.checkReasonCaughtExists(postId, revisionNumber, this.roomId, this.reasonId)) {
-            DatabaseUtils.storeReasonCaught(postId, revisionNumber, this.roomId, this.reasonId, this.getScore());
-            LOGGER.info("Successfully stored reason TextRemovedFilter for post " + postId + " to database.");
-        }
+        long postId = post.getPostId();
+        int revisionNumber = post.getRevisionNumber();
+
+        DatabaseUtils.storeReason(postId, revisionNumber, roomId, reasonId, getScore());
     }
 }

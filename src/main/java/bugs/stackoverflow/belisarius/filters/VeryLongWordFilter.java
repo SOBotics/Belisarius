@@ -8,12 +8,7 @@ import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class VeryLongWordFilter implements Filter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(VeryLongWordFilter.class);
-
     private final int roomId;
     private final Post post;
     private final int reasonId = 6;
@@ -27,11 +22,14 @@ public class VeryLongWordFilter implements Filter {
     @Override
     public boolean isHit() {
         this.listedWord = "";
+
         if (post.getBody() != null) {
             this.listedWord = CheckUtils.checkForLongWords(post.getBody());
             String oldListedWord = CheckUtils.checkForLongWords(post.getLastBody());
+
             return this.listedWord != null && oldListedWord == null;
         }
+
         return false;
     }
 
@@ -62,12 +60,11 @@ public class VeryLongWordFilter implements Filter {
 
     @Override
     public void storeHit() {
-        long postId = this.post.getPostId();
-        int revisionNumber = this.post.getRevisionNumber();
-        if (!DatabaseUtils.checkReasonCaughtExists(postId, revisionNumber, this.roomId, this.reasonId)) {
-            DatabaseUtils.storeReasonCaught(postId, revisionNumber, this.roomId, this.reasonId, this.getScore());
-            LOGGER.info("Successfully stored reason VeryLongWordFilter for post " + postId + " to database.");
-        }
+        long postId = post.getPostId();
+        int revisionNumber = post.getRevisionNumber();
+        double score = getScore();
+
+        DatabaseUtils.storeReason(postId, revisionNumber, roomId, reasonId, score);
     }
 
 }

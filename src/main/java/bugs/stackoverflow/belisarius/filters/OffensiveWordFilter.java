@@ -8,13 +8,9 @@ import java.util.Map;
 import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import bugs.stackoverflow.belisarius.utils.FilterUtils;
 
 public class OffensiveWordFilter implements Filter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(OffensiveWordFilter.class);
-
     private final int roomId;
     private final Post post;
     private final int reasonId = 4;
@@ -28,8 +24,7 @@ public class OffensiveWordFilter implements Filter {
 
     @Override
     public boolean isHit() {
-
-        if (this.post.getComment() != null) {
+        if (post.getComment() != null) {
             offensiveWords = CheckUtils.checkForOffensiveWords(this.post.getComment());
         }
 
@@ -43,12 +38,14 @@ public class OffensiveWordFilter implements Filter {
 
     @Override
     public double getTotalScore() {
-        return this.offensiveWords.size();
+        return offensiveWords.size();
     }
 
     @Override
     public String getFormattedReasonMessage() {
-        return "**Edit summary contains offensive " + (this.offensiveWords.size() > 1 ? "words" : "word") + ":** " + getOffensiveWords();
+        return "**Edit summary contains offensive "
+            + FilterUtils.pluralise("word", offensiveWords.size()) + ":** "
+            + getOffensiveWords();
     }
 
     @Override
@@ -57,7 +54,10 @@ public class OffensiveWordFilter implements Filter {
         List<String> words = new ArrayList<>();
 
         // add name + word to the words list
-        offensiveWords.values().forEach(word -> words.add(name + word));
+        offensiveWords
+            .values()
+            .forEach(word -> words.add(name + word));
+
         return words;
     }
 
@@ -82,17 +82,14 @@ public class OffensiveWordFilter implements Filter {
 
     @Override
     public void storeHit() {
-        long postId = this.post.getPostId();
-        int revisionNumber = this.post.getRevisionNumber();
-        if (!DatabaseUtils.checkReasonCaughtExists(postId, revisionNumber, this.roomId, this.reasonId)) {
-            DatabaseUtils.storeReasonCaught(postId, revisionNumber, this.roomId, this.reasonId, this.getScore());
-        }
+        long postId = post.getPostId();
+        int revisionNumber = post.getRevisionNumber();
+        double score = getScore();
+
+        DatabaseUtils.storeReason(postId, revisionNumber, roomId, reasonId, score);
 
         this.getCaughtOffensiveWordIds().forEach(id -> {
-            if (!DatabaseUtils.checkOffensiveWordCaughtExists(postId, revisionNumber, this.roomId, id)) {
-                DatabaseUtils.storeCaughtOffensiveWord(postId, revisionNumber, this.roomId, id);
-                LOGGER.info("Successfully stored offensive word id for post " + postId + " to database.");
-            }
+            DatabaseUtils.storeBlacklistedWord(postId, revisionNumber, this.roomId, id);
         });
     }
 }

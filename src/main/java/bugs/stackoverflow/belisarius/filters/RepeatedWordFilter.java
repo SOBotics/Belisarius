@@ -9,13 +9,9 @@ import java.util.Set;
 import bugs.stackoverflow.belisarius.models.Post;
 import bugs.stackoverflow.belisarius.utils.CheckUtils;
 import bugs.stackoverflow.belisarius.utils.DatabaseUtils;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import bugs.stackoverflow.belisarius.utils.FilterUtils;
 
 public class RepeatedWordFilter implements Filter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RepeatedWordFilter.class);
-
     private final int roomId;
     private final Post post;
     private final int reasonId = 5;
@@ -28,12 +24,12 @@ public class RepeatedWordFilter implements Filter {
 
     @Override
     public boolean isHit() {
-
-        if (this.post.getBody() != null) {
+        if (post.getBody() != null) {
             repeatedWords = CheckUtils.checkRepeatedWords(this.post.getBody());
         }
 
         double score = getScore();
+
         return score > 0 && score <= 5;
     }
 
@@ -51,8 +47,10 @@ public class RepeatedWordFilter implements Filter {
     public String getFormattedReasonMessage() {
         String message = "";
 
-        if (this.repeatedWords.size() > 0) {
-            message += "**Post contains repeated " + (this.repeatedWords.size() > 1 ? "words" : "word") + ":** " + getRepeatedWords() + " ";
+        if (!repeatedWords.isEmpty()) {
+            message += "**Post contains repeated "
+                + FilterUtils.pluralise("word", repeatedWords.size())
+                + ":** " + getRepeatedWords() + " ";
         }
 
         return message.trim();
@@ -80,11 +78,10 @@ public class RepeatedWordFilter implements Filter {
 
     @Override
     public void storeHit() {
-        long postId = this.post.getPostId();
-        int revisionNumber = this.post.getRevisionNumber();
-        if (!DatabaseUtils.checkReasonCaughtExists(postId, revisionNumber, this.roomId, this.reasonId)) {
-            DatabaseUtils.storeReasonCaught(postId, revisionNumber, this.roomId, this.reasonId, this.getScore());
-            LOGGER.info("Successfully stored reason RepeatedWordFilter for post " + postId + " to database.");
-        }
+        long postId = post.getPostId();
+        int revisionNumber = post.getRevisionNumber();
+        double score = getScore();
+
+        DatabaseUtils.storeReason(postId, revisionNumber, roomId, reasonId, score);
     }
 }
