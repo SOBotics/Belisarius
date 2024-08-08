@@ -1,10 +1,10 @@
 package bugs.stackoverflow.belisarius.utils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.io.IOException;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -18,12 +18,14 @@ import bugs.stackoverflow.belisarius.models.VandalisedPost;
 import bugs.stackoverflow.belisarius.services.ApiService;
 
 import org.junit.jupiter.api.Test;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class PostUtilsTest {
     private final ApiService apiService = new ApiService("stackoverflow");
     private final Belisarius belisarius = new Belisarius("stackoverflow");
+
     private final JsonObject examplePostObject = JsonParser.parseString("{"
             + "\"owner\": {\"reputation\": 6170, \"user_id\": 4450024, \"display_name\": \"Nu&#241;ito de la Calzada\"},"
             + "\"last_editor\": {\"reputation\": 6170, \"user_id\": 4450024, \"display_name\": \"Nu&#241;ito de la Calzada\"},"
@@ -44,62 +46,64 @@ public class PostUtilsTest {
     public void editorAlsoOwnerTest() {
         assertTrue(PostUtils.editorAlsoOwner(examplePostObject));
         examplePostObject.get("last_editor").getAsJsonObject().addProperty("user_id", 1234);
+
         assertFalse(PostUtils.editorAlsoOwner(examplePostObject));
     }
 
     @Test
-    public void getPostObjectTest() {
-        try {
-            JsonObject exampleRevisionObject = apiService.getLatestRevisions("4", 1).get("items").getAsJsonArray().get(0).getAsJsonObject();
-            Post postObject = PostUtils.getPost(exampleRevisionObject.getAsJsonObject(), "stackoverflow", "test");
-            postObject.setPreviousRevisionGuid("ABCDE12345");
+    public void getPostObjectTest() throws IOException {
+        JsonObject sample = apiService.getLatestRevisions("4", 1)
+            .get("items").getAsJsonArray()
+            .get(0).getAsJsonObject();
 
-            assertNotNull(postObject);
-            assertEquals(4, postObject.getPostId());
-            assertEquals("question", postObject.getPostType());
-            assertEquals("test", postObject.getTitle());
-            assertEquals("ABCDE12345", postObject.getPreviousRevisionGuid());
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
+        Post postObject = PostUtils.getPost(sample.getAsJsonObject(), "stackoverflow", "test");
+        postObject.setPreviousRevisionGuid("ABCDE12345");
+
+        assertNotNull(postObject);
+
+        assertEquals(4, postObject.getPostId());
+        assertEquals("question", postObject.getPostType());
+        assertEquals("test", postObject.getTitle());
+        assertEquals("ABCDE12345", postObject.getPreviousRevisionGuid());
     }
 
     @Test
     public void getVandalisedPostTest() {
-        try {
-            VandalisedPost noVandalism = PostUtils.getVandalisedPost(belisarius.getPost("4"));
-            assertNull(noVandalism.getSeverity());
-            Post deletedPost = belisarius.getPost("1");
-            assertNull(deletedPost);
+        VandalisedPost noVandalism = PostUtils.getVandalisedPost(belisarius.getPost("4"));
+        assertNull(noVandalism.getSeverity());
 
-            Map<String, List<VandalisedPost>> vandalisedPosts = new HashMap<>();
-            List<VandalisedPost> low = new ArrayList<>();
-            low.add(PostUtils.getVandalisedPost(belisarius.getPost("66373993"))); // removed code Q
-            low.add(PostUtils.getVandalisedPost(belisarius.getPost("63575223"))); // text removed Q
-            low.add(PostUtils.getVandalisedPost(belisarius.getPost("64296039"))); // text removed A
-            low.add(PostUtils.getVandalisedPost(belisarius.getPost("63769100"))); // both of the above
+        Post deletedPost = belisarius.getPost("1");
+        assertNull(deletedPost);
 
-            List<VandalisedPost> medium = new ArrayList<>();
+        Map<String, List<String>> vandalisedPosts = new HashMap<>();
+        List<String> low = Arrays.asList(
+            "66373993", // removed code Q
+            "63575223", // text removed Q
+            "64296039", // text removed A
+            "63769100" // both of the above
+        );
+
+        List<String> medium = Arrays.asList(
             // blacklisted word(s)
-            medium.add(PostUtils.getVandalisedPost(belisarius.getPost("63193055")));
-            medium.add(PostUtils.getVandalisedPost(belisarius.getPost("31883097")));
-            medium.add(PostUtils.getVandalisedPost(belisarius.getPost("64643310")));
-            medium.add(PostUtils.getVandalisedPost(belisarius.getPost("64123548"))); // very long word
+            "63193055",
+            "31883097",
+            "64643310",
+            "64123548" // very long word
+        );
 
-            List<VandalisedPost> high = new ArrayList<>();
-            high.add(PostUtils.getVandalisedPost(belisarius.getPost("62812593"))); // offensive word
+        List<String> high = Arrays.asList("62812593"); // offensive word
 
-            vandalisedPosts.put("low", low);
-            vandalisedPosts.put("medium", medium);
-            vandalisedPosts.put("high", high);
+        vandalisedPosts.put("low", low);
+        vandalisedPosts.put("medium", medium);
+        vandalisedPosts.put("high", high);
 
-            for (Map.Entry<String, List<VandalisedPost>> post : vandalisedPosts.entrySet()) {
-                for (VandalisedPost vandalisedPost : post.getValue()) {
-                    assertEquals(post.getKey(), vandalisedPost.getSeverity());
-                }
+        for (Map.Entry<String, List<String>> entry : vandalisedPosts.entrySet()) {
+            for (String postId : entry.getValue()) {
+                Post post = belisarius.getPost(postId);
+                VandalisedPost vandalisedPost = PostUtils.getVandalisedPost(post);
+
+                assertEquals(entry.getKey(), vandalisedPost.getSeverity());
             }
-        } catch (Exception exception) {
-            exception.printStackTrace();
         }
     }
 }

@@ -1,16 +1,13 @@
 package bugs.stackoverflow.belisarius.utils;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import bugs.stackoverflow.belisarius.utils.JsonUtils;
 
 import org.junit.jupiter.api.Test;
 
 public class JsonUtilsTest {
-    private final String revisionUrl = "https://stackoverflow.com/revisions/db207fcc-5e19-4bca-872c-add2541753e3/view-source";
-
     @Test
     public void escapeHtmlEncodingTest() {
         assertEquals(JsonUtils.escapeHtmlEncoding("John O&#39;Connor"), "John O'Connor");
@@ -25,8 +22,16 @@ public class JsonUtilsTest {
     }
 
     @Test
-    public void getHtmlTest() throws Exception {
-        assertNotNull(JsonUtils.getHtml(revisionUrl));
+    public void getHtmlTest() throws IOException {
+        // this revision was chosen because the post is locked and it is short
+        String markdown = JsonUtils.getHtml(
+            "https://stackoverflow.com/revisions/272c30b5-e20b-407f-ab1a-a379e312af0d/view-source"
+        );
+        assertEquals(
+            markdown,
+            "How can I redirect the user from one page to another using jQuery or pure JavaScript?"
+        );
+
         assertNull(JsonUtils.getHtml("https://stackoverflow.com/revisions/ABCDE/view-source"));
     }
 }
