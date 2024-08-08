@@ -16,14 +16,6 @@ public class Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
     public static void main(String[] args) throws ApiException {
-        PropertyService propertyService = new PropertyService();
-
-        String email = propertyService.getProperty("email");
-        String password = propertyService.getProperty("password");
-
-        StackExchangeClient client = new StackExchangeClient(email, password);
-        LOGGER.info("Created a chatexchange client.");
-
         // Initialise database
         DatabaseUtils.createVandalisedPostTable();
         DatabaseUtils.createBlacklistedWordCaughtTable();
@@ -32,38 +24,47 @@ public class Application {
         DatabaseUtils.createFeedbackTable();
         LOGGER.info("Initialised database!");
 
-        try {
-            // Initialise Higgs
-            int higgsDashboardId = Integer.parseInt(propertyService.getProperty("higgsBotId"));
-            int roomId = Integer.parseInt(propertyService.getProperty("roomid"));
+        init();
+    }
 
-            String higgsUrl = propertyService.getProperty("higgsUrl");
-            String useHiggs = propertyService.getProperty("useHiggs");
-            String secret = propertyService.getProperty("higgsSecret");
+    public static void init() throws ApiException {
+        PropertyService propertyService = new PropertyService();
 
-            if ("true".equals(useHiggs) && higgsDashboardId != 0) {
-                HiggsService.initInstance(higgsUrl, secret);
-            }
-            LOGGER.info("Initialised Higgs!");
+        // Login
+        String email = propertyService.getProperty("email");
+        String password = propertyService.getProperty("password");
 
-            // Initialise Redunda
-            String useRedunda = propertyService.getProperty("useRedunda");
-            String redundaKey = propertyService.getProperty("redundaKey");
-            String version = propertyService.getProperty("version");
+        StackExchangeClient client = new StackExchangeClient(email, password);
+        LOGGER.info("Created a chatexchange client.");
 
-            PingService redunda = new PingService(redundaKey, version);
-            if ("false".equals(useRedunda)) {
-                redunda.setDebugging(true);
-            }
-            LOGGER.info("Initialised Redunda!");
+        // Initialise Higgs
+        int higgsDashboardId = Integer.parseInt(propertyService.getProperty("higgsBotId"));
+        int roomId = Integer.parseInt(propertyService.getProperty("roomid"));
 
-            String site = propertyService.getProperty("site");
+        String higgsUrl = propertyService.getProperty("higgsUrl");
+        String useHiggs = propertyService.getProperty("useHiggs");
+        String secret = propertyService.getProperty("higgsSecret");
 
-            MonitorService monitorService = new MonitorService(client, roomId, site, redunda);
-            monitorService.runMonitor();
-            LOGGER.info("Monitor started.");
-        } catch (NumberFormatException exception) {
-            LOGGER.error("Unable to access values from login.properties!", exception);
+        if ("true".equals(useHiggs) && higgsDashboardId != 0) {
+            HiggsService.initInstance(higgsUrl, secret);
         }
+        LOGGER.info("Initialised Higgs!");
+
+        // Initialise Redunda
+        String useRedunda = propertyService.getProperty("useRedunda");
+        String redundaKey = propertyService.getProperty("redundaKey");
+        String version = propertyService.getProperty("version");
+
+        PingService redunda = new PingService(redundaKey, version);
+        if ("false".equals(useRedunda)) {
+            redunda.setDebugging(true);
+        }
+        LOGGER.info("Initialised Redunda!");
+
+        String site = propertyService.getProperty("site");
+
+        MonitorService monitorService = new MonitorService(client, roomId, site, redunda);
+        monitorService.runMonitor();
+        LOGGER.info("Monitor started.");
     }
 }

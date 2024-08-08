@@ -6,6 +6,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import bugs.stackoverflow.belisarius.Application;
 import bugs.stackoverflow.belisarius.Belisarius;
 import bugs.stackoverflow.belisarius.clients.Monitor;
 import bugs.stackoverflow.belisarius.models.Post;
@@ -18,11 +19,17 @@ import org.sobotics.chatexchange.chat.StackExchangeClient;
 import org.sobotics.chatexchange.chat.event.EventType;
 import org.sobotics.redunda.PingService;
 
+import io.swagger.client.ApiException;
+
 public class MonitorService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MonitorService.class);
 
     private final boolean shouldOutput = new PropertyService().getProperty("outputMessage").equals("true");
     private final Belisarius belisarius;
+    private final StackExchangeClient client;
+    private final String sitename;
+    private final int roomId;
+
     private Room room;
     private final PingService redunda;
     private ScheduledExecutorService executorService;
@@ -34,14 +41,21 @@ public class MonitorService {
         PingService redunda
     ) {
         this.belisarius = new Belisarius(sitename);
+        this.client = client;
+        this.sitename = sitename;
+        this.roomId = chatroomId;
 
         if (chatroomId != 0) {
-            this.room = client.joinRoom(ChatUtils.getChatHost(sitename), chatroomId);
-
-            LOGGER.info("Joined room " + chatroomId + " on " + sitename + ".");
+            this.joinRoom();
         }
 
         this.redunda = redunda;
+    }
+
+    public final void joinRoom() {
+        this.room = client.joinRoom(ChatUtils.getChatHost(sitename), roomId);
+
+        LOGGER.info("Joined room " + roomId + " on " + sitename + ".");
     }
 
     public void runMonitor() {
@@ -78,20 +92,23 @@ public class MonitorService {
     }
 
     public void stop() {
-        executorService.shutdown();
+        // leave room and exit
+        client.close();
+        System.exit(0);
     }
 
     public void reboot() {
-        this.stop();
-        executorService = Executors.newSingleThreadScheduledExecutor();
+        try (client) {
+            sendMessageToChat(Belisarius.README + "] rebooted at " + Instant.now());
+        }
 
-        this.runMonitor();
-        sendMessageToChat(Belisarius.README + "] rebooted at " + Instant.now());
+        executorService.shutdown();
 
         try {
-            Thread.sleep(1000);
-        } catch (InterruptedException exception) {
-            LOGGER.error("sleep was interrupted", exception);
+            Application.init();
+        } catch (ApiException exception) {
+            LOGGER.info("Exception while rebooting, exiting now.", exception);
+            System.exit(0);
         }
     }
 
