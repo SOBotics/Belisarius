@@ -65,6 +65,21 @@ public class PostUtilsTest {
         assertEquals("question", postObject.getPostType());
         assertEquals("test", postObject.getTitle());
         assertEquals("ABCDE12345", postObject.getPreviousRevisionGuid());
+
+        Post locked = belisarius.getPost("2276572");
+        assertEquals(
+            locked.getBody(),
+            "<p>How do I comment a block of lines in YAML?</p>\n"
+        );
+        assertEquals(
+            locked.getLastBody(),
+            "<p>Does anyone know how to comment a block of lines in yaml?</p>\n"
+        );
+        assertEquals(locked.getRevisionGuid(), "ec79a719-0ebf-48ca-ae89-27739738f2b7".toUpperCase());
+        assertEquals(locked.getPreviousRevisionGuid(), "0db0a737-a330-4625-a537-2bf9e73916a3".toUpperCase());
+        assertEquals(locked.getComment(), "Active reading [&lt;http://en.wikipedia.org/wiki/YAML&gt;].");
+        assertEquals(locked.getTitle(), "How do you do block comments in YAML?");
+        assertEquals(locked.getLastTitle(), "How do you do block comment in yaml?");
     }
 
     @Test
