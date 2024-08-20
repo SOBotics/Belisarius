@@ -26,8 +26,8 @@ public class CodeRemovedFilter implements Filter {
             && post.getBody() != null
             && "question".equals(post.getPostType())
         ) {
-            return !CheckUtils.checkIfNoCodeBlock(post.getLastBody())
-                && CheckUtils.checkIfNoCodeBlock(post.getBody());
+            return CheckUtils.containsCode(post.getLastBody())
+                && !CheckUtils.containsCode(post.getBody());
         }
 
         return false;

@@ -95,8 +95,8 @@ public class CheckUtils {
         return null;
     }
 
-    public static boolean checkIfNoCodeBlock(String target) {
-        return !target.contains("<code>");
+    public static boolean containsCode(String target) {
+        return target.contains("<code>");
     }
 
     public static double getJaroWinklerScore(String original, String target, double percentage) {

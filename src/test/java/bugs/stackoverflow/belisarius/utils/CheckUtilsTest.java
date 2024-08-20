@@ -59,8 +59,8 @@ public class CheckUtilsTest {
 
     @Test
     public void checkIfNoCodeBlockTest() {
-        assertTrue(CheckUtils.checkIfNoCodeBlock("Not a code block"));
-        assertFalse(CheckUtils.checkIfNoCodeBlock("<code>This is a code block</code>"));
+        assertFalse(CheckUtils.containsCode("Not a code block"));
+        assertTrue(CheckUtils.containsCode("<code>This is a code block</code>"));
     }
 
     @Test

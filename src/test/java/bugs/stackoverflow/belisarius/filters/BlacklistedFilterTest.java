@@ -3,54 +3,52 @@ package bugs.stackoverflow.belisarius.filters;
 import java.io.IOException;
 
 import bugs.stackoverflow.belisarius.models.Post;
-import bugs.stackoverflow.belisarius.utils.PostUtils;
-import bugs.stackoverflow.belisarius.services.ApiService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import com.google.gson.JsonObject;
-
 public class BlacklistedFilterTest {
-    private final ApiService apiService = new ApiService("stackoverflow");
-
     @Test
     public void hitTest() throws IOException {
         // blacklisted word added after edit
-        Post post1 = getSamplePost(
+        Post post1 = FilterTestUtils.getSamplePost(
             "This was my question. PROBLEM SOLVED: do this",
             "This is my question. It is quite big.",
             "title",
             "title",
-            "edit"
+            "edit",
+            "question"
         );
 
         // blacklisted word existed before edit:
-        Post post2 = getSamplePost(
+        Post post2 = FilterTestUtils.getSamplePost(
             "Minor edit, This is my question, Minor edit. PrObLEM fIXeD: do this",
             "This is my question. PrObLEM fIXeD: do this",
             "title",
             "title",
-            "edit"
+            "edit",
+            "question"
         );
 
         // blacklisted word inside HTML tag
-        Post post3 = getSamplePost(
+        Post post3 = FilterTestUtils.getSamplePost(
             "This was my question. <code>PROBLEM SOLVED</code>: do this",
             "This is my question. It is quite big.",
             "title",
             "title",
-            "edit"
+            "edit",
+            "question"
         );
 
         // more than one blacklisted words
-        Post post4 = getSamplePost(
+        Post post4 = FilterTestUtils.getSamplePost(
             "This was my question. problem solved. answer: do this",
             "This is my question. It is quite big.",
             "title",
             "[SOLVED] title",
-            "problem fixed, approval overriden"
+            "problem fixed, approval overriden",
+            "question"
         );
 
         assertEquals(new BlacklistedFilter(0, post1).isHit(), true);
@@ -61,27 +59,5 @@ public class BlacklistedFilterTest {
         assertEquals(filter4.isHit(), true);
         // 1 (title) + 1 (edit summary) + 2 (post body) = 4
         assertEquals(filter4.getTotalScore(), 4.0);
-    }
-
-    private Post getSamplePost(
-        String body,
-        String lastBody,
-        String title,
-        String lastTitle,
-        String summary
-    ) throws IOException {
-        // choosing this post because it is locked
-        // if a new revision appears, edit .get(2) accordingly
-        JsonObject json = apiService.getLatestRevisions("2276572", 1)
-            .get("items").getAsJsonArray()
-            .get(2).getAsJsonObject();
-
-        json.addProperty("body", body);
-        json.addProperty("last_body", lastBody);
-        json.addProperty("title", title);
-        json.addProperty("last_title", lastTitle);
-        json.addProperty("comment", summary);
-
-        return PostUtils.getPost(json, "stackoverflow", "title");
     }
 }
