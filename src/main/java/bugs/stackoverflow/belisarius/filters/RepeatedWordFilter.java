@@ -25,7 +25,7 @@ public class RepeatedWordFilter implements Filter {
     @Override
     public boolean isHit() {
         if (post.getBody() != null) {
-            repeatedWords = CheckUtils.checkRepeatedWords(this.post.getBody());
+            repeatedWords = CheckUtils.checkRepeatedWords(post.getBody());
         }
 
         double score = getScore();
@@ -40,7 +40,7 @@ public class RepeatedWordFilter implements Filter {
 
     @Override
     public double getTotalScore() {
-        return getScore();
+        return 6 - getScore();
     }
 
     @Override
