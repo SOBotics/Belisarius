@@ -1,6 +1,5 @@
 package bugs.stackoverflow.belisarius.utils;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.io.IOException;
@@ -90,7 +89,6 @@ public class PostUtilsTest {
         Post deletedPost = belisarius.getPost("1");
         assertNull(deletedPost);
 
-        Map<String, List<String>> vandalisedPosts = new HashMap<>();
         List<String> low = Arrays.asList(
             "66373993", // removed code Q
             "63575223", // text removed Q
@@ -108,9 +106,11 @@ public class PostUtilsTest {
 
         List<String> high = Arrays.asList("62812593"); // offensive word
 
-        vandalisedPosts.put("low", low);
-        vandalisedPosts.put("medium", medium);
-        vandalisedPosts.put("high", high);
+        Map<String, List<String>> vandalisedPosts = Map.of(
+            "low", low,
+            "medium", medium,
+            "high", high
+        );
 
         for (Map.Entry<String, List<String>> entry : vandalisedPosts.entrySet()) {
             for (String postId : entry.getValue()) {

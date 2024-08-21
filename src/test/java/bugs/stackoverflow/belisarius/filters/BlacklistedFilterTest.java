@@ -51,9 +51,20 @@ public class BlacklistedFilterTest {
             "question"
         );
 
+        // body would be caught if post was a question
+        Post post5 = FilterTestUtils.getSamplePost(
+            "This is my answer. answer: do this",
+            "This was my answer. It was quite big.",
+            "title",
+            null,
+            "removed some characters from body",
+            "answer"
+        );
+
         assertEquals(new BlacklistedFilter(0, post1).isHit(), true);
         assertEquals(new BlacklistedFilter(0, post2).isHit(), false);
         assertEquals(new BlacklistedFilter(0, post3).isHit(), false);
+        assertEquals(new BlacklistedFilter(0, post5).isHit(), false);
 
         BlacklistedFilter filter4 = new BlacklistedFilter(0, post4);
         assertEquals(filter4.isHit(), true);
