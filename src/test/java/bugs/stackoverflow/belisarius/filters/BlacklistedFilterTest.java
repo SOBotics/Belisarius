@@ -1,10 +1,12 @@
 package bugs.stackoverflow.belisarius.filters;
 
 import java.io.IOException;
+import java.util.List;
 
 import bugs.stackoverflow.belisarius.models.Post;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -70,5 +72,22 @@ public class BlacklistedFilterTest {
         assertEquals(filter4.isHit(), true);
         // 1 (title) + 1 (edit summary) + 2 (post body) = 4
         assertEquals(filter4.getTotalScore(), 4.0);
+
+        List<String> reasons = List.of(
+            "Contains blacklisted word: (?i)(problem|error|issue)\\s+(re|now\\s+)?(solved|fixed)",
+            "Contains blacklisted word: (?:problem|error|issue).{0,10}(?<!n't|not)\\s+(?:now\\s+)?fixed(?!\\W*\\?)",
+            "Contains blacklisted word: (?i)(problem|error|issue)\\s+(re|now\\s+)?(solved|fixed)",
+            "Contains blacklisted word: (?i)(answer -|answer:)"
+        );
+        List<String> actual = filter4.getReasonName();
+
+        assertTrue(actual.containsAll(reasons) && reasons.containsAll(actual));
+        assertEquals(
+            filter4.getFormattedReasonMessage(),
+            "**Body contains blacklisted words:** (?i)(problem|error|issue)\\s+(re|now\\s+)?(solved|fixed), "
+                + "(?i)(answer -|answer:) **Edit summary contains blacklisted words:** "
+                + "(?i)(problem|error|issue)\\s+(re|now\\s+)?(solved|fixed), "
+                + "(?:problem|error|issue).{0,10}(?<!n't|not)\\s+(?:now\\s+)?fixed(?!\\W*\\?)"
+        );
     }
 }

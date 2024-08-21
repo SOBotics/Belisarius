@@ -60,5 +60,7 @@ public class CodeRemovedFilterTest {
         assertEquals(filter4.isHit(), true);
         // total score is always 1
         assertEquals(filter4.getTotalScore(), 1.0);
+        assertEquals(filter4.getFormattedReasonMessage(), "**Code removed**");
+        assertEquals(filter4.getReasonName().get(0), "Code removed");
     }
 }

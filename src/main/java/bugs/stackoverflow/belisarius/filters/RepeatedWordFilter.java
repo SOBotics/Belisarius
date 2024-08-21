@@ -68,7 +68,9 @@ public class RepeatedWordFilter implements Filter {
             words.append(word);
         }
 
-        return words.toString().substring(0, 40) + "...";
+        return words.toString().length() < 40
+            ? words.toString()
+            : words.toString().substring(0, 40) + "...";
     }
 
     @Override

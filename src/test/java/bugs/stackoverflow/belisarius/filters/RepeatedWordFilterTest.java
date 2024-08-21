@@ -50,5 +50,20 @@ public class RepeatedWordFilterTest {
         assertEquals(filter1.getTotalScore(), 2.0);
         assertEquals(filter2.getTotalScore(), 4.0);
         assertEquals(filter3.getTotalScore(), 5.0);
+
+        assertEquals(filter1.getReasonName().get(0), "Contains repeated words");
+
+        assertEquals(
+            filter1.getFormattedReasonMessage(),
+            "**Post contains repeated words:** repeatedthesearewords"
+        );
+        assertEquals(
+            filter2.getFormattedReasonMessage(),
+            "**Post contains repeated words:** Issueresolved"
+        );
+        assertEquals(
+            filter3.getFormattedReasonMessage(),
+            "**Post contains repeated word:** Deleted"
+        );
     }
 }

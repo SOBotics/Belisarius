@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-public class RepeatedWordFilterTest {
+public class TextRemovedFilterTest {
     @Test
     public void hitTest() throws IOException {
         Post post1 = FilterTestUtils.getSamplePost(
@@ -20,7 +20,6 @@ public class RepeatedWordFilterTest {
             "question"
         );
 
-        // https://higgs.sobotics.org/Hippo/report/84303
         Post post2 = FilterTestUtils.getSamplePost(
             "This text has nothing to do with the above one.",
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit, "
@@ -54,5 +53,13 @@ public class RepeatedWordFilterTest {
         assertEquals(filter3.isHit(), true);
         // total weight is always 1.0
         assertEquals(filter3.getTotalScore(), 1.0);
+        assertEquals(
+            filter3.getReasonName().get(0),
+            "Lots of text removed with a high JW score"
+        );
+        assertEquals(
+            filter3.getFormattedReasonMessage(),
+            "**80.0% or more text removed with a JW score of 0.42**"
+        );
     }
 }

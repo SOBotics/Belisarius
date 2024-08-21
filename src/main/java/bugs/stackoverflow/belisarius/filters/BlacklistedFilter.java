@@ -77,8 +77,8 @@ public class BlacklistedFilter implements Filter {
 
     @Override
     public String getFormattedReasonMessage() {
-        String message = getFormattedMessage("title", "title")
-            + getFormattedMessage("body", "body")
+        String message = getFormattedMessage("title", "Title")
+            + getFormattedMessage("body", "Body")
             + getFormattedMessage("comment", "Edit summary");
 
         return message.trim();

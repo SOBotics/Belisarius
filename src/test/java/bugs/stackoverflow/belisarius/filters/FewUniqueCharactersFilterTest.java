@@ -61,5 +61,7 @@ public class FewUniqueCharactersFilterTest {
         assertEquals(filter3.isHit(), true);
         // total score is always 1
         assertEquals(filter3.getTotalScore(), 1.0);
+        assertEquals(filter3.getFormattedReasonMessage(), "**Few unique characters detected:** Deltd");
+        assertEquals(filter3.getReasonName().get(0), "Few unique characters in body");
     }
 }

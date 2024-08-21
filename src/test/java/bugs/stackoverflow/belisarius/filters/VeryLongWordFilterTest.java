@@ -57,5 +57,10 @@ public class VeryLongWordFilterTest {
         assertEquals(filter1.isHit(), true);
         // total weight is always 1.0
         assertEquals(filter1.getTotalScore(), 1.0);
+        assertEquals(filter1.getReasonName().get(0), "Contains very long word");
+        assertEquals(
+            filter1.getFormattedReasonMessage(),
+            "**Contains very long word:** answerwithaveryveryveryveryverylongwordt..."
+        );
     }
 }
