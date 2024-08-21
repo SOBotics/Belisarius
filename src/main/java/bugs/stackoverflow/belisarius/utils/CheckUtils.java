@@ -14,24 +14,19 @@ import org.jsoup.nodes.Document;
 import info.debatty.java.stringsimilarity.JaroWinkler;
 
 public class CheckUtils {
-    // Map with the threshold for the FewUniqueCharacters reason.
-    // Stolen from https://github.com/Charcoal-SE/SmokeDetector/blob/84099eecffbd85b15de90a1ea41a7c8776ac0903/findspam.py#L592-L595
-    // Key is the number of unique characters, value is a list with lengths which correspond to the key
-    private static final Map<Integer, List<Integer>> FEW_UNIQUES_THRESHOLD = new HashMap<Integer, List<Integer>>() {
-        private static final long serialVersionUID = -2936670361661267625L;
-
-        {
-            put(6, Arrays.asList(30, 36));
-            put(7, Arrays.asList(36, 42));
-            put(8, Arrays.asList(42, 48));
-            put(9, Arrays.asList(48, 54));
-            put(10, Arrays.asList(54, 60));
-            put(11, Arrays.asList(60, 70));
-            put(12, Arrays.asList(70, 80));
-            put(13, Arrays.asList(80, 90));
-            put(14, Arrays.asList(90, 100));
-        }
-    };
+    // Stolen from https://github.com/Charcoal-SE/SmokeDetector/blob/078d8237f31ddc9b914cacd045667d1921473032/findspam.py#L869-L872
+    // key: number of unique characters, value: [lower bound, upper bound]
+    private static final Map<Integer, List<Integer>> FEW_UNIQUES_THRESHOLD = Map.of(
+        6, Arrays.asList(30, 36),
+        7, Arrays.asList(36, 42),
+        8, Arrays.asList(42, 48),
+        9, Arrays.asList(48, 54),
+        10, Arrays.asList(54, 60),
+        11, Arrays.asList(60, 70),
+        12, Arrays.asList(70, 80),
+        13, Arrays.asList(80, 90),
+        14, Arrays.asList(90, 100)
+    );
 
     public static Map<Integer, String> checkForBlackListedWords(String target, String lastTarget, String postType) {
         Map<Integer, String> blacklistedWords = DatabaseUtils.getBlacklistedWordsByType(postType);
@@ -126,7 +121,7 @@ public class CheckUtils {
                 && length < lengths.get(1)
                 && uniquesCount <= threshold.getKey()
             ) {
-                return body.codePoints()         // Intstream of codePoints
+                return body.codePoints() // Intstream of codePoints
                     .distinct()
                     .collect(
                         StringBuilder::new, // collect to a StringBuilder
@@ -171,7 +166,7 @@ public class CheckUtils {
     }
 
     public static Set<String> checkRepeatedWords(String target) {
-        String[] words = target.split("\\W");
+        String[] words = removeHtml(target).split("\\W");
 
         return new HashSet<>(Arrays.asList(words));
     }
