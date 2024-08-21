@@ -163,6 +163,12 @@
                                         <exclude>META-INF/*.MF</exclude>
                                     </excludes>
                                 </filter>
+                                <filter>
+                                    <artifact>*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF.versions.9.module-info</exclude>
+                                    </excludes>
+                                </filter>
                             </filters>
                         </configuration>
                     </execution>
