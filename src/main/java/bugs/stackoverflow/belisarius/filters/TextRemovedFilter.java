@@ -25,9 +25,9 @@ public class TextRemovedFilter implements Filter {
         String original = "";
         String target = "";
 
-        if (this.post.getBody() != null && this.post.getLastBody() != null) {
-            original = this.post.getLastBody();
-            target = this.post.getBody();
+        if (post.getBody() != null && post.getLastBody() != null) {
+            original = post.getLastBody();
+            target = post.getBody();
         }
 
         this.score = CheckUtils.getJaroWinklerScore(original, target, percentage);
