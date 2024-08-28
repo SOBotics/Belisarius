@@ -17,12 +17,16 @@
 
       mvn clean install
 
-- Fill in `properties/login.properties`.
-- Start the bot:
+- Run
+
+      cp properties/login.example.properties properties/login.properties
+
+  and fill `properties/login.properties`.
+
+- Start the bot by running:
 
       java -cp target/belisarius-1.7.1.jar:./lib/* bugs.stackoverflow.belisarius.Application
 
 -----
 
-If you want to change the location of the log file, edit `src/main/resources/log4j.xml` and change the path in line 16.
-Please note that the project should be rebuilt (`mvn install`), for the changes to be applied.
+If you want to change the location of the log file, edit `src/main/resources/log4j.xml`. The project must be rebuilt (`mvn install`), for the changes to be applied.

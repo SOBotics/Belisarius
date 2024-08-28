@@ -9,7 +9,7 @@ There are two feedback:
 
 ### How can I send feedback?
 
-There are two ways to do this:
+There are two ways that you can send feedback:
 
 1. Reply to the report with either `tp` or `fp`. There's a [userscript](https://github.com/SOBotics/Userscripts/blob/master/Belisarius/Belisarius_Controls.user.js) which may be helpful.
 2. Go to the respective Higgs report (click the "Hippo" link) and select the type of feedback you wish to send.

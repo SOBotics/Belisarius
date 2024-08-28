@@ -2,13 +2,13 @@
 
 ## Background
 
-This bot has been developed in an attempt to help capture possible vandalism. This includes:
+This bot has been developed in an attempt to help capture possible vandalism by identifying edits that:
 
- - Removing all code
- - Replacing all content with nonsense/repeated words
- - Adding solutions to their questions instead of posting an answer
- - Removing large amounts of text from their post
- - Using certain keywords or offensive language within the edit summary
+ - remove all code
+ - replace content with nonsense or repeated words
+ - include solutions to questions
+ - remove large amounts of text from the post
+ - use certain keywords or offensive language within the edit summary
  
 ## Why do we need the bot?
 
@@ -16,9 +16,9 @@ The point of the bot is to help identify bad edits and/or potential vandalism ma
 
 ## Implementation
 
-The bot queries the [Stack Exchange API][1] once every minute to get a list of the latest posts. There is logic to check that the post has been edited and that it has been edited by the author.
+The bot queries the [Stack Exchange API][1] every minute to fetch a list of the most recently edited posts. There is logic to check that the post has been edited and that it has been edited by the author.
 
-The `post_id` from each post is then taken and the [Stack Exchange API][2] is again queried for the list of revisions. To limit calls we utilise the functionality of pushing multiple ids into the API and then logic is in place to ensure we are using the latest revision.
+The `post_id` from each post is then extracted and the [Stack Exchange API][2] is again queried for a list of revisions. To reduce API calls multiple ids are sent at once, and then logic is in place to ensure we are using the latest revision.
 
 Edits can be made up of a title change, body change of a question, tag changes or changes made to the body of an answer. Currently tags are not checked. Instead the title, question body and answer body depending on what has been edited are run through filters, as is the edit summary.
  
