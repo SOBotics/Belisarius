@@ -16,19 +16,23 @@ public class PropertyService {
     private Properties prop;
 
     public PropertyService() {
-        File propertiesFile = new File(FileUtils.LOGIN_PROPERTIES_FILE);
-
-        // for testing
-        if (propertiesFile.isFile()) {
-            loadProperties(FileUtils.LOGIN_PROPERTIES_FILE);
-        } else {
-            loadProperties(FileUtils.LOGIN_PROPERTIES_EXAMPLE_FILE);
-        }
+        loadProperties(getFilePath());
     }
 
     // added for testing
     public PropertyService(String filename) {
         loadProperties(filename);
+    }
+
+    public String getFilePath() {
+        File propertiesFile = new File(FileUtils.LOGIN_PROPERTIES_FILE);
+
+        // for testing
+        if (propertiesFile.isFile()) {
+            return FileUtils.LOGIN_PROPERTIES_FILE;
+        } else {
+            return FileUtils.LOGIN_PROPERTIES_EXAMPLE_FILE;
+        }
     }
 
     public String getProperty(String name) {

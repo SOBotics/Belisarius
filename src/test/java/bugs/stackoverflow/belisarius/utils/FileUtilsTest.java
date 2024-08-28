@@ -16,7 +16,7 @@ import bugs.stackoverflow.belisarius.services.PropertyService;
 
 public class FileUtilsTest {
     private final PropertyService propertyService = new PropertyService();
-    private final Path propertiesFilePath = Paths.get(FileUtils.LOGIN_PROPERTIES_EXAMPLE_FILE); 
+    private final Path propertiesFilePath = Paths.get(propertyService.getFilePath()); 
 
     @Test
     public void readFileTest() {
