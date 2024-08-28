@@ -25,7 +25,7 @@
 
 - Start the bot by running:
 
-      java -cp target/belisarius-1.7.1.jar:./lib/* bugs.stackoverflow.belisarius.Application
+      java -cp target/belisarius-1.8.0.jar:./lib/* bugs.stackoverflow.belisarius.Application
 
 -----
 

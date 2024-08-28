@@ -1,6 +1,7 @@
 # Belisarius - Detecting vandalism on Stack Overflow
 
-![Test](https://github.com/SOBotics/Belisarius/workflows/Test/badge.svg)
+![Test](https://github.com/SOBotics/Belisarius/workflows/Test/badge.svg) &nbsp;
+[![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 
 ## Background
 
@@ -83,7 +84,7 @@ A sample image of a report is:
 
 - Start the bot by running:
 
-      java -cp target/belisarius-1.7.1.jar:./lib/* bugs.stackoverflow.belisarius.Application
+      java -cp target/belisarius-1.8.0.jar:./lib/* bugs.stackoverflow.belisarius.Application
 
 -----
 
