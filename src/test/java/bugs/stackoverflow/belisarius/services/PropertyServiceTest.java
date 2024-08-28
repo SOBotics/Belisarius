@@ -3,11 +3,12 @@ package bugs.stackoverflow.belisarius.services;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import bugs.stackoverflow.belisarius.services.PropertyService;
+import bugs.stackoverflow.belisarius.utils.FileUtils;
 
 import org.junit.jupiter.api.Test;
 
 public class PropertyServiceTest {
-    private final PropertyService propertyService = new PropertyService();
+    private final PropertyService propertyService = new PropertyService(FileUtils.LOGIN_PROPERTIES_EXAMPLE_FILE);
 
     @Test
     public void getPropertyTest() {

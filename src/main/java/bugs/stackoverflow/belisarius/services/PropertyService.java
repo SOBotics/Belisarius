@@ -1,5 +1,6 @@
 package bugs.stackoverflow.belisarius.services;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -10,21 +11,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PropertyService {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(PropertyService.class);
 
     private Properties prop;
 
     public PropertyService() {
-        try (FileInputStream propertiesFis = new FileInputStream(FileUtils.LOGIN_PROPERTIES_FILE)) {
-            prop = new Properties();
-            prop.load(propertiesFis);
-        } catch (IOException exception) {
-            LOGGER.info(
-                "IOException occurred while loading properties from " + FileUtils.LOGIN_PROPERTIES_FILE,
-                exception
-            );
+        File propertiesFile = new File(FileUtils.LOGIN_PROPERTIES_FILE);
+
+        // for testing
+        if (propertiesFile.isFile()) {
+            loadProperties(FileUtils.LOGIN_PROPERTIES_FILE);
+        } else {
+            loadProperties(FileUtils.LOGIN_PROPERTIES_EXAMPLE_FILE);
         }
+    }
+
+    // added for testing
+    public PropertyService(String filename) {
+        loadProperties(filename);
     }
 
     public String getProperty(String name) {
@@ -35,5 +39,17 @@ public class PropertyService {
         }
 
         return property;
+    }
+
+    private void loadProperties(String filename) {
+        try (FileInputStream propertiesFis = new FileInputStream(filename)) {
+            prop = new Properties();
+            prop.load(propertiesFis);
+        } catch (IOException exception) {
+            LOGGER.info(
+                "IOException occurred while loading properties from " + filename,
+                exception
+            );
+        }
     }
 }
