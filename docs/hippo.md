@@ -6,7 +6,7 @@ Higgs is developed by [Rob](https://github.com/rjrudman) and hosted by Das_Geek.
 
 Here's how a report looks like:
 
-[![Higgs report](https://i.sstatic.net/ffjpv.png)](https://i.sstatic.net/ffjpv.png)
+[![Higgs report](https://i.imgur.com/bSBhllD.png)](https://i.imgur.com/bSBhllD.png)
 
 - `Answer to:` is prepended to the title if the reported post is an answer.
 - Current body contains the text the latest revision had at the time of reporting.
