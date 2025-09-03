@@ -9,7 +9,7 @@
     <version>1.8.0</version>
 
     <properties>
-        <project.java.version>11</project.java.version>
+        <project.java.version>17</project.java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
@@ -50,7 +50,7 @@
         <dependency>
             <groupId>org.threeten</groupId>
             <artifactId>threetenbp</artifactId>
-            <version>1.7.1</version>
+            <version>1.7.2</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -60,7 +60,7 @@
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.21.1</version>
+            <version>1.21.2</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

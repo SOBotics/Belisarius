@@ -3,7 +3,7 @@
 #### Minimum requirements
 
 - Maven 3.6
-- Java 11
+- Java 17
 - SQLite for reading the database - instructions to install for [Windows](https://www.sqlitetutorial.net/download-install-sqlite), [Linux](https://linoxide.com/linux-how-to/install-use-sqlite-linux) and [MacOS](https://flaviocopes.com/sqlite-how-to-install)
 
 #### Compile and run
