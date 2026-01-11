@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -36,8 +35,7 @@ public class FileUtilsTest {
             String wordRegex = matches.get(1);
             String postType = matches.get(2);
 
-            String[] expectedTypesArr = { "question", "question_title", "answer" };
-            List<String> expectedTypes = Arrays.asList(expectedTypesArr);
+            List<String> expectedTypes = List.of("question", "question_title", "answer");
 
             assertDoesNotThrow(() -> Integer.valueOf(wordId)); // the id must be a number
             assertDoesNotThrow(() -> Pattern.compile(wordRegex)); // the regex must be valid

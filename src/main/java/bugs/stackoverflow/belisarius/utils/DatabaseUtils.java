@@ -24,22 +24,26 @@ public class DatabaseUtils {
     public static void createVandalisedPostTable() {
         SQLiteConnection connection = new SQLiteConnection();
 
-        String sql = "CREATE TABLE IF NOT EXISTS VandalisedPost(PostId integer, \n"
-                                                            + " CreationDate integer, \n"
-                                                            + " RevisionId integer, \n"
-                                                            + " RoomId integer, \n"
-                                                            + " OwnerId integer, \n"
-                                                            + " Title text, \n"
-                                                            + " LastTitle text, \n"
-                                                            + " Body text, \n"
-                                                            + " LastBody text, \n"
-                                                            + " IsRollback integer, \n"
-                                                            + " PostType text, \n"
-                                                            + " Comment text, \n"
-                                                            + " Site text, \n"
-                                                            + " Severity text, \n"
-                                                            + " RevisionGuid text, \n"
-                                                            + " PRIMARY KEY(PostId, RevisionId, RoomId));";
+        String sql = """
+                     CREATE TABLE IF NOT EXISTS VandalisedPost(
+                       PostId integer,
+                       CreationDate integer,
+                       RevisionId integer,
+                       RoomId integer,
+                       OwnerId integer,
+                       Title text,
+                       LastTitle text,
+                       Body text,
+                       LastBody text,
+                       IsRollback integer,
+                       PostType text,
+                       Comment text,
+                       Site text,
+                       Severity text,
+                       RevisionGuid text,
+                       PRIMARY KEY(PostId, RevisionId, RoomId)
+                     );
+                     """;
 
         try (Connection conn = connection.getConnection();
             Statement statement = conn.createStatement()) {
@@ -52,16 +56,19 @@ public class DatabaseUtils {
     public static void createReasonCaughtTable() {
         SQLiteConnection connection = new SQLiteConnection();
 
-        String sql = "CREATE TABLE IF NOT EXISTS ReasonCaught(PostId integer, \n"
-                                                          + " RevisionId integer, \n"
-                                                          + " RoomId integer, \n"
-                                                          + " ReasonId text, \n"
-                                                          + " Score integer, \n"
-                                                          + " PRIMARY KEY(PostId, RevisionId, RoomId, ReasonId), \n"
-                                                          + " FOREIGN KEY(PostId, RevisionId, RoomId)"
-                                                          + " REFERENCES VandalisedPost(PostId, RevisionId, RoomId), \n"
-                                                          + " FOREIGN KEY(ReasonId) REFERENCES Reason(ReasonId), \n"
-                                                          + " FOREIGN KEY(RoomId) REFERENCES Room(RoomId));";
+        String sql = """
+                     CREATE TABLE IF NOT EXISTS ReasonCaught(
+                       PostId integer,
+                       RevisionId integer,
+                       RoomId integer,
+                       ReasonId text,
+                       Score integer,
+                       PRIMARY KEY(PostId, RevisionId, RoomId, ReasonId),
+                       FOREIGN KEY(PostId, RevisionId, RoomId) REFERENCES VandalisedPost(PostId, RevisionId, RoomId),
+                       FOREIGN KEY(ReasonId) REFERENCES Reason(ReasonId),
+                       FOREIGN KEY(RoomId) REFERENCES Room(RoomId)
+                     );
+                     """;
 
         try (Connection conn = connection.getConnection();
             Statement statement = conn.createStatement()) {
@@ -74,16 +81,18 @@ public class DatabaseUtils {
     public static void createBlacklistedWordCaughtTable() {
         SQLiteConnection connection = new SQLiteConnection();
 
-        String sql = "CREATE TABLE IF NOT EXISTS BlacklistedWordCaught(PostId integer, \n"
-                                                                   + " RevisionId integer, \n"
-                                                                   + " RoomId integer, \n"
-                                                                   + " BlacklistedWordId integer, \n"
-                                                                   + " PRIMARY KEY(PostId, RevisionId, RoomId, BlacklistedWordId), \n "
-                                                                   + " FOREIGN KEY(PostId, RevisionId, RoomId)"
-                                                                   + " REFERENCES VandalisedPost(PostId, RevisionId, RoomId), \n"
-                                                                   + " FOREIGN KEY(BlacklistedWordId)"
-                                                                   + " REFERENCES BlacklistedWord(BlacklistedWordId), \n"
-                                                                   + " FOREIGN KEY(RoomId) REFERENCES Room(RoomId));";
+        String sql = """
+                     CREATE TABLE IF NOT EXISTS BlacklistedWordCaught(
+                       PostId integer,
+                       RevisionId integer,
+                       RoomId integer,
+                       BlacklistedWordId integer,
+                       PRIMARY KEY(PostId, RevisionId, RoomId, BlacklistedWordId),
+                       FOREIGN KEY(PostId, RevisionId, RoomId) REFERENCES VandalisedPost(PostId, RevisionId, RoomId),
+                       FOREIGN KEY(BlacklistedWordId) REFERENCES BlacklistedWord(BlacklistedWordId),
+                       FOREIGN KEY(RoomId) REFERENCES Room(RoomId)
+                     );
+                     """;
 
         try (Connection conn = connection.getConnection();
             Statement statement = conn.createStatement()) {
@@ -96,15 +105,18 @@ public class DatabaseUtils {
     public static void createOffensiveWordCaughtTable() {
         SQLiteConnection connection = new SQLiteConnection();
 
-        String sql = "CREATE TABLE IF NOT EXISTS OffensiveWordCaught(PostId integer, \n"
-                                                                 + " RevisionId integer, \n"
-                                                                 + " RoomId integer, \n"
-                                                                 + " OffensiveWordId integer, \n"
-                                                                 + " PRIMARY KEY(PostId, RevisionId, RoomId), \n "
-                                                                 + " FOREIGN KEY(PostId, RevisionId, RoomId)"
-                                                                 + " REFERENCES VandalisedPost(PostId, RevisionId, RoomId), \n"
-                                                                 + " FOREIGN KEY(OffensiveWordId) REFERENCES OffensiveWord(OffensiveWordId), \n"
-                                                                 + " FOREIGN KEY(RoomId) REFERENCES Room(RoomId));";
+        String sql = """
+                     CREATE TABLE IF NOT EXISTS OffensiveWordCaught(
+                       PostId integer,
+                       RevisionId integer,
+                       RoomId integer,
+                       OffensiveWordId integer,
+                       PRIMARY KEY(PostId, RevisionId, RoomId),
+                       FOREIGN KEY(PostId, RevisionId, RoomId) REFERENCES VandalisedPost(PostId, RevisionId, RoomId),
+                       FOREIGN KEY(OffensiveWordId) REFERENCES OffensiveWord(OffensiveWordId),
+                       FOREIGN KEY(RoomId) REFERENCES Room(RoomId)
+                     );
+                     """;
 
         try (Connection conn = connection.getConnection();
             Statement statement = conn.createStatement()) {
@@ -117,15 +129,18 @@ public class DatabaseUtils {
     public static void createFeedbackTable() {
         SQLiteConnection connection = new SQLiteConnection();
 
-        String sql = "CREATE TABLE IF NOT EXISTS Feedback(PostId integer, \n"
-                                                      + " RevisionId integer, \n"
-                                                      + " RoomId integer, \n"
-                                                      + " UserId integer, \n"
-                                                      + " Feedback text, \n"
-                                                      + " PRIMARY KEY(PostId, RevisionId, RoomId, UserId), \n"
-                                                      + " FOREIGN KEY(PostId, RevisionId, RoomId)"
-                                                      + " REFERENCES VandalisedPost(PostId, RevisionId, RoomId), \n"
-                                                      + " FOREIGN KEY(RoomId) REFERENCES VandalisedPost(RoomId));";
+        String sql = """
+                     CREATE TABLE IF NOT EXISTS Feedback(
+                       PostId integer,
+                       RevisionId integer,
+                       RoomId integer,
+                       UserId integer,
+                       Feedback text,
+                       PRIMARY KEY(PostId, RevisionId, RoomId, UserId),
+                       FOREIGN KEY(PostId, RevisionId, RoomId) REFERENCES VandalisedPost(PostId, RevisionId, RoomId),
+                       FOREIGN KEY(RoomId) REFERENCES VandalisedPost(RoomId)
+                     );
+                     """;
 
         try (Connection conn = connection.getConnection();
             Statement statement = conn.createStatement()) {
@@ -138,10 +153,13 @@ public class DatabaseUtils {
     public static boolean checkVandalisedPostExists(long postId, int revisionId, int roomId) {
         SQLiteConnection connection = new SQLiteConnection();
 
-        String sql = "SELECT (COUNT(*) > 0) As Found FROM VandalisedPost "
-                                                  + "WHERE PostId = ? "
-                                                  + "AND RevisionId = ? "
-                                                  + "AND RoomId = ?;";
+        String sql = """
+                     SELECT (COUNT(*) > 0) AS Found
+                     FROM VandalisedPost
+                     WHERE PostId = ?
+                        AND RevisionId = ?
+                        AND RoomId = ?;
+                     """;
 
         try (Connection conn = connection.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
@@ -167,11 +185,14 @@ public class DatabaseUtils {
     private static boolean checkReasonCaughtExists(long postId, int revisionId, int roomId, int reasonId) {
         SQLiteConnection connection = new SQLiteConnection();
 
-        String sql = "SELECT (COUNT(*) > 0) As Found FROM ReasonCaught "
-                                                  + "WHERE PostId = ? "
-                                                  + "AND RevisionId = ? "
-                                                  + "AND RoomId = ? "
-                                                  + "AND ReasonId = ?;";
+        String sql = """
+                     SELECT (COUNT(*) > 0) AS Found
+                     FROM ReasonCaught
+                     WHERE PostId = ?
+                         AND RevisionId = ?
+                         AND RoomId = ?
+                         AND ReasonId = ?;
+                     """;
 
         try (Connection conn = connection.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
@@ -203,11 +224,14 @@ public class DatabaseUtils {
     ) {
         SQLiteConnection connection = new SQLiteConnection();
 
-        String sql = "SELECT (COUNT(*) > 0) As Found FROM BlacklistedWordCaught "
-                                                  + "WHERE PostId = ? "
-                                                  + "AND RevisionId = ? "
-                                                  + "AND RoomId = ? \n"
-                                                  + "AND BlacklistedWordId = ?;";
+        String sql = """
+                     SELECT (COUNT(*) > 0) AS Found
+                     FROM BlacklistedWordCaught
+                     WHERE PostId = ?
+                        AND RevisionId = ?
+                        AND RoomId = ?
+                        AND BlacklistedWordId = ?;
+                     """;
 
         try (Connection conn = connection.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
@@ -240,11 +264,14 @@ public class DatabaseUtils {
     ) {
         SQLiteConnection connection = new SQLiteConnection();
 
-        String sql = "SELECT (COUNT(*) > 0) As Found FROM OffensiveWordCaught "
-                                                  + "WHERE PostId = ? "
-                                                  + "AND RevisionId = ? "
-                                                  + "AND RoomId = ? \n"
-                                                  + "AND OffensiveWordId = ?;";
+        String sql = """
+                     SELECT (COUNT(*) > 0) AS Found
+                     FROM OffensiveWordCaught
+                     WHERE PostId = ?
+                        AND RevisionId = ?
+                        AND RoomId = ?
+                        AND OffensiveWordId = ?;
+                     """;
 
         try (Connection conn = connection.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
